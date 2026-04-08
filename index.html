@@ -41,6 +41,12 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
 .tab:hover{background:var(--surface2)}
 .tab.on{background:var(--blue-a);color:var(--blue)}
 .tab.dim{opacity:.4;cursor:not-allowed}
+
+/* ── SUB-PAGE FRAME ── */
+.subpage{display:none;width:100%;height:calc(100vh - 56px);border:none;background:var(--bg)}
+.subpage.vis{display:block}
+.main{display:block}
+.main.hidden{display:none}
 .dot{width:7px;height:7px;border-radius:50%;display:inline-block}
 .tr{display:flex;align-items:center;gap:8px;margin-left:auto}
 select.ctl{font-family:'Inter',sans-serif;font-size:12.5px;font-weight:500;
@@ -130,6 +136,8 @@ select.ctl{font-family:'Inter',sans-serif;font-size:12.5px;font-weight:500;
 
 /* Stats row inside drill */
 .dstats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+/* 5-col variant for bonus drill */
+.dstats-5{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px}
 .dstat{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:12px}
 .dstat-v{font-size:18px;font-weight:800;margin-bottom:2px}
 .dstat-l{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--text3)}
@@ -237,16 +245,28 @@ select.ctl{font-family:'Inter',sans-serif;font-size:12.5px;font-weight:500;
 
 <header class="top">
   <div class="brand">
-    <div class="av">T</div>
+    <div class="av" id="brand-av">T</div>
     <div>
-      <div class="bn">NAM Wholesale Trading</div>
-      <div class="bs">Statement of Comprehensive Income</div>
+      <div class="bn" id="brand-name">NAM Wholesale Trading</div>
+      <div class="bs" id="brand-sub">Statement of Comprehensive Income</div>
     </div>
   </div>
   <div class="tabs">
-    <button class="tab on"><span class="dot" style="background:var(--blue)"></span> NAM Trading</button>
-    <button class="tab dim"><span class="dot" style="background:var(--green)"></span> NAM Builders</button>
-    <button class="tab dim"><span class="dot" style="background:var(--orange)"></span> ALM Manpower</button>
+    <button class="tab on"  id="tab-trading"  onclick="switchTab('trading')">
+      <span class="dot" style="background:var(--blue)"></span> NAM Trading
+    </button>
+    <button class="tab" id="tab-builders" onclick="switchTab('builders')">
+      <span class="dot" style="background:var(--green)"></span> NAM Builders
+    </button>
+    <button class="tab" id="tab-alm"      onclick="switchTab('alm')">
+      <span class="dot" style="background:var(--orange)"></span> ALM Manpower
+    </button>
+    <button class="tab" id="tab-loan"     onclick="switchTab('loan')">
+      <span class="dot" style="background:var(--purple)"></span> Loan
+    </button>
+    <button class="tab" id="tab-summary"  onclick="switchTab('summary')">
+      <span class="dot" style="background:var(--navy)"></span> Overall Summary
+    </button>
   </div>
   <div class="tr">
     <select class="ctl" id="sy" onchange="load()"><option value="2026">2026</option></select>
@@ -260,7 +280,7 @@ select.ctl{font-family:'Inter',sans-serif;font-size:12.5px;font-weight:500;
       <option value="November">November</option><option value="December">December</option>
     </select>
     <div class="clk" id="clk">--:--:-- --</div>
-    <button class="rfbtn" id="rfb" onclick="load()">
+    <button class="rfbtn" id="rfb" onclick="refreshActive()">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
         <path d="M3 12a9 9 0 019-9 9.75 9.75 0 016.74 2.74L21 8"/><path d="M21 3v5h-5M21 12a9 9 0 01-9 9 9.75 9.75 0 01-6.74-2.74L3 16"/><path d="M8 16H3v5"/>
       </svg>Refresh
@@ -268,7 +288,23 @@ select.ctl{font-family:'Inter',sans-serif;font-size:12.5px;font-weight:500;
   </div>
 </header>
 
-<main class="main">
+<!-- ── SUB-PAGE IFRAMES (hidden until tab is clicked) ── -->
+<!-- Each sub-dashboard is a separate HTML file served by HtmlService.
+     Replace the src values with the URLs returned by your GAS doGet() or
+     use google.script.run + HtmlService.createHtmlOutputFromFile() pattern.
+     
+     FILE NAMES to create in your GAS project:
+       nam_builders.html  → NAM Builders dashboard
+       alm_manpower.html  → ALM Manpower dashboard
+       loan.html          → Loan dashboard
+       overall_summary.html → Overall Summary dashboard
+-->
+<iframe id="frame-builders" class="subpage" src="about:blank" title="NAM Builders Dashboard"></iframe>
+<iframe id="frame-alm"      class="subpage" src="about:blank" title="ALM Manpower Dashboard"></iframe>
+<iframe id="frame-loan"     class="subpage" src="about:blank" title="Loan Dashboard"></iframe>
+<iframe id="frame-summary"  class="subpage" src="about:blank" title="Overall Summary Dashboard"></iframe>
+
+<main class="main" id="main-trading">
   <div class="sbar" id="sbar">
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
     <span id="stxt">NAM Trading · Updated · TVA ✓</span>
@@ -376,7 +412,7 @@ select.ctl{font-family:'Inter',sans-serif;font-size:12.5px;font-weight:500;
 <script>
 // ══════════════════════════════════════
 // ⚠️  PASTE YOUR APPS SCRIPT WEB APP URL HERE
-const API = 'https://script.google.com/macros/s/AKfycby83aJGbvL5Gj-VskWqQGhIeqwOKCXIsg0oJZ7epwPIU3RAGmFuAKBdQYV7R1RCgyk/exec';
+const API = 'https://script.google.com/macros/s/AKfycby4ijTcYO1v5WTzx3rvszsOx37KNqPIzKaDC0_XdWSquSbVfLFK112zfr6w5mRYX6rK/exec';
 // ══════════════════════════════════════
 
 let activeCard = null, activeColor = null;
@@ -800,18 +836,42 @@ function renderNI(d){
 }
 
 // ══════════════════════════════════════════════════════
-// DRILL: BONUS MONITORING  ← FIXED
+// DRILL: BONUS MONITORING
+// NEW: 5-column stat row — adds Accumulated Net Profit
+//      right of Net Margin (between Net Margin and the
+//      existing remaining/earned stats)
 // ══════════════════════════════════════════════════════
 function renderBonus(d){
-  // pct is now the correct decimal from col G (% Achieved)
-  const pctDisplay = d.pct > 1 ? F.p(d.pct) : F.p(d.pct);
+  const anpNeg = (d.accumNetProfit || 0) < 0;
+  const anpColor = anpNeg ? 'var(--red)' : 'var(--green)';
+  const anpClass = anpNeg ? 't-red' : 't-green';
+
   document.getElementById('dc').innerHTML=`
-    <div class="dstats">
-      <div class="dstat"><div class="dstat-v">${F.p(d.pct)}</div><div class="dstat-l">% Achieved</div></div>
-      <div class="dstat"><div class="dstat-v">${F.k(d.earned)}</div><div class="dstat-l">Total Earned</div></div>
-      <div class="dstat"><div class="dstat-v">${F.k(d.annualTarget)}</div><div class="dstat-l">Annual Target</div></div>
-      <div class="dstat"><div class="dstat-v t-red">${F.k(d.remaining)}</div><div class="dstat-l">Remaining</div></div>
+    <!-- 5-column stats: % Achieved | Earned | Annual Target | Remaining | Accumulated Net Profit -->
+    <div class="dstats-5">
+      <div class="dstat">
+        <div class="dstat-v">${F.p(d.pct)}</div>
+        <div class="dstat-l">% Achieved</div>
+      </div>
+      <div class="dstat">
+        <div class="dstat-v">${F.k(d.earned)}</div>
+        <div class="dstat-l">Total Earned</div>
+      </div>
+      <div class="dstat">
+        <div class="dstat-v">${F.k(d.annualTarget)}</div>
+        <div class="dstat-l">Annual Target</div>
+      </div>
+      <div class="dstat">
+        <div class="dstat-v t-red">${F.k(d.remaining)}</div>
+        <div class="dstat-l">Remaining</div>
+      </div>
+      <!-- ★ NEW: Accumulated Net Profit from col J row 19 of Performance Bonus sheet -->
+      <div class="dstat" style="border-color:${anpColor};background:${anpNeg?'var(--red-a)':'var(--green-a)'}">
+        <div class="dstat-v ${anpClass}">${F.k(d.accumNetProfit ?? 0, false)}</div>
+        <div class="dstat-l" style="color:${anpColor}">Accum. Net Profit</div>
+      </div>
     </div>
+
     <div class="vtog">
       <button class="vbtn on" id="vb-chart-bonus" onclick="vtoggle('bonus','chart')">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> Chart
@@ -820,6 +880,7 @@ function renderBonus(d){
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg> Table
       </button>
     </div>
+
     <div class="dcont" id="vc-bonus">
       <div class="cwrap"><canvas id="ch-bonus-bar" style="max-height:240px"></canvas></div>
       <div>
@@ -827,49 +888,69 @@ function renderBonus(d){
         <div id="bonus-month-list"></div>
       </div>
     </div>
+
     <div id="vt-bonus" style="display:none">
       <table class="dtbl">
-        <thead><tr><th>Month</th><th>Target (₱)</th><th>Earned (₱)</th><th>Variance (₱)</th><th>% Achieved</th><th>Status</th><th>Net Profit (₱)</th></tr></thead>
+        <thead>
+          <tr>
+            <th>Month</th>
+            <th>Target (₱)</th>
+            <th>Earned (₱)</th>
+            <th>Variance (₱)</th>
+            <th>% Achieved</th>
+            <th>Status</th>
+            <th>Net Profit (₱)</th>
+            <th>Accum. Net Profit (₱)</th>
+          </tr>
+        </thead>
         <tbody id="bonus-tbl-body"></tbody>
       </table>
     </div>
   `;
-  const mr=d.monthRows||[];
-  barChart('ch-bonus-bar',mr.map(x=>x.month),[
-    {label:'Target',data:mr.map(x=>x.target),backgroundColor:'rgba(37,99,235,.2)',borderColor:'#2563eb',borderWidth:1.5,borderRadius:4},
-    {label:'Earned',data:mr.map(x=>x.earned),backgroundColor:mr.map(x=>x.status==='Met'?'rgba(22,163,74,.6)':x.status==='Behind'?'rgba(220,38,38,.5)':'rgba(148,163,184,.3)'),borderColor:mr.map(x=>x.status==='Met'?'#16a34a':x.status==='Behind'?'#dc2626':'#94a3b8'),borderWidth:1.5,borderRadius:4}
+
+  const mr = d.monthRows || [];
+  barChart('ch-bonus-bar', mr.map(x=>x.month), [
+    {label:'Target',  data:mr.map(x=>x.target),
+     backgroundColor:'rgba(37,99,235,.2)', borderColor:'#2563eb', borderWidth:1.5, borderRadius:4},
+    {label:'Earned',  data:mr.map(x=>x.earned),
+     backgroundColor:mr.map(x=>x.status==='Met'?'rgba(22,163,74,.6)':x.status==='Behind'?'rgba(220,38,38,.5)':'rgba(148,163,184,.3)'),
+     borderColor:mr.map(x=>x.status==='Met'?'#16a34a':x.status==='Behind'?'#dc2626':'#94a3b8'),
+     borderWidth:1.5, borderRadius:4}
   ]);
-  document.getElementById('bonus-month-list').innerHTML=mr.map(row=>{
-    const w=Math.min(100,row.target>0?row.earned/row.target*100:0);
-    const sc=row.status==='Met'?'badge-met':row.status==='Behind'?'badge-beh':'badge-pen';
-    const barC=row.status==='Met'?'var(--green)':row.status==='Behind'?'var(--red)':'var(--border)';
+
+  document.getElementById('bonus-month-list').innerHTML = mr.map(row=>{
+    const wPct = Math.min(100, row.target > 0 ? row.earned / row.target * 100 : 0);
+    const sc  = row.status==='Met' ? 'badge-met' : row.status==='Behind' ? 'badge-beh' : 'badge-pen';
+    const barC = row.status==='Met' ? 'var(--green)' : row.status==='Behind' ? 'var(--red)' : 'var(--border)';
     return `<div class="irow">
       <div class="iname">${row.month}</div>
-      <div class="ibar-wrap" style="width:70px"><div class="ibar-fill" style="width:${w}%;background:${barC}"></div></div>
+      <div class="ibar-wrap" style="width:70px"><div class="ibar-fill" style="width:${wPct}%;background:${barC}"></div></div>
       <div class="iamt">${F.k(row.earned)}</div>
       <span class="${sc}">${row.status}</span>
     </div>`;
   }).join('');
-  document.getElementById('bonus-tbl-body').innerHTML=mr.map(row=>{
-    const sc=row.status==='Met'?'badge-met':row.status==='Behind'?'badge-beh':'badge-pen';
-    const npC=row.netProfit<0?'t-red':row.netProfit>0?'t-green':'';
+
+  document.getElementById('bonus-tbl-body').innerHTML = mr.map(row=>{
+    const sc   = row.status==='Met' ? 'badge-met' : row.status==='Behind' ? 'badge-beh' : 'badge-pen';
+    const npC  = row.netProfit < 0 ? 't-red'  : row.netProfit > 0  ? 't-green' : '';
+    const anpC = (row.accumNetProfit || 0) < 0 ? 't-red' : (row.accumNetProfit || 0) > 0 ? 't-green' : '';
     return `<tr>
       <td>${row.month}</td>
-      <td class="mono">${F.k(row.target,false)}</td>
-      <td class="mono">${row.earned>0?F.k(row.earned,false):'—'}</td>
-      <td class="mono ${row.variance>0?'t-green':'t-red'}">${row.variance>0?'+':''}${row.variance!==0?F.k(row.variance,false):'—'}</td>
-      <td>${row.pctAchieved>0?F.p(row.pctAchieved):'—'}</td>
+      <td class="mono">${F.k(row.target, false)}</td>
+      <td class="mono">${row.earned > 0 ? F.k(row.earned, false) : '—'}</td>
+      <td class="mono ${row.variance > 0 ? 't-green' : 't-red'}">${row.variance !== 0 ? (row.variance > 0 ? '+' : '') + F.k(row.variance, false) : '—'}</td>
+      <td>${row.pctAchieved > 0 ? F.p(row.pctAchieved) : '—'}</td>
       <td><span class="${sc}">${row.status}</span></td>
-      <td class="mono ${npC}">${row.netProfit!==0?F.k(row.netProfit,false):'—'}</td>
+      <td class="mono ${npC}">${row.netProfit !== 0 ? F.k(row.netProfit, false) : '—'}</td>
+      <td class="mono ${anpC}">${row.accumNetProfit ? F.k(row.accumNetProfit, false) : '—'}</td>
     </tr>`;
   }).join('');
 }
 
 // ══════════════════════════════════════════════════════
-// DRILL: ACTUAL VS TARGET  ← FULLY REWRITTEN
-// Now reads Monthly Expense Target sheet data from backend
+// DRILL: ACTUAL VS TARGET
 // ══════════════════════════════════════════════════════
-let avtSub = 'revenue'; // 'revenue' | 'expenses'
+let avtSub = 'revenue';
 function renderAVT(d){
   window._avtData = d;
   const withinC  = d.withinCount  || 0;
@@ -945,9 +1026,7 @@ function renderAVT(d){
     </div>
   `;
 
-  // Render revenue chart
   _renderAvtRevenueChart(d);
-  // Pre-render expense table
   _renderAvtExpenseTable(d);
   avtSub = 'revenue';
 }
@@ -972,7 +1051,6 @@ function _renderAvtRevenueChart(d){
      backgroundColor:'rgba(234,88,12,.35)', borderColor:'#ea580c', borderWidth:1.5, borderRadius:4}
   ]);
 
-  // Revenue mini-list
   document.getElementById('avt-rev-list').innerHTML = tr.filter(x=>x.actual>0).map(row=>{
     const pct = row.target ? row.actual/row.target : 0;
     const w   = Math.min(100, pct*100);
@@ -985,7 +1063,6 @@ function _renderAvtRevenueChart(d){
     </div>`;
   }).join('');
 
-  // Revenue table
   document.getElementById('avt-tbl-body').innerHTML = tr.map(row=>{
     const pct = row.target ? row.actual/row.target : 0;
     const c   = pct>=1 ? 't-green' : 't-red';
@@ -1001,7 +1078,6 @@ function _renderAvtRevenueChart(d){
 
 function _renderAvtExpenseTable(d){
   const items  = d.expItems || [];
-  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   document.getElementById('avt-exp-body').innerHTML = items.map(item=>{
     const sc = item.periodStatus==='Within'  ? 'badge-wit'
              : item.periodStatus==='Exceeds' ? 'badge-exc'
@@ -1011,7 +1087,7 @@ function _renderAvtExpenseTable(d){
                 : m.status==='Exceeds' ? 'badge-exc'
                 :                        'badge-na';
       return `<td style="white-space:nowrap">
-        ${m.amount>0 ? `<span style="font-size:11px;font-family:\'JetBrains Mono\',monospace">${F.k(m.amount)}</span><br>` : ''}
+        ${m.amount>0 ? `<span style="font-size:11px;font-family:'JetBrains Mono',monospace">${F.k(m.amount)}</span><br>` : ''}
         <span class="${msc}">${m.status==='Within'?'✓':m.status==='Exceeds'?'✗':'—'}</span>
       </td>`;
     }).join('');
@@ -1063,6 +1139,99 @@ function renderPL(d){
       <td class="mono ${r.cls}">${F.k(r.val,false)}</td>
       <td class="${r.cls}">${F.p(Math.abs(r.pct))}</td>
     </tr>`).join('');
+}
+
+// ── Tab Routing ──────────────────────────────────────────────
+// Maps tab id → { frameId, brandAv, brandName, brandSub, frameFile }
+const TAB_CONFIG = {
+  trading: {
+    frame: null,                  // no iframe — uses the native <main>
+    av: 'T', name: 'NAM Wholesale Trading', sub: 'Statement of Comprehensive Income',
+    file: null
+  },
+  builders: {
+    frame: 'frame-builders',
+    av: 'B', name: 'NAM Builders', sub: 'Statement of Comprehensive Income',
+    // ⚠️  Replace with your deployed GAS URL for NAM Builders, e.g.:
+    // file: 'https://script.google.com/macros/s/YOUR_BUILDERS_DEPLOYMENT_ID/exec'
+    file: 'nam_builders.html'    // ← GAS HtmlService file name (no path needed)
+  },
+  alm: {
+    frame: 'frame-alm',
+    av: 'A', name: 'ALM Manpower', sub: 'Statement of Comprehensive Income',
+    file: 'alm_manpower.html'
+  },
+  loan: {
+    frame: 'frame-loan',
+    av: 'L', name: 'Loan Monitoring', sub: 'Loan Schedule & Payment Tracker',
+    file: 'loan.html'
+  },
+  summary: {
+    frame: 'frame-summary',
+    av: '∑', name: 'Overall Summary', sub: 'Consolidated Business Dashboard',
+    file: 'overall_summary.html'
+  }
+};
+
+let activeTab = 'trading';
+// Track which iframes have already been loaded (lazy-load on first click)
+const frameLoaded = {};
+
+function switchTab(tab) {
+  if (tab === activeTab) return;
+
+  const prev = TAB_CONFIG[activeTab];
+  const next = TAB_CONFIG[tab];
+
+  // Hide previous
+  if (prev.frame) {
+    document.getElementById(prev.frame).classList.remove('vis');
+  } else {
+    document.getElementById('main-trading').classList.add('hidden');
+  }
+  document.getElementById('tab-' + activeTab).classList.remove('on');
+
+  // Show next
+  if (next.frame) {
+    const iframe = document.getElementById(next.frame);
+    // Lazy-load: only set src the first time this tab is visited
+    if (!frameLoaded[tab]) {
+      iframe.src = next.file;
+      frameLoaded[tab] = true;
+    }
+    iframe.classList.add('vis');
+    // Hide the year/month controls — they belong to Trading's own GAS call.
+    // Sub-pages manage their own controls internally.
+    document.getElementById('sy').style.display = 'none';
+    document.getElementById('sm').style.display = 'none';
+  } else {
+    document.getElementById('main-trading').classList.remove('hidden');
+    document.getElementById('sy').style.display = '';
+    document.getElementById('sm').style.display = '';
+  }
+
+  document.getElementById('tab-' + tab).classList.add('on');
+
+  // Update brand
+  document.getElementById('brand-av').textContent   = next.av;
+  document.getElementById('brand-name').textContent = next.name;
+  document.getElementById('brand-sub').textContent  = next.sub;
+
+  activeTab = tab;
+}
+
+function refreshActive() {
+  if (activeTab === 'trading') {
+    load();
+  } else {
+    const cfg = TAB_CONFIG[activeTab];
+    if (cfg.frame) {
+      const iframe = document.getElementById(cfg.frame);
+      // Force reload the iframe
+      iframe.src = cfg.file;
+      frameLoaded[activeTab] = true;
+    }
+  }
 }
 
 // ── Init ─────────────────────────────────────────────────
