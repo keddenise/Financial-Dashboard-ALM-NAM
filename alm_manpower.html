@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>ALM Manpower Services — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#eef0f6;--surface:#fff;--surface2:#f5f6fb;--border:#e2e5ef;
+  --text:#0d1526;--text2:#4e5a72;--text3:#8d97ae;
+  --blue:#2563eb;--blue2:#1d4ed8;--blue-a:#dbeafe;
+  --green:#16a34a;--green-a:#dcfce7;
+  --orange:#ea580c;--orange-a:#ffedd5;
+  --red:#dc2626;--red-a:#fee2e2;
+  --purple:#7c3aed;--purple-a:#ede9fe;
+  --navy:#1e3a5f;--navy-a:#e0e7ef;
+  --teal:#0891b2;--teal-a:#cffafe;
+  --r:12px;--r2:16px;
+  --sh:0 1px 3px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04);
+  --sh2:0 4px 24px rgba(0,0,0,.10);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-size:13px;min-height:100vh}
+
+.top{background:var(--surface);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:12px;padding:0 20px;height:56px;
+  position:sticky;top:0;z-index:200;box-shadow:var(--sh)}
+.brand{display:flex;align-items:center;gap:9px;min-width:190px}
+.av{width:32px;height:32px;background:var(--orange);border-radius:8px;
+  display:grid;place-items:center;color:#fff;font-weight:800;font-size:12px}
+.bn{font-size:12.5px;font-weight:700;line-height:1.15}
+.bs{font-size:10.5px;color:var(--text3)}
+.tabs{display:flex;gap:3px;flex:1}
+.tab{display:flex;align-items:center;gap:5px;padding:5px 13px;border-radius:20px;
+  font-size:12.5px;font-weight:500;color:var(--text2);cursor:pointer;border:none;
+  background:transparent;transition:all .15s;text-decoration:none}
+.tab:hover{background:var(--surface2)}
+.tab.on{background:var(--orange-a);color:var(--orange)}
+.dot{width:7px;height:7px;border-radius:50%;display:inline-block}
+.tr{display:flex;align-items:center;gap:8px;margin-left:auto}
+select.ctl{font-family:'Inter',sans-serif;font-size:12.5px;font-weight:500;
+  border:1px solid var(--border);border-radius:8px;padding:5px 22px 5px 9px;
+  background:var(--surface);color:var(--text);cursor:pointer;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%235a6478' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 7px center}
+.clk{font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:500;
+  color:var(--text2);background:var(--surface2);border:1px solid var(--border);
+  border-radius:8px;padding:5px 9px}
+.rfbtn{display:flex;align-items:center;gap:5px;padding:6px 14px;
+  background:var(--orange);color:#fff;border:none;border-radius:8px;
+  font-family:'Inter',sans-serif;font-size:12.5px;font-weight:600;cursor:pointer;transition:.15s}
+.rfbtn:hover{background:#d4520a}
+.rfbtn svg{transition:transform .4s}
+.rfbtn.spin svg{animation:rot .8s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+
+.main{padding:18px 20px 40px}
+.sbar{display:flex;align-items:center;gap:7px;background:var(--orange-a);
+  border:1px solid #fdba74;border-radius:10px;padding:7px 14px;margin-bottom:16px;
+  font-size:12px;font-weight:500;color:var(--orange);display:none}
+.prow{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
+.ptitle{font-size:21px;font-weight:800}
+.psub{font-size:11.5px;color:var(--text3);margin-top:3px;display:flex;align-items:center;gap:4px}
+.pbadge{font-size:11px;font-weight:700;background:var(--orange-a);color:var(--orange);
+  padding:3px 10px;border-radius:8px}
+
+/* KPI CARDS */
+.krow{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:12px}
+@media(max-width:1200px){.krow{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:700px){.krow{grid-template-columns:repeat(2,1fr)}}
+.kcard{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r2);
+  padding:14px;cursor:pointer;transition:all .18s;box-shadow:var(--sh);position:relative;overflow:hidden}
+.kcard:hover{box-shadow:var(--sh2);transform:translateY(-1px)}
+.kcard.act{box-shadow:0 0 0 2.5px currentColor,var(--sh2)}
+.kcard.act-blue{color:var(--blue);border-color:var(--blue)}
+.kcard.act-green{color:var(--green);border-color:var(--green)}
+.kcard.act-orange{color:var(--orange);border-color:var(--orange)}
+.kcard.act-red{color:var(--red);border-color:var(--red)}
+.kcard.act-purple{color:var(--purple);border-color:var(--purple)}
+.kcard.act-navy{color:var(--navy);border-color:var(--navy)}
+.kh{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px}
+.kico{width:27px;height:27px;border-radius:7px;display:grid;place-items:center;font-size:12px;font-weight:700}
+.i-b{background:var(--blue-a);color:var(--blue)}
+.i-g{background:var(--green-a);color:var(--green)}
+.i-o{background:var(--orange-a);color:var(--orange)}
+.i-r{background:var(--red-a);color:var(--red)}
+.i-p{background:var(--purple-a);color:var(--purple)}
+.i-n{background:var(--navy-a);color:var(--navy)}
+.klbl{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--text3);margin-bottom:4px}
+.kval{font-size:21px;font-weight:800;color:var(--text);line-height:1.1;margin-bottom:3px}
+.ksub{font-size:11px;color:var(--text3);margin-bottom:8px}
+.kbadge{display:inline-flex;align-items:center;gap:2px;padding:2px 7px;border-radius:5px;font-size:10.5px;font-weight:600}
+.bg-b{background:var(--blue-a);color:var(--blue)}
+.bg-g{background:var(--green-a);color:var(--green)}
+.bg-o{background:var(--orange-a);color:var(--orange)}
+.bg-r{background:var(--red-a);color:var(--red)}
+.bg-p{background:var(--purple-a);color:var(--purple)}
+.bg-n{background:var(--navy-a);color:var(--navy)}
+.kprog{height:3px;border-radius:2px;background:var(--border);margin-top:8px;overflow:hidden}
+.kbar{height:100%;border-radius:2px;transition:width .6s cubic-bezier(.4,0,.2,1)}
+.kb-b{background:var(--blue)}.kb-g{background:var(--green)}.kb-o{background:var(--orange)}
+.kb-r{background:var(--red)}.kb-p{background:var(--purple)}.kb-n{background:var(--navy)}
+.xbtn{position:absolute;bottom:10px;right:10px;width:18px;height:18px;border-radius:50%;
+  background:var(--surface2);border:1px solid var(--border);display:grid;place-items:center;
+  font-size:9px;color:var(--text3)}
+
+/* DRILL PANEL */
+.dpanel{background:var(--surface);border-radius:var(--r2);padding:18px;
+  margin-bottom:14px;display:none;animation:sld .18s ease;box-shadow:var(--sh2)}
+.dpanel.vis{display:block}
+.dpanel.col-blue{border:1.5px solid var(--blue)}
+.dpanel.col-green{border:1.5px solid var(--green)}
+.dpanel.col-orange{border:1.5px solid var(--orange)}
+.dpanel.col-red{border:1.5px solid var(--red)}
+.dpanel.col-purple{border:1.5px solid var(--purple)}
+.dpanel.col-navy{border:1.5px solid var(--navy)}
+@keyframes sld{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.dh{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
+.dtitle{font-size:14.5px;font-weight:800}
+.dsub{font-size:11.5px;color:var(--text3);margin-top:2px}
+.dcls{width:26px;height:26px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);
+  display:grid;place-items:center;cursor:pointer;font-size:12px;color:var(--text3);flex-shrink:0}
+.dcls:hover{background:var(--border)}
+
+.dstats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.dstats-5{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px}
+.dstats-3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.dstat{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:12px}
+.dstat-v{font-size:18px;font-weight:800;margin-bottom:2px}
+.dstat-l{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--text3)}
+
+/* Sub-tabs */
+.stabs{display:flex;gap:8px;margin-bottom:12px}
+.stab{flex:1;border:1.5px solid var(--border);border-radius:var(--r);padding:11px;
+  cursor:pointer;transition:.15s}
+.stab:hover{box-shadow:var(--sh2)}
+.stab.sel{border-color:var(--orange);background:#fff5ee}
+.stab-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--text3);
+  display:flex;align-items:center;gap:4px;margin-bottom:6px}
+.stab-v{font-size:17px;font-weight:800;margin-bottom:2px}
+.stab-p{font-size:11px;color:var(--text3);margin-bottom:7px}
+.smbar{height:3px;border-radius:2px;background:var(--border);overflow:hidden}
+.smfill{height:100%;border-radius:2px;transition:width .5s}
+
+/* AVT sub-tabs */
+.avtabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.avtab{flex:1;min-width:120px;border:1.5px solid var(--border);border-radius:var(--r);padding:11px;
+  cursor:pointer;transition:.15s;text-align:center}
+.avtab:hover{box-shadow:var(--sh2)}
+.avtab.sel{border-color:var(--navy);background:#eaf0f8}
+.avtab-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;
+  color:var(--text3);margin-bottom:5px}
+.avtab-v{font-size:17px;font-weight:800;margin-bottom:2px}
+.avtab-p{font-size:11px;color:var(--text3)}
+
+/* View toggle */
+.vtog{display:flex;gap:5px;margin-bottom:12px}
+.vbtn{display:flex;align-items:center;gap:4px;padding:5px 12px;border-radius:8px;
+  border:1px solid var(--border);font-family:'Inter',sans-serif;font-size:12px;font-weight:600;
+  cursor:pointer;background:var(--surface2);color:var(--text2);transition:.15s}
+.vbtn.on{background:var(--orange);color:#fff;border-color:var(--orange)}
+
+/* Drill content grid */
+.dcont{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:900px){.dcont{grid-template-columns:1fr}}
+.cwrap{display:flex;align-items:center;justify-content:center;min-height:240px}
+.cwrap canvas{max-height:260px}
+
+/* Items list */
+.ilist-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text3);margin-bottom:8px}
+.irow{display:flex;align-items:center;gap:7px;padding:4px 0;border-bottom:1px solid var(--surface2)}
+.idot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.iname{flex:1;font-size:12px;color:var(--text2)}
+.ibar-wrap{width:55px;height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+.ibar-fill{height:100%;border-radius:2px}
+.iamt{font-size:12px;font-weight:700;font-family:'JetBrains Mono',monospace;white-space:nowrap}
+.ipct{font-size:10.5px;color:var(--text3);width:34px;text-align:right}
+
+/* Table */
+.dtbl{width:100%;border-collapse:collapse}
+.dtbl th{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;
+  color:var(--text3);padding:6px 8px;border-bottom:1px solid var(--border);text-align:left}
+.dtbl th:last-child,.dtbl td:last-child{text-align:right}
+.dtbl td{font-size:12px;padding:5px 8px;border-bottom:1px solid var(--surface2)}
+.dtbl tr:last-child td{border-bottom:none}
+.dtbl .mono{font-family:'JetBrains Mono',monospace;font-weight:600}
+.tbl-bold td{font-weight:700;background:var(--surface2)}
+
+/* Scrollable expense table */
+.exp-scroll{max-height:380px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--r)}
+.exp-scroll .dtbl th{position:sticky;top:0;background:var(--surface);z-index:1}
+
+/* HC/WD mini cards */
+.hc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;margin-bottom:12px}
+.hc-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:10px}
+.hc-name{font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hc-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.hc-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.3px}
+.hc-val{font-size:12px;font-weight:700;font-family:'JetBrains Mono',monospace}
+.hc-bar{height:2px;border-radius:1px;background:var(--border);overflow:hidden;margin-top:4px}
+.hc-fill{height:100%;border-radius:1px}
+
+/* Bottom charts */
+.brow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+@media(max-width:900px){.brow{grid-template-columns:1fr}}
+.bcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);
+  padding:16px;box-shadow:var(--sh)}
+.bch{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px}
+.bct{font-size:13.5px;font-weight:800}
+.bcs{font-size:11px;color:var(--text3);margin-top:2px}
+.bbd{font-size:10.5px;font-weight:700;background:var(--orange-a);color:var(--orange);padding:2px 8px;border-radius:6px}
+.bbdg{font-size:10.5px;font-weight:700;background:var(--green-a);color:var(--green);padding:2px 8px;border-radius:6px}
+.chartbox{position:relative;height:190px}
+
+/* Waterfall */
+.wfall{display:flex;flex-direction:column;gap:3px}
+.wrow{display:flex;align-items:center;gap:8px}
+.wlbl{font-size:11px;color:var(--text2);width:120px;text-align:right;flex-shrink:0}
+.wbar-wrap{flex:1;height:20px;border-radius:4px;overflow:hidden;background:var(--surface2);position:relative}
+.wbar{height:100%;border-radius:4px;position:absolute;transition:width .5s}
+.wbar.pos{background:var(--green)}.wbar.neg{background:var(--red)}.wbar.sub{background:var(--blue)}
+.wamt{font-size:11px;font-weight:700;font-family:'JetBrains Mono',monospace;width:80px;flex-shrink:0}
+
+/* Status badges */
+.badge-met{background:var(--green-a);color:var(--green);border-radius:5px;padding:1px 6px;font-size:10px;font-weight:700}
+.badge-beh{background:var(--red-a);color:var(--red);border-radius:5px;padding:1px 6px;font-size:10px;font-weight:700}
+.badge-pen{background:var(--surface2);color:var(--text3);border-radius:5px;padding:1px 6px;font-size:10px;font-weight:700}
+.badge-exc{background:var(--red-a);color:var(--red);border-radius:5px;padding:1px 6px;font-size:10px;font-weight:700}
+.badge-wit{background:var(--green-a);color:var(--green);border-radius:5px;padding:1px 6px;font-size:10px;font-weight:700}
+.badge-na{background:var(--surface2);color:var(--text3);border-radius:5px;padding:1px 6px;font-size:10px;font-weight:700}
+
+.t-red{color:var(--red)}.t-green{color:var(--green)}.t-blue{color:var(--blue)}.t-orange{color:var(--orange)}
+.fw7{font-weight:700}
+.ld{display:flex;align-items:center;justify-content:center;min-height:200px;font-size:13px;color:var(--text3)}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">
+    <div class="av">ALM</div>
+    <div>
+      <div class="bn">ALM Manpower Services</div>
+      <div class="bs">Statement of Comprehensive Income</div>
+    </div>
+  </div>
+  <div class="tabs">
+    <a class="tab" href="nam_trading.html"><span class="dot" style="background:var(--blue)"></span> NAM Trading</a>
+    <a class="tab" href="nam_builders.html"><span class="dot" style="background:var(--green)"></span> NAM Builders</a>
+    <a class="tab on" href="alm_manpower.html"><span class="dot" style="background:var(--orange)"></span> ALM Manpower</a>
+    <a class="tab" href="loan.html"><span class="dot" style="background:var(--purple)"></span> Loan</a>
+    <a class="tab" href="overall_summary.html"><span class="dot" style="background:var(--navy)"></span> Overall Summary</a>
+  </div>
+  <div class="tr">
+    <select class="ctl" id="sy" onchange="load()"><option value="2026">2026</option></select>
+    <select class="ctl" id="sm" onchange="load()">
+      <option value="YTD">All Months (YTD)</option>
+      <option value="January">January</option><option value="February">February</option>
+      <option value="March">March</option><option value="April">April</option>
+      <option value="May">May</option><option value="June">June</option>
+      <option value="July">July</option><option value="August">August</option>
+      <option value="September">September</option><option value="October">October</option>
+      <option value="November">November</option><option value="December">December</option>
+    </select>
+    <div class="clk" id="clk">--:--:-- --</div>
+    <button class="rfbtn" id="rfb" onclick="refreshActive()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M3 12a9 9 0 019-9 9.75 9.75 0 016.74 2.74L21 8"/><path d="M21 3v5h-5M21 12a9 9 0 01-9 9 9.75 9.75 0 01-6.74-2.74L3 16"/><path d="M8 16H3v5"/>
+      </svg>Refresh
+    </button>
+  </div>
+</header>
+
+<main class="main">
+  <div class="sbar" id="sbar">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+    <span id="stxt">ALM Manpower · Updated · TVA ✓</span>
+  </div>
+  <div class="prow">
+    <div>
+      <div class="ptitle" id="ptitle">ALM Manpower Services — FY 2026</div>
+      <div class="psub">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+        Click any card below to drill down
+      </div>
+    </div>
+    <div class="pbadge" id="pbadge">YTD</div>
+  </div>
+
+  <!-- KPI CARDS -->
+  <div class="krow">
+    <div class="kcard" id="kc-rev" onclick="openDrill('revenue')">
+      <div class="kh"><div class="dot" style="background:var(--blue)"></div><div class="kico i-b">₱</div></div>
+      <div class="klbl">Total Revenue</div>
+      <div class="kval" id="kv-rev">—</div>
+      <div class="ksub" id="ks-rev">Gross Profit: —</div>
+      <div class="kbadge bg-b" id="kb-rev">YTD Revenue</div>
+      <div class="kprog"><div class="kbar kb-b" id="kbar-rev" style="width:0%"></div></div>
+      <div class="xbtn">▼</div>
+    </div>
+    <div class="kcard" id="kc-hc" onclick="openDrill('revenue')">
+      <div class="kh"><div class="dot" style="background:var(--teal)"></div><div class="kico" style="background:var(--teal-a);color:var(--teal)">HC</div></div>
+      <div class="klbl">Headcount & Working Days</div>
+      <div class="kval" id="kv-hc">—</div>
+      <div class="ksub" id="ks-hc">Avg Working Days: —</div>
+      <div class="kbadge" id="kb-hc" style="background:var(--teal-a);color:var(--teal)">— vs Target</div>
+      <div class="kprog"><div class="kbar" id="kbar-hc" style="width:0%;background:var(--teal)"></div></div>
+      <div class="xbtn">▼</div>
+    </div>
+    <div class="kcard" id="kc-gp" onclick="openDrill('gp')">
+      <div class="kh"><div class="dot" style="background:var(--green)"></div><div class="kico i-g">↗</div></div>
+      <div class="klbl">Gross Profit</div>
+      <div class="kval" id="kv-gp">—</div>
+      <div class="ksub" id="ks-gp">Margin: —</div>
+      <div class="kbadge bg-g" id="kb-gp">— GP Margin</div>
+      <div class="kprog"><div class="kbar kb-g" id="kbar-gp" style="width:0%"></div></div>
+      <div class="xbtn">▼</div>
+    </div>
+    <div class="kcard" id="kc-ga" onclick="openDrill('ga')">
+      <div class="kh"><div class="dot" style="background:var(--orange)"></div><div class="kico i-o">≡</div></div>
+      <div class="klbl">G&A Expenses</div>
+      <div class="kval" id="kv-ga">—</div>
+      <div class="ksub">General & Administrative</div>
+      <div class="kbadge bg-o" id="kb-ga">— of Revenue</div>
+      <div class="kprog"><div class="kbar kb-o" id="kbar-ga" style="width:0%"></div></div>
+      <div class="xbtn">▼</div>
+    </div>
+    <div class="kcard" id="kc-ni" onclick="openDrill('netincome')">
+      <div class="kh"><div class="dot" style="background:var(--red)"></div><div class="kico i-r">↘</div></div>
+      <div class="klbl">Net Income</div>
+      <div class="kval" id="kv-ni">—</div>
+      <div class="ksub" id="ks-ni">Net Margin: —</div>
+      <div class="kbadge bg-r" id="kb-ni">Net Loss</div>
+      <div class="kprog"><div class="kbar kb-r" id="kbar-ni" style="width:0%"></div></div>
+      <div class="xbtn">▼</div>
+    </div>
+    <div class="kcard" id="kc-bonus" onclick="openDrill('bonus')">
+      <div class="kh"><div class="dot" style="background:var(--purple)"></div><div class="kico i-p">◎</div></div>
+      <div class="klbl">Bonus Monitoring</div>
+      <div class="kval" id="kv-bonus">—</div>
+      <div class="ksub" id="ks-bonus">— months met</div>
+      <!-- FIX #2: remaining now shows "Exceeded by" when negative -->
+      <div class="kbadge bg-p" id="kb-bonus">— remaining</div>
+      <div class="kprog"><div class="kbar kb-p" id="kbar-bonus" style="width:0%"></div></div>
+      <div class="xbtn">▼</div>
+    </div>
+  </div>
+
+  <!-- AVT card -->
+  <div class="krow" style="grid-template-columns:1fr;margin-bottom:12px">
+    <div class="kcard" id="kc-avt" onclick="openDrill('avt')" style="display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:16px;padding:14px 18px">
+      <div class="kico i-n" style="width:32px;height:32px;font-size:14px">≔</div>
+      <div>
+        <div class="klbl" style="margin-bottom:2px">Actual vs Target · Revenue / HC / P&L / Expenses</div>
+        <div class="kval" style="font-size:16px" id="kv-avt">—</div>
+        <div class="ksub" id="ks-avt" style="margin-bottom:0">Revenue Achievement</div>
+      </div>
+      <div style="text-align:right">
+        <div class="kbadge bg-n" id="kb-avt">— Rev</div>
+        <div class="kprog" style="margin-top:8px;width:120px"><div class="kbar kb-n" id="kbar-avt" style="width:0%"></div></div>
+      </div>
+      <div class="xbtn" style="position:static;width:auto;height:auto;border:none;background:none;font-size:13px;color:var(--navy);font-weight:700">▼ Detail</div>
+    </div>
+  </div>
+
+  <!-- DRILL PANEL -->
+  <div class="dpanel" id="dp">
+    <div class="dh">
+      <div><div class="dtitle" id="dtitle">Detail</div><div class="dsub" id="dsub"></div></div>
+      <button class="dcls" onclick="closeD()">✕</button>
+    </div>
+    <div id="dc"></div>
+  </div>
+
+  <!-- BOTTOM CHARTS -->
+  <div class="brow">
+    <div class="bcard">
+      <div class="bch">
+        <div><div class="bct">12-Month Performance Trend</div><div class="bcs">Revenue · Gross Profit · Net Income</div></div>
+        <div class="bbd">FY 2026</div>
+      </div>
+      <div class="chartbox"><canvas id="trend-chart"></canvas></div>
+    </div>
+    <div class="bcard">
+      <div class="bch">
+        <div><div class="bct">Headcount vs Target — Monthly</div><div class="bcs">Actual HC deployed vs HC target per month</div></div>
+        <div class="bbd" style="background:var(--teal-a);color:var(--teal)">HC</div>
+      </div>
+      <div class="chartbox"><canvas id="hc-chart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- P&L Summary -->
+  <div class="brow" style="margin-top:12px">
+    <div class="bcard">
+      <div class="bch">
+        <div><div class="bct">P&L Summary</div><div class="bcs">Income statement breakdown</div></div>
+        <div class="bbdg" id="plbadge">YTD</div>
+      </div>
+      <table class="dtbl" id="pl-tbl">
+        <thead><tr><th>Item</th><th>Amount (₱)</th><th>% of Revenue</th></tr></thead>
+        <tbody id="pl-body"></tbody>
+      </table>
+    </div>
+    <div class="bcard">
+      <div class="bch">
+        <div><div class="bct">G&A vs Revenue — Trend</div><div class="bcs">Monthly G&A expense vs total revenue</div></div>
+        <div class="bbd">FY 2026</div>
+      </div>
+      <div class="chartbox"><canvas id="ga-trend-chart"></canvas></div>
+    </div>
+  </div>
+</main>
+
+<script>
+// ══════════════════════════════════════════════════════════
+// ⚠️  PASTE YOUR APPS SCRIPT WEB APP URL HERE
+const API = 'https://script.google.com/macros/s/AKfycbwE8ZVI2zLrkkc-DAUzoulZTy9-m3Jg5TlN1bmal3WNPKFS2z-A_HAojCQlUjQ5Mxs0-g/exec';
+// ══════════════════════════════════════════════════════════
+
+let activeCard = null;
+let drillCache = {};
+let trendChart = null, hcChart = null, gaTrendChart = null;
+let drillCharts = {};
+
+// ── Formatting ─────────────────────────────────────────────
+const F = {
+  k(n, c=true){
+    if(n===null||n===undefined||isNaN(n)) return '—';
+    const neg=n<0, a=Math.abs(n);
+    let s = c ? (a>=1e6?'₱'+(a/1e6).toFixed(2)+'M':a>=1e3?'₱'+(a/1e3).toFixed(1)+'K':'₱'+a.toFixed(0))
+              : '₱'+a.toLocaleString('en-PH',{minimumFractionDigits:2,maximumFractionDigits:2});
+    return neg?'('+s+')':s;
+  },
+  p(n){
+    if(n===null||n===undefined||isNaN(n)) return '—';
+    return (n*100).toFixed(1)+'%';
+  },
+  pp(n){ return Math.min(100,Math.max(0,(n||0)*100)); },
+};
+
+function tick(){
+  const d=new Date(), h=d.getHours(), m=String(d.getMinutes()).padStart(2,'0'),
+    s=String(d.getSeconds()).padStart(2,'0'), ap=h>=12?'PM':'AM',
+    hh=String(h%12||12).padStart(2,'0');
+  document.getElementById('clk').textContent=`${hh}:${m}:${s} ${ap}`;
+}
+setInterval(tick,1000); tick();
+
+async function api(action){
+  const year=document.getElementById('sy').value;
+  const month=document.getElementById('sm').value;
+  const r=await fetch(`${API}?action=${action}&year=${year}&month=${encodeURIComponent(month)}`);
+  if(!r.ok) throw new Error(`HTTP ${r.status}`);
+  return r.json();
+}
+
+async function load(){
+  drillCache={};
+  const btn=document.getElementById('rfb'); btn.classList.add('spin');
+  try{
+    const [sum,trend]=await Promise.all([api('summary'),api('trend')]);
+    renderKPIs(sum); renderTrend(trend); renderPL(sum); renderHCChart(trend); renderGATrend(trend);
+    const now=new Date();
+    const ts=now.toLocaleTimeString('en-PH',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    const sb=document.getElementById('sbar');
+    sb.style.display='flex'; sb.style.background=''; sb.style.borderColor=''; sb.style.color='';
+    document.getElementById('stxt').textContent=`ALM Manpower · Updated · ${ts} · TVA ✓`;
+    const m=document.getElementById('sm').value;
+    document.getElementById('pbadge').textContent=m==='YTD'?'YTD':m.slice(0,3);
+    document.getElementById('plbadge').textContent=m==='YTD'?'YTD':m.slice(0,3);
+    if(activeCard) openDrill(activeCard,true);
+  }catch(e){ showErr(e.message); }
+  finally{ btn.classList.remove('spin'); }
+}
+
+async function refreshActive(){ drillCache={}; await load(); }
+
+function showErr(msg){
+  const sb=document.getElementById('sbar');
+  sb.style.display='flex'; sb.style.background='#fee2e2'; sb.style.borderColor='#fca5a5'; sb.style.color='#dc2626';
+  document.getElementById('stxt').textContent='⚠️ Error: '+msg;
+}
+
+// ── KPI Rendering ──────────────────────────────────────────
+function renderKPIs(d){
+  const k=d.kpis, b=d.bonus, avt=d.avt;
+  const m=document.getElementById('sm').value;
+
+  // Revenue
+  set('kv-rev',F.k(k.totalRevenue));
+  set('ks-rev','Gross Profit: '+F.k(k.grossProfit));
+  set('kb-rev',m==='YTD'?'YTD Revenue':'Monthly Revenue');
+  w('kbar-rev',F.pp(k.totalRevenue/10000000));
+
+  // HC — FIX: now populated from AvT row 41
+  set('kv-hc',k.hcActual ? Math.round(k.hcActual)+' HC' : '—');
+  set('ks-hc','Avg Working Days: '+(k.wdActual?k.wdActual.toFixed(1):'—'));
+  const hcPct = k.hcTarget ? k.hcActual/k.hcTarget : 0;
+  set('kb-hc',k.hcTarget ? F.pp(hcPct).toFixed(0)+'% vs Target ('+k.hcTarget+')' : '— vs Target');
+  w('kbar-hc',F.pp(hcPct));
+
+  // GP
+  set('kv-gp',F.k(k.grossProfit));
+  set('ks-gp','Margin: '+F.p(k.grossMargin));
+  set('kb-gp',(k.grossMargin>=0?'▲':'▼')+' '+F.p(k.grossMargin)+' GP');
+  cl('kb-gp',k.grossMargin>=0?'bg-g':'bg-r');
+  w('kbar-gp',F.pp(k.grossMargin/0.5));
+
+  // G&A
+  set('kv-ga',F.k(k.gaExpenses));
+  set('kb-ga',F.p(k.gaRatio)+' of Revenue');
+  w('kbar-ga',F.pp(k.gaRatio/1.5));
+
+  // Net Income
+  const niNeg=k.netIncome<0;
+  set('kv-ni',F.k(k.netIncome));
+  set('ks-ni','Net Margin: '+F.p(k.netMargin));
+  set('kb-ni',niNeg?'▼ Net Loss':'▲ Net Profit');
+  cl('kb-ni',niNeg?'bg-r':'bg-g');
+  document.getElementById('kv-ni').className='kval '+(niNeg?'t-red':'t-green');
+  w('kbar-ni',F.pp(Math.abs(k.netMargin)/0.2));
+
+  // Bonus — FIX #2 & #3: correct pct (decimal) + remaining badge
+  if(b){
+    set('kv-bonus',F.p(b.pct));
+    set('ks-bonus',b.monthsMet+'/12 months met · Target: '+F.k(b.annualTarget));
+    // FIX: show "Exceeded by" when revenue surpasses annual target
+    set('kb-bonus', b.remaining<0
+      ? 'Exceeded by '+F.k(-b.remaining)
+      : F.k(b.remaining)+' remaining');
+    w('kbar-bonus',F.pp(b.pct));
+  }
+
+  // AVT
+  if(avt){
+    set('kv-avt',F.p(avt.pct));
+    set('ks-avt','Revenue: '+F.k(avt.actual)+' vs '+F.k(avt.target));
+    set('kb-avt',(avt.pct>=1?'✓ ':'▲ ')+F.p(avt.pct)+' Rev');
+    w('kbar-avt',F.pp(avt.pct));
+  }
+}
+
+function set(id,txt){ const el=document.getElementById(id); if(el) el.textContent=txt; }
+function w(id,pct){ const el=document.getElementById(id); if(el) el.style.width=Math.min(100,pct)+'%'; }
+function cl(id,cls){ const el=document.getElementById(id); if(!el) return; el.className='kbadge '+cls; }
+
+// ── P&L Table ───────────────────────────────────────────────
+function renderPL(d){
+  const k=d.kpis, rev=k.totalRevenue;
+  const rows=[
+    {label:'Total Revenue',    val:k.totalRevenue,  bold:false},
+    {label:'(-) Direct Opex',  val:-k.directOpex,   bold:false},
+    {label:'Gross Profit',     val:k.grossProfit,   bold:true},
+    {label:'(-) G&A Expenses', val:-k.gaExpenses,   bold:false},
+    {label:'Net Income/(Loss)',val:k.netIncome,      bold:true},
+  ];
+  const tbody=document.getElementById('pl-body');
+  tbody.innerHTML=rows.map(r=>`
+    <tr class="${r.bold?'tbl-bold':''}">
+      <td>${r.label}</td>
+      <td class="mono ${r.val<0?'t-red':r.bold&&r.val>0?'t-green':''}">${F.k(r.val,false)}</td>
+      <td class="mono">${rev?F.p(r.val/rev):'—'}</td>
+    </tr>`).join('');
+}
+
+// ── Charts ──────────────────────────────────────────────────
+function renderTrend(d){
+  const labels=d.months.map(m=>m.month);
+  const ctx=document.getElementById('trend-chart');
+  if(trendChart) trendChart.destroy();
+  trendChart=new Chart(ctx,{type:'line',data:{labels,datasets:[
+    {label:'Revenue',    data:d.months.map(m=>m.revenue),    borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,.08)',fill:true,tension:.3,pointRadius:3},
+    {label:'Gross Profit',data:d.months.map(m=>m.grossProfit),borderColor:'#16a34a',backgroundColor:'rgba(22,163,74,.04)',fill:false,tension:.3,pointRadius:3},
+    {label:'Net Income', data:d.months.map(m=>m.netIncome),  borderColor:'#dc2626',backgroundColor:'rgba(220,38,38,.04)',fill:false,tension:.3,pointRadius:3},
+  ]},options:chartOpts('Revenue · GP · Net Income')});
+}
+
+function renderHCChart(d){
+  const labels=d.months.map(m=>m.month);
+  const ctx=document.getElementById('hc-chart');
+  if(hcChart) hcChart.destroy();
+  // FIX: hcActual/hcTarget now correctly populated from AvT row 41
+  hcChart=new Chart(ctx,{type:'bar',data:{labels,datasets:[
+    {label:'HC Target',data:d.months.map(m=>m.hcTarget),backgroundColor:'rgba(8,145,178,.15)',borderColor:'#0891b2',borderWidth:1.5},
+    {label:'HC Actual',data:d.months.map(m=>m.hcActual),backgroundColor:'rgba(8,145,178,.7)',borderRadius:3},
+  ]},options:{...chartOpts('Headcount Target vs Actual'),scales:{
+    x:{grid:{color:'#f0f2f7'},ticks:{font:{family:'Inter',size:10},color:'#8d97ae'}},
+    y:{grid:{color:'#f0f2f7'},ticks:{font:{family:'Inter',size:10},color:'#8d97ae'}}
+  }}});
+}
+
+function renderGATrend(d){
+  const labels=d.months.map(m=>m.month);
+  const ctx=document.getElementById('ga-trend-chart');
+  if(gaTrendChart) gaTrendChart.destroy();
+  gaTrendChart=new Chart(ctx,{type:'line',data:{labels,datasets:[
+    {label:'Revenue',    data:d.months.map(m=>m.revenue),    borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,.06)',fill:true,tension:.3,pointRadius:2},
+    {label:'G&A Expenses',data:d.months.map(m=>m.gaExpenses),borderColor:'#ea580c',backgroundColor:'rgba(234,88,12,.04)',fill:false,tension:.3,pointRadius:2},
+  ]},options:chartOpts('G&A vs Revenue')});
+}
+
+function chartOpts(label){
+  return{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+    plugins:{legend:{labels:{font:{family:'Inter',size:10},boxWidth:10}},
+      tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${F.k(c.raw)}`}}},
+    scales:{
+      x:{grid:{color:'#f0f2f7'},ticks:{font:{family:'Inter',size:10},color:'#8d97ae'}},
+      y:{grid:{color:'#f0f2f7'},ticks:{font:{family:'Inter',size:10},color:'#8d97ae',
+        callback:v=>v>=1e6?'₱'+(v/1e6).toFixed(1)+'M':v>=1e3?'₱'+(v/1e3).toFixed(0)+'K':'₱'+v}}}};
+}
+
+// ── Drill Panel ─────────────────────────────────────────────
+const cardMeta={
+  revenue  :{color:'blue',  title:'Revenue — Detail',          sub:'Per-client breakdown, HC & WD'},
+  gp       :{color:'green', title:'Gross Profit — Detail',     sub:'Direct expenses & margin analysis'},
+  ga       :{color:'orange',title:'G&A Expenses — Detail',     sub:'Compensation & admin expense structure'},
+  netincome:{color:'red',   title:'Net Income — Detail',       sub:'Full P&L waterfall'},
+  bonus    :{color:'purple',title:'Bonus Monitoring — Detail', sub:'Commission progress by month'},
+  avt      :{color:'navy',  title:'Actual vs Target — Detail', sub:'Revenue / HC / P&L / Expense tracking'},
+};
+const cardKey={revenue:'kc-rev',gp:'kc-gp',ga:'kc-ga',netincome:'kc-ni',bonus:'kc-bonus',avt:'kc-avt'};
+const actMap ={revenue:'act-blue',gp:'act-green',ga:'act-orange',netincome:'act-red',bonus:'act-purple',avt:'act-navy'};
+
+async function openDrill(card, forceRefresh=false){
+  if(activeCard===card && !forceRefresh){ closeD(); return; }
+  activeCard=card;
+  Object.keys(cardKey).forEach(k=>{
+    const el=document.getElementById(cardKey[k]); if(!el) return;
+    el.classList.remove('act','act-blue','act-green','act-orange','act-red','act-purple','act-navy');
+    if(k===card) el.classList.add('act',actMap[k]);
+  });
+  const meta=cardMeta[card];
+  const dp=document.getElementById('dp');
+  dp.className=`dpanel vis col-${meta.color}`;
+  document.getElementById('dtitle').textContent=meta.title;
+  const m=document.getElementById('sm').value;
+  document.getElementById('dsub').textContent=meta.sub+' · '+(m==='YTD'?'YTD':m)+' '+document.getElementById('sy').value;
+  document.getElementById('dc').innerHTML='<div class="ld">Loading…</div>';
+  Object.values(drillCharts).forEach(c=>c&&c.destroy()); drillCharts={};
+  setTimeout(()=>dp.scrollIntoView({behavior:'smooth',block:'nearest'}),100);
+  let data=drillCache[card];
+  if(!data||forceRefresh){
+    const actionMap={revenue:'revenue',gp:'gp',ga:'ga',netincome:'netincome',bonus:'bonus',avt:'avt'};
+    data=await api(actionMap[card]);
+    drillCache[card]=data;
+  }
+  const renders={revenue:renderRevenue,gp:renderGP,ga:renderGA,netincome:renderNI,bonus:renderBonus,avt:renderAVT};
+  if(renders[card]) renders[card](data);
+}
+
+function closeD(){
+  activeCard=null;
+  document.getElementById('dp').className='dpanel';
+  Object.keys(cardKey).forEach(k=>{
+    const el=document.getElementById(cardKey[k]); if(el) el.className='kcard';
+  });
+  Object.values(drillCharts).forEach(c=>c&&c.destroy()); drillCharts={};
+}
+
+// ── View Toggle ─────────────────────────────────────────────
+function vtoggle(id,view){
+  document.getElementById(`vb-chart-${id}`).classList.toggle('on',view==='chart');
+  document.getElementById(`vb-table-${id}`).classList.toggle('on',view==='table');
+  const ch=document.getElementById(`vc-${id}`), tb=document.getElementById(`vt-${id}`);
+  if(ch) ch.style.display=view==='chart'?'grid':'none';
+  if(tb) tb.style.display=view==='table'?'block':'none';
+}
+
+// ── Palette ─────────────────────────────────────────────────
+const PAL={
+  blue  :['#2563eb','#3b82f6','#60a5fa','#93c5fd','#bfdbfe','#dbeafe'],
+  green :['#16a34a','#22c55e','#4ade80','#86efac','#bbf7d0'],
+  orange:['#ea580c','#f97316','#fb923c','#fdba74','#fed7aa','#ffedd5'],
+  red   :['#dc2626','#ef4444','#f87171','#fca5a5','#fecaca'],
+  purple:['#7c3aed','#8b5cf6','#a78bfa','#c4b5fd','#ddd6fe'],
+  navy  :['#1e3a5f','#1e40af','#2563eb','#3b82f6','#60a5fa'],
+  mixed :['#2563eb','#16a34a','#ea580c','#7c3aed','#dc2626','#0891b2','#1e3a5f','#f59e0b','#8b5cf6','#fb923c','#4ade80','#67e8f9','#fbbf24','#a78bfa','#f472b6'],
+};
+
+// ── Chart helpers ────────────────────────────────────────────
+function pieChart(id,labels,data,colors){
+  const ctx=document.getElementById(id); if(!ctx) return null;
+  if(drillCharts[id]) drillCharts[id].destroy();
+  const total=data.reduce((a,b)=>a+b,0);
+  return drillCharts[id]=new Chart(ctx,{type:'pie',data:{labels,datasets:[{data,backgroundColor:colors,borderWidth:2,borderColor:'#fff'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},
+      tooltip:{callbacks:{label:c=>` ${c.label}: ${F.k(c.raw)} (${F.p(c.raw/total)})`}}}}});
+}
+function barChart(id,labels,datasets,opts={}){
+  const ctx=document.getElementById(id); if(!ctx) return null;
+  if(drillCharts[id]) drillCharts[id].destroy();
+  return drillCharts[id]=new Chart(ctx,{type:'bar',data:{labels,datasets},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+      plugins:{legend:{labels:{font:{family:'Inter',size:10},boxWidth:10}},
+        tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${F.k(c.raw)}`}}},
+      scales:{
+        x:{stacked:opts.stacked,grid:{color:'#f0f2f7'},ticks:{font:{family:'Inter',size:10},color:'#8d97ae'}},
+        y:{stacked:opts.stacked,grid:{color:'#f0f2f7'},ticks:{font:{family:'Inter',size:10},color:'#8d97ae',
+          callback:v=>v>=1e6?'₱'+(v/1e6).toFixed(1)+'M':v>=1e3?'₱'+(v/1e3).toFixed(0)+'K':'₱'+v}}}}});
+}
+function lineChart(id,labels,datasets){
+  const ctx=document.getElementById(id); if(!ctx) return null;
+  if(drillCharts[id]) drillCharts[id].destroy();
+  return drillCharts[id]=new Chart(ctx,{type:'line',data:{labels,datasets},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+      plugins:{legend:{labels:{font:{family:'Inter',size:10},boxWidth:10}},
+        tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${F.k(c.raw)}`}}},
+      scales:{
+        x:{grid:{color:'#f0f2f7'},ticks:{font:{family:'Inter',size:10},color:'#8d97ae'}},
+        y:{grid:{color:'#f0f2f7'},ticks:{font:{family:'Inter',size:10},color:'#8d97ae',
+          callback:v=>v>=1e6?'₱'+(v/1e6).toFixed(1)+'M':v>=1e3?'₱'+(v/1e3).toFixed(0)+'K':'₱'+v}}}}});
+}
+
+function itemsList(items,maxVal,color){
+  if(!items||!items.length) return '<div style="color:var(--text3);font-size:12px">No data</div>';
+  return items.filter(x=>(x.val||x.amount)>0).map((x,i)=>{
+    const val=x.val||x.amount||0, pct=x.pct||0;
+    const clr=Array.isArray(color)?color[i%color.length]:color;
+    const barW=Math.min(100,maxVal>0?(val/maxVal)*100:0);
+    return `<div class="irow">
+      <div class="idot" style="background:${clr}"></div>
+      <div class="iname">${x.name}</div>
+      <div class="ibar-wrap"><div class="ibar-fill" style="width:${barW}%;background:${clr}"></div></div>
+      <div class="iamt">${F.k(val)}</div>
+      <div class="ipct">${F.p(pct)}</div>
+    </div>`;
+  }).join('');
+}
+
+function statusBadge(raw){
+  const s=String(raw||'');
+  if(s==='—'||s===''||s==='Pending') return `<span class="badge-pen">— Pending</span>`;
+  if(s.includes('✔')||s.includes('Met')||s.includes('Within'))
+    return `<span class="badge-met">${s}</span>`;
+  if(s.includes('✘')||s.includes('Exc')||s.includes('Behind'))
+    return `<span class="badge-exc">${s}</span>`;
+  if(s.includes('△'))
+    return `<span class="badge-wit">${s}</span>`;
+  return `<span class="badge-na">${s}</span>`;
+}
+
+// ══════════════════════════════════════════════════════════
+// REVENUE DRILL
+// ══════════════════════════════════════════════════════════
+function renderRevenue(d){
+  const maxRev=d.clients[0]?d.clients[0].amount:0;
+  document.getElementById('dc').innerHTML=`
+  <div class="dstats-5">
+    <div class="dstat"><div class="dstat-v t-blue">${F.k(d.totalRevenue)}</div><div class="dstat-l">Total Revenue</div></div>
+    <div class="dstat"><div class="dstat-v t-green">${F.k(d.grossProfit)}</div><div class="dstat-l">Gross Profit</div></div>
+    <div class="dstat"><div class="dstat-v">${F.p(d.grossMargin)}</div><div class="dstat-l">GP Margin</div></div>
+    <div class="dstat"><div class="dstat-v t-orange">${F.k(d.directOpex)}</div><div class="dstat-l">Direct Expenses</div></div>
+    <div class="dstat"><div class="dstat-v">${d.clients.length}</div><div class="dstat-l">Active Clients</div></div>
+  </div>
+  <div class="vtog">
+    <button class="vbtn on" id="vb-chart-rev" onclick="vtoggle('rev','chart')">📊 Chart</button>
+    <button class="vbtn" id="vb-table-rev" onclick="vtoggle('rev','table')">📋 Client Table</button>
+  </div>
+  <div id="vc-rev" style="display:grid">
+    <div class="dcont">
+      <div>
+        <div class="ilist-title">Revenue by Client</div>
+        ${itemsList(d.clients.map(c=>({name:c.name,val:c.amount,pct:d.totalRevenue?c.amount/d.totalRevenue:0})),maxRev,PAL.mixed)}
+      </div>
+      <div class="cwrap"><canvas id="rev-pie"></canvas></div>
+    </div>
+    <div style="margin-top:14px">
+      <div class="ilist-title">Monthly Revenue vs Target</div>
+      <div style="height:200px"><canvas id="rev-trend"></canvas></div>
+    </div>
+    <div style="margin-top:14px">
+      <div class="ilist-title">Headcount & Working Days by Client (Latest Period)</div>
+      <div class="hc-grid" id="hc-client-grid"></div>
+    </div>
+  </div>
+  <div id="vt-rev" style="display:none">
+    <div class="exp-scroll">
+      <table class="dtbl">
+        <thead><tr><th>#</th><th>Client</th><th>Revenue (₱)</th><th>% Share</th><th>HC Actual</th><th>HC Target</th><th>WD Actual</th><th>WD Target</th><th>Status</th></tr></thead>
+        <tbody>
+          ${(d.clientAvt||[]).map((c,i)=>`
+          <tr>
+            <td>${i+1}</td><td>${c.name}</td>
+            <td class="mono">${F.k(c.actual,false)}</td>
+            <td class="mono">${d.totalRevenue?F.p(c.actual/d.totalRevenue):'—'}</td>
+            <td class="mono">${c.hcActual||'—'}</td>
+            <td class="mono">${c.hcTarget||'—'}</td>
+            <td class="mono">${c.wdActual?parseFloat(c.wdActual).toFixed(1):'—'}</td>
+            <td class="mono">${c.wdTarget?parseFloat(c.wdTarget).toFixed(1):'—'}</td>
+            <td>${statusBadge(c.statusRaw)}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+
+  pieChart('rev-pie', d.clients.map(c=>c.name), d.clients.map(c=>c.amount), PAL.mixed);
+  barChart('rev-trend', d.trend.map(t=>t.month),[
+    {label:'Target',data:d.trend.map(t=>t.revTarget),backgroundColor:'rgba(37,99,235,.2)',borderColor:'#2563eb',borderWidth:1.5},
+    {label:'Actual',data:d.trend.map(t=>t.revActual),backgroundColor:'rgba(37,99,235,.65)',borderRadius:3},
+  ]);
+
+  const grid=document.getElementById('hc-client-grid');
+  if(grid){
+    grid.innerHTML=(d.clients||[]).map(c=>`
+      <div class="hc-card">
+        <div class="hc-name">${c.name}</div>
+        <div class="hc-row"><span class="hc-lbl">HC</span><span class="hc-val">${c.hcActual||'—'}</span></div>
+        <div class="hc-row"><span class="hc-lbl">Avg WD</span><span class="hc-val">${c.wdActual?parseFloat(c.wdActual).toFixed(1):'—'}</span></div>
+        <div class="hc-bar"><div class="hc-fill" style="width:${Math.min(100,(c.wdActual/26)*100||0)}%;background:var(--teal)"></div></div>
+      </div>`).join('');
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// GP DRILL
+// ══════════════════════════════════════════════════════════
+function renderGP(d){
+  document.getElementById('dc').innerHTML=`
+  <div class="dstats">
+    <div class="dstat"><div class="dstat-v t-blue">${F.k(d.totalRevenue)}</div><div class="dstat-l">Total Revenue</div></div>
+    <div class="dstat"><div class="dstat-v t-orange">${F.k(d.directOpex)}</div><div class="dstat-l">Direct Expenses</div></div>
+    <div class="dstat"><div class="dstat-v t-green">${F.k(d.grossProfit)}</div><div class="dstat-l">Gross Profit</div></div>
+    <div class="dstat"><div class="dstat-v">${F.p(d.grossMargin)}</div><div class="dstat-l">GP Margin</div></div>
+  </div>
+  <div class="dcont">
+    <div>
+      <div class="ilist-title">Direct Expense Breakdown</div>
+      ${d.dirItems.length>0
+        ? itemsList(d.dirItems.map(x=>({name:x.name,val:x.val,pct:x.pct})),d.dirItems[0].val,PAL.orange)
+        : '<div style="color:var(--text3);font-size:12px">No direct expenses for this period</div>'}
+    </div>
+    <div>
+      <div class="ilist-title">Gross Profit Trend</div>
+      <div class="cwrap"><canvas id="gp-trend"></canvas></div>
+    </div>
+  </div>`;
+
+  lineChart('gp-trend',d.trend.map(t=>t.month),[
+    {label:'Revenue',    data:d.trend.map(t=>t.revenue),    borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,.06)',fill:true,tension:.3,pointRadius:3},
+    {label:'Gross Profit',data:d.trend.map(t=>t.grossProfit),borderColor:'#16a34a',fill:false,tension:.3,pointRadius:3},
+    {label:'Direct Exp', data:d.trend.map(t=>t.directOpex), borderColor:'#ea580c',fill:false,tension:.3,pointRadius:2},
+  ]);
+}
+
+// ══════════════════════════════════════════════════════════
+// G&A DRILL
+// ══════════════════════════════════════════════════════════
+function renderGA(d){
+  function showGASub(sub){
+    document.getElementById('stab-comp').classList.toggle('sel',sub==='comp');
+    document.getElementById('stab-gna').classList.toggle('sel',sub==='gna');
+    const items=sub==='comp'?d.compItems:d.gnaItems;
+    const total=sub==='comp'?d.compTotal:d.gnaTotal;
+    const color=sub==='comp'?PAL.orange:PAL.blue;
+    const maxVal=items[0]?items[0].val:0;
+    document.getElementById('ga-items').innerHTML=itemsList(items,maxVal,color);
+    const chartData=items.slice(0,8);
+    const ctx=document.getElementById('ga-pie');
+    if(ctx){
+      if(drillCharts['ga-pie']) drillCharts['ga-pie'].destroy();
+      const tot=chartData.reduce((s,x)=>s+x.val,0);
+      drillCharts['ga-pie']=new Chart(ctx,{type:'doughnut',
+        data:{labels:chartData.map(x=>x.name),datasets:[{data:chartData.map(x=>x.val),backgroundColor:color,borderWidth:2,borderColor:'#fff'}]},
+        options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},
+          tooltip:{callbacks:{label:c=>` ${c.label}: ${F.k(c.raw)} (${F.p(c.raw/tot)})`}}}}});
+    }
+  }
+
+  document.getElementById('dc').innerHTML=`
+  <div class="dstats-3">
+    <div class="dstat"><div class="dstat-v t-orange">${F.k(d.gaTotal)}</div><div class="dstat-l">Total G&A</div></div>
+    <div class="dstat"><div class="dstat-v">${F.k(d.compTotal)} <span style="font-size:11px;color:var(--text3)">(${F.p(d.compPct)})</span></div><div class="dstat-l">Compensation</div></div>
+    <div class="dstat"><div class="dstat-v">${F.k(d.gnaTotal)} <span style="font-size:11px;color:var(--text3)">(${F.p(d.gnaPct)})</span></div><div class="dstat-l">GNA/Admin</div></div>
+  </div>
+  <div class="stabs">
+    <div class="stab sel" id="stab-comp" onclick="showGASub('comp')">
+      <div class="stab-lbl">💼 Compensation</div>
+      <div class="stab-v">${F.k(d.compTotal)}</div>
+      <div class="stab-p">${F.p(d.compPct)} of G&A</div>
+      <div class="smbar"><div class="smfill" style="width:${F.pp(d.compPct)}%;background:var(--orange)"></div></div>
+    </div>
+    <div class="stab" id="stab-gna" onclick="showGASub('gna')">
+      <div class="stab-lbl">🏢 Admin & GNA</div>
+      <div class="stab-v">${F.k(d.gnaTotal)}</div>
+      <div class="stab-p">${F.p(d.gnaPct)} of G&A</div>
+      <div class="smbar"><div class="smfill" style="width:${F.pp(d.gnaPct)}%;background:var(--blue)"></div></div>
+    </div>
+  </div>
+  <div class="dcont">
+    <div><div class="ilist-title" id="ga-items-title">Items</div><div id="ga-items"></div></div>
+    <div class="cwrap"><canvas id="ga-pie"></canvas></div>
+  </div>
+  <div style="margin-top:14px">
+    <div class="ilist-title">G&A Expense Trend — Monthly</div>
+    <div style="height:200px"><canvas id="ga-trend-d"></canvas></div>
+  </div>`;
+
+  window.showGASub=showGASub;
+  showGASub('comp');
+
+  lineChart('ga-trend-d',d.trend.map(t=>t.month),[
+    {label:'Total G&A',data:d.trend.map(t=>t.total),borderColor:'#ea580c',backgroundColor:'rgba(234,88,12,.07)',fill:true,tension:.3,pointRadius:3},
+    {label:'Compensation',data:d.trend.map(t=>t.comp),borderColor:'#f97316',fill:false,tension:.3,pointRadius:2,borderDash:[4,2]},
+    {label:'GNA/Admin',data:d.trend.map(t=>t.gna),borderColor:'#2563eb',fill:false,tension:.3,pointRadius:2,borderDash:[4,2]},
+  ]);
+}
+
+// ══════════════════════════════════════════════════════════
+// NET INCOME DRILL
+// ══════════════════════════════════════════════════════════
+function renderNI(d){
+  const maxAbs=Math.max(d.totalRevenue,Math.abs(d.netIncome));
+  const wfall=d.waterfall.map(ww=>{
+    const pct=Math.min(100,Math.abs(ww.value)/maxAbs*100);
+    const cls=ww.type==='positive'?'pos':ww.type==='subtotal'?'sub':'neg';
+    return `<div class="wrow">
+      <div class="wlbl">${ww.label}</div>
+      <div class="wbar-wrap"><div class="wbar ${cls}" style="width:${pct}%"></div></div>
+      <div class="wamt ${ww.value<0?'t-red':ww.type==='subtotal'?'t-blue':'t-green'}">${F.k(ww.value)}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('dc').innerHTML=`
+  <div class="dstats">
+    <div class="dstat"><div class="dstat-v t-blue">${F.k(d.totalRevenue)}</div><div class="dstat-l">Total Revenue</div></div>
+    <div class="dstat"><div class="dstat-v t-green">${F.k(d.grossProfit)}</div><div class="dstat-l">Gross Profit (${F.p(d.grossMargin)})</div></div>
+    <div class="dstat"><div class="dstat-v t-orange">${F.k(d.gaExpenses)}</div><div class="dstat-l">G&A Expenses</div></div>
+    <div class="dstat"><div class="dstat-v ${d.netIncome<0?'t-red':'t-green'}">${F.k(d.netIncome)}</div><div class="dstat-l">Net Income (${F.p(d.netMargin)})</div></div>
+  </div>
+  <div class="dcont">
+    <div><div class="ilist-title">P&L Waterfall</div><div class="wfall">${wfall}</div></div>
+    <div><div class="ilist-title">Monthly Trend</div><div class="cwrap"><canvas id="ni-trend"></canvas></div></div>
+  </div>`;
+
+  lineChart('ni-trend',d.trend.map(t=>t.month),[
+    {label:'Revenue',     data:d.trend.map(t=>t.revenue),    borderColor:'#2563eb',fill:false,tension:.3,pointRadius:3},
+    {label:'Gross Profit',data:d.trend.map(t=>t.grossProfit),borderColor:'#16a34a',fill:false,tension:.3,pointRadius:2},
+    {label:'G&A Expenses',data:d.trend.map(t=>t.gaExpenses), borderColor:'#ea580c',fill:false,tension:.3,pointRadius:2,borderDash:[4,2]},
+    {label:'Net Income',  data:d.trend.map(t=>t.netIncome),  borderColor:'#dc2626',fill:false,tension:.3,pointRadius:3,borderDash:[3,3]},
+  ]);
+}
+
+// ══════════════════════════════════════════════════════════
+// BONUS DRILL — FIX: correct row indexing + pct display
+// ══════════════════════════════════════════════════════════
+function renderBonus(d){
+  const monthLabels = d.monthRows.map(r => r.month);
+ 
+  document.getElementById('dc').innerHTML = `
+  <div class="dstats-5">
+    <div class="dstat">
+      <div class="dstat-v t-purple">${F.p(d.pct)}</div>
+      <div class="dstat-l">% of Commission Target</div>
+    </div>
+    <div class="dstat">
+      <div class="dstat-v">${F.k(d.totalEarned)}</div>
+      <div class="dstat-l">Commission Earned (YTD)</div>
+    </div>
+    <div class="dstat">
+      <div class="dstat-v">${F.k(d.annualTarget)}</div>
+      <div class="dstat-l">Annual Target</div>
+    </div>
+    <div class="dstat">
+      <div class="dstat-v ${d.accumNetProfit < 0 ? 't-red' : 't-green'}">${F.k(d.accumNetProfit)}</div>
+      <div class="dstat-l">Accum. Net Profit</div>
+    </div>
+    <div class="dstat">
+      <div class="dstat-v">${d.monthsMet}/12</div>
+      <div class="dstat-l">Months Target Met</div>
+    </div>
+  </div>
+ 
+  <div class="dcont">
+    <div>
+      <div class="ilist-title">Monthly Commission vs Target</div>
+      <div class="cwrap"><canvas id="bonus-bar"></canvas></div>
+    </div>
+    <div>
+      <div class="ilist-title">Net Profit by Month</div>
+      <div class="cwrap"><canvas id="bonus-ni"></canvas></div>
+    </div>
+  </div>
+ 
+  <div style="margin-top:14px">
+    <div class="ilist-title">Monthly Breakdown Table</div>
+    <div class="exp-scroll">
+      <table class="dtbl">
+        <thead><tr>
+          <th>Month</th>
+          <th>Target (₱)</th>
+          <th>Commission (₱)</th>
+          <th>Variance (₱)</th>
+          <th>Status</th>
+          <th>% of Target</th>
+          <th>Net Profit (₱)</th>
+          <th>P&amp;L</th>
+          <th>Accum. Net (₱)</th>
+        </tr></thead>
+        <tbody>
+          ${d.monthRows.map(r => `
+          <tr>
+            <td class="fw7">${r.month}</td>
+            <td class="mono">${F.k(r.target, false)}</td>
+            <td class="mono">${r.earned > 0 ? F.k(r.earned, false) : '—'}</td>
+            <td class="mono ${r.variance > 0 ? 't-green' : r.variance < 0 ? 't-red' : ''}">
+              ${r.earned > 0 ? F.k(r.variance, false) : '—'}
+            </td>
+            <td>
+              ${r.status === 'Met'
+                ? '<span class="badge-met">✓ Met</span>'
+                : r.status === 'Behind'
+                  ? '<span class="badge-beh">✗ Behind</span>'
+                  : '<span class="badge-pen">— Pending</span>'}
+            </td>
+            <td class="mono">${r.pctAchieved > 0 ? F.p(r.pctAchieved) : '—'}</td>
+            <td class="mono ${r.netProfit < 0 ? 't-red' : r.netProfit > 0 ? 't-green' : ''}">
+              ${r.netProfit !== 0 ? F.k(r.netProfit, false) : '—'}
+            </td>
+            <td>
+              ${r.netProfit < 0
+                ? '<span class="badge-beh">▼ Loss</span>'
+                : r.netProfit > 0
+                  ? '<span class="badge-met">▲ Profit</span>'
+                  : '<span class="badge-pen">—</span>'}
+            </td>
+            <td class="mono ${r.accumNetProfit < 0 ? 't-red' : r.accumNetProfit > 0 ? 't-green' : ''}">
+              ${r.accumNetProfit !== 0 ? F.k(r.accumNetProfit, false) : '—'}
+            </td>
+          </tr>`).join('')}
+ 
+          <tr class="tbl-bold">
+            <td>ANNUAL TOTAL</td>
+            <td class="mono">${F.k(d.annualTarget, false)}</td>
+            <td class="mono">${F.k(d.totalEarned, false)}</td>
+            <td class="mono ${d.totalEarned - d.annualTarget > 0 ? 't-green' : 't-red'}">
+              ${F.k(d.totalEarned - d.annualTarget, false)}
+            </td>
+            <td>
+              ${d.monthsMet > 0
+                ? '<span class="badge-met">✓ ' + d.monthsMet + ' Met</span>'
+                : '<span class="badge-beh">✗ Behind</span>'}
+            </td>
+            <td class="mono">${F.p(d.pct)}</td>
+            <td class="mono ${d.accumNetProfit < 0 ? 't-red' : 't-green'}">${F.k(d.accumNetProfit, false)}</td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+ 
+  // Commission vs Target bar chart
+  barChart('bonus-bar', monthLabels, [
+    {
+      label: 'Target',
+      data: d.monthRows.map(r => r.target),
+      backgroundColor: 'rgba(124,58,237,.2)',
+      borderColor: '#7c3aed',
+      borderWidth: 1.5,
+    },
+    {
+      label: 'Commission',
+      data: d.monthRows.map(r => r.earned),
+      backgroundColor: d.monthRows.map(r =>
+        r.status === 'Met'     ? 'rgba(22,163,74,.7)'   :
+        r.status === 'Behind'  ? 'rgba(220,38,38,.7)'   :
+                                  'rgba(141,151,174,.4)'),
+      borderRadius: 3,
+    },
+  ]);
+ 
+  // Net Profit bar chart
+  barChart('bonus-ni', monthLabels, [
+    {
+      label: 'Net Profit',
+      data: d.monthRows.map(r => r.netProfit),
+      backgroundColor: d.monthRows.map(r =>
+        r.netProfit >= 0 ? 'rgba(22,163,74,.7)' : 'rgba(220,38,38,.7)'),
+      borderRadius: 3,
+    },
+  ]);
+}
+
+// ══════════════════════════════════════════════════════════
+// AVT DRILL — FIX: P&L targets now populated, HC chart fixed
+// ══════════════════════════════════════════════════════════
+function renderAVT(d){
+  function showAvtSub(sub){
+    ['revenue','hc','pl','opex','ga'].forEach(s=>{
+      document.getElementById(`avtab-${s}`).classList.toggle('sel',s===sub);
+    });
+    document.getElementById('avt-content').innerHTML=renderAvtContent(sub,d);
+    if(sub==='revenue') setTimeout(()=>renderAvtRevChart(d),50);
+    if(sub==='hc')      setTimeout(()=>renderAvtHCChart(d),50);
+  }
+
+  document.getElementById('dc').innerHTML=`
+  <div class="dstats">
+    <div class="dstat"><div class="dstat-v t-blue">${F.k(d.revTotal.actual)}</div><div class="dstat-l">Revenue Actual</div></div>
+    <div class="dstat"><div class="dstat-v">${F.k(d.revTotal.target)}</div><div class="dstat-l">Revenue Target</div></div>
+    <div class="dstat"><div class="dstat-v">${d.revTotal.target?F.p((d.revTotal.actual-d.revTotal.target)/d.revTotal.target):'—'}</div><div class="dstat-l">vs Target</div></div>
+    <div class="dstat"><div class="dstat-v">${d.hcTotal?Math.round(d.hcTotal.hcActual||0):'—'}</div><div class="dstat-l">Total HC Actual</div></div>
+  </div>
+  <div class="avtabs">
+    <div class="avtab sel" id="avtab-revenue" onclick="showAvtSub('revenue')">
+      <div class="avtab-lbl">① Revenue</div>
+      <div class="avtab-v">${F.k(d.revTotal.actual)}</div>
+      <div class="avtab-p">${d.revTotal.target?F.p(d.revTotal.actual/d.revTotal.target)+' of target':'—'}</div>
+    </div>
+    <div class="avtab" id="avtab-hc" onclick="showAvtSub('hc')">
+      <div class="avtab-lbl">② HC & WD</div>
+      <div class="avtab-v">${d.hcTotal?Math.round(d.hcTotal.hcActual||0):'—'}</div>
+      <div class="avtab-p">${d.hcTotal&&d.hcTotal.hcTarget?'Target: '+d.hcTotal.hcTarget:'—'}</div>
+    </div>
+    <div class="avtab" id="avtab-pl" onclick="showAvtSub('pl')">
+      <div class="avtab-lbl">③ P&L Summary</div>
+      <div class="avtab-v">${(d.plRows&&d.plRows[4])?F.k(d.plRows[4].actual):'—'}</div>
+      <div class="avtab-p">Net Income/(Loss)</div>
+    </div>
+    <div class="avtab" id="avtab-opex" onclick="showAvtSub('opex')">
+      <div class="avtab-lbl">④ Oper. Expenses</div>
+      <div class="avtab-v">${(d.opRows&&d.opRows[d.opRows.length-1])?F.k(d.opRows[d.opRows.length-1].actual):'—'}</div>
+      <div class="avtab-p">Direct Opex Total</div>
+    </div>
+    <div class="avtab" id="avtab-ga" onclick="showAvtSub('ga')">
+      <div class="avtab-lbl">⑤ G&A Detail</div>
+      <div class="avtab-v">${(d.gaRows&&d.gaRows[d.gaRows.length-1])?F.k(d.gaRows[d.gaRows.length-1].actual):'—'}</div>
+      <div class="avtab-p">${d.withinCount||0} within · ${d.exceedsCount||0} exceed</div>
+    </div>
+  </div>
+  <div id="avt-content"></div>`;
+
+  window.showAvtSub=showAvtSub;
+  showAvtSub('revenue');
+}
+
+function renderAvtContent(sub,d){
+  if(sub==='revenue') return `
+    <div class="dcont" style="margin-bottom:12px">
+      <div>
+        <div class="ilist-title">Revenue by Client — Actual vs Target</div>
+        <table class="dtbl">
+          <thead><tr><th>Client</th><th>Target</th><th>Actual</th><th>Diff %</th><th>Status</th></tr></thead>
+          <tbody>
+            ${(d.revClients||[]).map(c=>`
+            <tr>
+              <td>${c.name}</td>
+              <td class="mono">${F.k(c.target)}</td>
+              <td class="mono">${F.k(c.actual)}</td>
+              <td class="mono ${c.diff>0?'t-green':'t-red'}">${c.diff!==null?F.p(c.diff):'—'}</td>
+              <td>${statusBadge(c.statusRaw)}</td>
+            </tr>`).join('')}
+            <tr class="tbl-bold">
+              <td>TOTAL</td>
+              <td class="mono">${F.k(d.revTotal.target)}</td>
+              <td class="mono">${F.k(d.revTotal.actual)}</td>
+              <td class="mono ${d.revTotal.actual-d.revTotal.target>0?'t-green':'t-red'}">${d.revTotal.target?F.p((d.revTotal.actual-d.revTotal.target)/d.revTotal.target):'—'}</td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <div class="ilist-title">Revenue Trend — Actual vs Target</div>
+        <div class="cwrap"><canvas id="avt-rev-chart"></canvas></div>
+      </div>
+    </div>`;
+
+  if(sub==='hc') return `
+    <div class="dcont" style="margin-bottom:12px">
+      <div>
+        <div class="ilist-title">HC & WD by Client</div>
+        <div class="exp-scroll">
+          <table class="dtbl">
+            <thead><tr><th>Client</th><th>HC Tgt</th><th>HC Act</th><th>WD Tgt</th><th>WD Act</th></tr></thead>
+            <tbody>
+              ${(d.hcClients||[]).map(c=>`
+              <tr>
+                <td>${c.name}</td>
+                <td class="mono">${c.hcTarget||'—'}</td>
+                <td class="mono ${c.hcActual>0&&c.hcActual<c.hcTarget?'t-red':c.hcActual>=c.hcTarget?'t-green':''}">${c.hcActual||'—'}</td>
+                <td class="mono">${c.wdTarget||'—'}</td>
+                <td class="mono ${c.wdActual>0&&c.wdActual<c.wdTarget?'t-red':c.wdActual>=c.wdTarget?'t-green':''}">${c.wdActual?parseFloat(c.wdActual).toFixed(1):'—'}</td>
+              </tr>`).join('')}
+              <tr class="tbl-bold">
+                <td>TOTAL/AVG</td>
+                <td class="mono">${d.hcTotal?d.hcTotal.hcTarget||'—':'—'}</td>
+                <td class="mono">${d.hcTotal?Math.round(d.hcTotal.hcActual)||'—':'—'}</td>
+                <td class="mono">${d.hcTotal?d.hcTotal.wdTarget||'—':'—'}</td>
+                <td class="mono">${d.hcTotal&&d.hcTotal.wdActual?parseFloat(d.hcTotal.wdActual).toFixed(1):'—'}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div>
+        <div class="ilist-title">Monthly HC — Actual vs Target</div>
+        <div class="cwrap"><canvas id="avt-hc-chart"></canvas></div>
+      </div>
+    </div>`;
+
+  if(sub==='pl') return `
+    <div>
+      <div class="ilist-title">P&L Summary — Actual vs Target</div>
+      <table class="dtbl">
+        <thead><tr><th>P&L Line Item</th><th>Target (₱)</th><th>Actual (₱)</th><th>Diff %</th><th>Status</th></tr></thead>
+        <tbody>
+          ${(d.plRows||[]).map(r=>`
+          <tr class="${r.label.includes('Profit')||r.label.includes('Net')?'tbl-bold':''}">
+            <td>${r.label}</td>
+            <td class="mono">${r.target?F.k(r.target,false):'—'}</td>
+            <td class="mono ${r.actual<0?'t-red':r.actual>0?'t-green':''}">${r.actual?F.k(r.actual,false):'—'}</td>
+            <td class="mono">${r.target?F.p((r.actual-r.target)/Math.abs(r.target)):'—'}</td>
+            <td>${statusBadge(r.statusRaw)}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`;
+
+  if(sub==='opex') return `
+    <div>
+      <div class="ilist-title">Operating (Direct) Expenses — Actual vs Target</div>
+      <table class="dtbl">
+        <thead><tr><th>Expense Item</th><th>Target (₱)</th><th>Actual (₱)</th><th>Diff %</th><th>Status</th></tr></thead>
+        <tbody>
+          ${(d.opRows||[]).map(r=>`
+          <tr class="${r.isTotal?'tbl-bold':''}">
+            <td>${r.label}</td>
+            <td class="mono">${r.target?F.k(r.target,false):'—'}</td>
+            <td class="mono">${r.actual?F.k(r.actual,false):'—'}</td>
+            <td class="mono">${r.target?F.p((r.actual-r.target)/r.target):'—'}</td>
+            <td>${statusBadge(r.statusRaw)}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`;
+
+  if(sub==='ga') return `
+    <div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div class="ilist-title" style="margin-bottom:0">G&A Expenses — Actual vs Target (${d.withinCount||0} within budget · ${d.exceedsCount||0} exceed)</div>
+      </div>
+      <div class="exp-scroll">
+        <table class="dtbl">
+          <thead><tr><th>Expense Item</th><th>Target (₱)</th><th>Actual (₱)</th><th>Diff %</th><th>Status</th></tr></thead>
+          <tbody>
+            ${(d.gaRows||[]).map(r=>`
+            <tr class="${r.isTotal?'tbl-bold':''}">
+              <td>${r.label}</td>
+              <td class="mono">${r.target?F.k(r.target,false):'—'}</td>
+              <td class="mono">${r.actual?F.k(r.actual,false):'—'}</td>
+              <td class="mono ${r.actual>r.target&&r.target?'t-red':r.actual<=r.target&&r.target?'t-green':''}">${r.target?F.p((r.actual-r.target)/r.target):'—'}</td>
+              <td>${statusBadge(r.statusRaw)}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+
+  return '';
+}
+
+function renderAvtRevChart(d){
+  lineChart('avt-rev-chart',(d.revTrend||[]).map(t=>t.month),[
+    {label:'Target',data:(d.revTrend||[]).map(t=>t.target),borderColor:'#94a3b8',borderDash:[4,2],fill:false,tension:.3,pointRadius:2},
+    {label:'Actual',data:(d.revTrend||[]).map(t=>t.actual),borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,.07)',fill:true,tension:.3,pointRadius:3},
+  ]);
+}
+
+// FIX #7: HC chart now uses hcTrend from GS (AvT row 41 per month)
+function renderAvtHCChart(d){
+  const src = d.hcTrend || d.revTrend || [];
+  barChart('avt-hc-chart', src.map(t=>t.month),[
+    {label:'HC Target',data:src.map(t=>t.hcTarget||0),backgroundColor:'rgba(8,145,178,.15)',borderColor:'#0891b2',borderWidth:1.5},
+    {label:'HC Actual',data:src.map(t=>t.hcActual||0),backgroundColor:'rgba(8,145,178,.7)',borderRadius:3},
+  ]);
+}
+
+// ── Init ───────────────────────────────────────────────────
+load();
+</script>
+</body>
+</html>
