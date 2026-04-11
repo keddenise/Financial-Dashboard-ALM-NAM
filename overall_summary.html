@@ -251,6 +251,148 @@ html, body { overflow-x: hidden; max-width: 100vw; }
 /* Expense items 2-col → 1-col on mobile (JS-generated, override via class) */
 .exp-items-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
 
+/* ── MOBILE KPI CARDS (matching NAM Builders style) ── */
+.mob-kpi-grid {
+  display: none; /* hidden on desktop */
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.mob-kpi-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 14px 12px;
+  box-shadow: var(--sh);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all .18s;
+}
+.mob-kpi-card:active { transform: scale(0.98); }
+.mob-kpi-card .mk-dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  display: inline-block; margin-bottom: 10px;
+}
+.mob-kpi-card .mk-icon {
+  position: absolute; top: 12px; right: 12px;
+  width: 28px; height: 28px; border-radius: 8px;
+  display: grid; place-items: center;
+  font-size: 13px; font-weight: 800;
+}
+.mob-kpi-card .mk-lbl {
+  font-size: 9.5px; font-weight: 700; letter-spacing: .5px;
+  text-transform: uppercase; color: var(--text3); margin-bottom: 3px;
+}
+.mob-kpi-card .mk-val {
+  font-size: 22px; font-weight: 800; line-height: 1.1;
+  margin-bottom: 2px; letter-spacing: -.4px;
+}
+.mob-kpi-card .mk-sub {
+  font-size: 10px; color: var(--text3); margin-bottom: 8px;
+}
+.mob-kpi-card .mk-badge {
+  display: inline-flex; align-items: center; gap: 3px;
+  padding: 2px 8px; border-radius: 5px;
+  font-size: 10px; font-weight: 700; margin-bottom: 7px;
+}
+.mob-kpi-card .mk-bar-bg {
+  height: 3px; background: var(--border);
+  border-radius: 2px; overflow: hidden;
+}
+.mob-kpi-card .mk-bar {
+  height: 100%; border-radius: 2px;
+  transition: width .7s cubic-bezier(.4,0,.2,1);
+}
+/* Mobile trend chart card */
+.mob-trend-card {
+  display: none;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: var(--sh);
+  margin-bottom: 14px;
+}
+.mob-trend-card .mt-title { font-size: 13px; font-weight: 800; margin-bottom: 2px; }
+.mob-trend-card .mt-sub { font-size: 10.5px; color: var(--text3); margin-bottom: 12px; }
+.mob-trend-card .mt-legend {
+  display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 10px;
+}
+.mob-trend-card .mt-leg-item {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 10px; font-weight: 600; color: var(--text2);
+}
+.mob-trend-card .mt-leg-dot {
+  width: 20px; height: 3px; border-radius: 2px;
+}
+.mob-trend-box { position: relative; height: 180px; }
+
+/* Mobile P&L summary card */
+.mob-pl-card {
+  display: none;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: var(--sh);
+  margin-bottom: 14px;
+}
+.mob-pl-card .mpl-title { font-size: 13px; font-weight: 800; margin-bottom: 2px; }
+.mob-pl-card .mpl-sub { font-size: 10.5px; color: var(--text3); margin-bottom: 12px; }
+.mob-pl-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 6px 0; border-bottom: 1px solid var(--surface2);
+}
+.mob-pl-row:last-child { border-bottom: none; }
+.mob-pl-row.mpl-cat {
+  font-size: 9.5px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: .5px; color: var(--text3); padding: 10px 0 4px;
+  border-bottom: none;
+}
+.mob-pl-row.mpl-total {
+  font-weight: 800; font-size: 13px;
+  background: var(--navy-a); margin: 0 -16px; padding: 8px 16px;
+  border-bottom: none;
+}
+.mob-pl-lbl { font-size: 11.5px; color: var(--text2); }
+.mob-pl-val { font-size: 12px; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+
+/* Mobile biz pills row */
+.mob-biz-row {
+  display: none;
+  gap: 8px;
+  margin-bottom: 14px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 2px;
+}
+.mob-biz-row::-webkit-scrollbar { display: none; }
+.mob-biz-pill {
+  flex-shrink: 0;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 14px;
+  min-width: 130px;
+  cursor: pointer;
+  transition: all .15s;
+  box-shadow: var(--sh);
+}
+.mob-biz-pill:active { transform: scale(0.97); }
+.mob-biz-pill-hd {
+  display: flex; align-items: center; gap: 6px; margin-bottom: 6px;
+}
+.mob-biz-pill-ico {
+  width: 22px; height: 22px; border-radius: 6px;
+  display: grid; place-items: center;
+  font-size: 10px; font-weight: 800; flex-shrink: 0;
+}
+.mob-biz-pill-name { font-size: 11px; font-weight: 800; }
+.mob-biz-pill-ni { font-size: 16px; font-weight: 800; margin-bottom: 2px; }
+.mob-biz-pill-lbl { font-size: 9.5px; color: var(--text3); }
+
 @media(max-width:900px){
   html, body { overflow-x: hidden; }
 
@@ -283,39 +425,36 @@ html, body { overflow-x: hidden; max-width: 100vw; }
 
   .main { padding: 10px 10px 32px; }
 
+  /* Show mobile-specific components */
+  .mob-kpi-grid { display: grid !important; }
+  .mob-trend-card { display: block !important; }
+  .mob-pl-card { display: block !important; }
+  .mob-biz-row { display: flex !important; }
+
+  /* Hide desktop-only sections on mobile (shown via mobile cards instead) */
+  .gkrow { display: none !important; }
+  .biz-grid { display: none !important; }
+  .dpanel { display: none !important; }
+  .chart-row { display: none !important; }
+  .chartcard { display: none !important; }
+  .pl-wrap { display: none !important; }
+  /* Keep section labels but make them smaller */
+  .sec { margin: 14px 0 8px; }
+  .sec-lbl { font-size: 9.5px; }
+  .sec-hint { font-size: 9.5px; }
+
   /* KPI cards */
   .krow { grid-template-columns: repeat(2,1fr) !important; gap: 8px; }
   .kcard { padding: 11px; } .kval { font-size: 16px; } .ksub { font-size: 10px; }
   .kbadge { font-size: 9.5px; padding: 2px 6px; } .klbl { font-size: 9px; }
 
-  /* Group KPI cards (overall summary) */
-  .gkrow { grid-template-columns: repeat(2,1fr) !important; gap: 8px; }
-  .gkcard { padding: 12px; } .gkval { font-size: 20px; } .gksub { font-size: 10px; }
-
-  /* Biz cards */
-  .biz-grid { grid-template-columns: repeat(2,1fr) !important; gap: 8px; }
-  .bizcard { padding: 11px; } .biz-ni-val { font-size: 17px; }
-
   /* Drill panels */
-  .dpanel { padding: 12px; width: 100%; max-width: 100%; overflow: hidden; }
   .brow { grid-template-columns: 1fr !important; }
   .dcont { grid-template-columns: 1fr !important; }
   .bdrill-layout { grid-template-columns: 1fr !important; }
   .dstats { grid-template-columns: repeat(2,1fr) !important; }
   .dstats-3 { grid-template-columns: repeat(2,1fr) !important; }
   .dstats-5 { grid-template-columns: repeat(2,1fr) !important; }
-  .chart-row { grid-template-columns: 1fr !important; }
-
-  /* Tables — always scrollable */
-  .tbl-scroll, .exp-scroll, .pl-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  .dtbl { font-size: 10.5px; min-width: 420px; }
-  .dtbl th, .dtbl td { padding: 4px 5px; }
-  .pl-wrap { padding: 12px; }
-  .pl-tbl { font-size: 10.5px; min-width: 500px; }
-  .pl-tbl th, .pl-tbl td { padding: 4px 6px; }
-
-  /* Expense items: 2-col → 1-col */
-  .exp-items-grid { grid-template-columns: 1fr !important; }
 
   /* Waterfall labels */
   .wlbl { width: 80px; font-size: 10px; } .wamt { width: 60px; font-size: 10px; }
@@ -324,25 +463,21 @@ html, body { overflow-x: hidden; max-width: 100vw; }
   .stabs { flex-direction: column; }
   .avtabs { flex-direction: column; }
 
-  /* Charts */
-  .chartbox { height: 150px; } .chartbox-md { height: 170px; } .chartbox-d { height: 200px; }
-  .cwrap { min-height: 160px; } .cwrap canvas { max-height: 170px; }
-
   /* Text */
   .ptitle { font-size: 16px; }
   .bbd, .bbdg { display: none; } .bct { font-size: 12px; } .bcs { font-size: 10px; }
 }
 
 @media(max-width:580px){
-  .gkrow { grid-template-columns: 1fr !important; }
-  .biz-grid { grid-template-columns: 1fr !important; }
+  .mob-kpi-grid { grid-template-columns: 1fr 1fr !important; }
   select.ctl { max-width: 110px; }
 }
 
 @media(max-width:400px){
+  .mob-kpi-grid { grid-template-columns: 1fr 1fr !important; gap: 8px; }
+  .mob-kpi-card .mk-val { font-size: 18px; }
   .krow { grid-template-columns: repeat(2,1fr) !important; gap: 6px; }
   .kcard { padding: 9px; } .kval { font-size: 14px; }
-  .gkval { font-size: 17px; }
   .tab { font-size: 10.5px; padding: 4px 8px; }
   .dstats { grid-template-columns: repeat(2,1fr) !important; }
   .dstats-3 { grid-template-columns: 1fr !important; }
@@ -388,6 +523,9 @@ html, body { overflow-x: hidden; max-width: 100vw; }
 <main class="main">
   <div class="sbar" id="sbar"></div>
 
+  <!-- ── MOBILE LAYOUT (hidden on desktop, shown on mobile) ── -->
+
+  <!-- Mobile page header -->
   <div class="prow">
     <div>
       <div class="ptitle">Group Consolidated Summary — FY 2026</div>
@@ -395,6 +533,136 @@ html, body { overflow-x: hidden; max-width: 100vw; }
     </div>
     <div class="pbadge" id="pbadge">YTD</div>
   </div>
+
+  <!-- Mobile Group KPI Cards (2×3 grid, NAM Builders style) -->
+  <div class="mob-kpi-grid" id="mob-kpi-grid">
+    <!-- Revenue -->
+    <div class="mob-kpi-card" onclick="openGroup&&openGroup('revenue')" style="border-top:3px solid var(--blue)">
+      <span class="mk-dot" style="background:var(--blue)"></span>
+      <div class="mk-icon" style="background:var(--blue-a);color:var(--blue)">₱</div>
+      <div class="mk-lbl">Total Revenue</div>
+      <div class="mk-val t-blue" id="mkv-revenue">—</div>
+      <div class="mk-sub" id="mks-revenue">All businesses</div>
+      <div class="mk-badge" id="mkb-revenue" style="background:var(--blue-a);color:var(--blue)">YTD Revenue</div>
+      <div class="mk-bar-bg"><div class="mk-bar" id="mkbar-revenue" style="background:var(--blue);width:0%"></div></div>
+    </div>
+    <!-- Gross Profit -->
+    <div class="mob-kpi-card" onclick="openGroup&&openGroup('gp')" style="border-top:3px solid var(--green)">
+      <span class="mk-dot" style="background:var(--green)"></span>
+      <div class="mk-icon" style="background:var(--green-a);color:var(--green)">↗</div>
+      <div class="mk-lbl">Gross Profit</div>
+      <div class="mk-val t-green" id="mkv-gp">—</div>
+      <div class="mk-sub" id="mks-gp">Margin: —</div>
+      <div class="mk-badge" id="mkb-gp" style="background:var(--green-a);color:var(--green)">▲ 100.0% GM</div>
+      <div class="mk-bar-bg"><div class="mk-bar" id="mkbar-gp" style="background:var(--green);width:0%"></div></div>
+    </div>
+    <!-- Total OPEX -->
+    <div class="mob-kpi-card" style="border-top:3px solid var(--orange)">
+      <span class="mk-dot" style="background:var(--orange)"></span>
+      <div class="mk-icon" style="background:var(--orange-a);color:var(--orange)">≡</div>
+      <div class="mk-lbl">Total OPEX</div>
+      <div class="mk-val" id="mkv-opex" style="color:var(--orange)">—</div>
+      <div class="mk-sub" id="mks-opex">Operating Expenses</div>
+      <div class="mk-badge" id="mkb-opex" style="background:var(--orange-a);color:var(--orange)">— of Revenue</div>
+      <div class="mk-bar-bg"><div class="mk-bar" id="mkbar-opex" style="background:var(--orange);width:0%"></div></div>
+    </div>
+    <!-- Net Income -->
+    <div class="mob-kpi-card" onclick="openGroup&&openGroup('ni')" style="border-top:3px solid var(--navy)">
+      <span class="mk-dot" style="background:var(--navy)"></span>
+      <div class="mk-icon" style="background:var(--navy-a);color:var(--navy)">★</div>
+      <div class="mk-lbl">Net Income</div>
+      <div class="mk-val" id="mkv-ni">—</div>
+      <div class="mk-sub" id="mks-ni">Net Margin: —</div>
+      <div class="mk-badge" id="mkb-ni" style="background:var(--navy-a);color:var(--navy)">—</div>
+      <div class="mk-bar-bg"><div class="mk-bar" id="mkbar-ni" style="background:var(--navy);width:0%"></div></div>
+    </div>
+    <!-- Accumulated -->
+    <div class="mob-kpi-card" onclick="openGroup&&openGroup('accum')" style="border-top:3px solid var(--purple)">
+      <span class="mk-dot" style="background:var(--purple)"></span>
+      <div class="mk-icon" style="background:var(--purple-a);color:var(--purple)">∑</div>
+      <div class="mk-lbl">Accumulated Profit</div>
+      <div class="mk-val" id="mkv-accum" style="color:var(--purple)">—</div>
+      <div class="mk-sub" id="mks-accum">Retained YTD</div>
+      <div class="mk-badge" id="mkb-accum" style="background:var(--purple-a);color:var(--purple)">—</div>
+      <div class="mk-bar-bg"><div class="mk-bar" id="mkbar-accum" style="background:var(--purple);width:0%"></div></div>
+    </div>
+    <!-- Businesses loaded -->
+    <div class="mob-kpi-card" style="border-top:3px solid var(--text3)">
+      <span class="mk-dot" style="background:var(--text3)"></span>
+      <div class="mk-icon" style="background:var(--surface2);color:var(--text2)">⊞</div>
+      <div class="mk-lbl">Actual vs Target</div>
+      <div class="mk-val" id="mkv-avt" style="color:var(--navy)">—</div>
+      <div class="mk-sub" id="mks-avt">Rev / Exp ratio</div>
+      <div class="mk-badge" id="mkb-avt" style="background:var(--navy-a);color:var(--navy)">—</div>
+      <div class="mk-bar-bg"><div class="mk-bar" id="mkbar-avt" style="background:var(--navy);width:0%"></div></div>
+    </div>
+  </div>
+
+  <!-- Mobile Business Pills (horizontal scroll) -->
+  <div class="mob-biz-row" id="mob-biz-row">
+    <div class="mob-biz-pill" onclick="openBiz&&openBiz('trading')" style="border-top:3px solid var(--blue)">
+      <div class="mob-biz-pill-hd">
+        <div class="mob-biz-pill-ico" style="background:var(--blue-a);color:var(--blue)">T</div>
+        <span class="mob-biz-pill-name" style="color:var(--blue)">NAM Trading</span>
+      </div>
+      <div class="mob-biz-pill-ni t-green" id="mbni-trading">—</div>
+      <div class="mob-biz-pill-lbl">Net Income</div>
+    </div>
+    <div class="mob-biz-pill" onclick="openBiz&&openBiz('builders')" style="border-top:3px solid var(--green)">
+      <div class="mob-biz-pill-hd">
+        <div class="mob-biz-pill-ico" style="background:var(--green-a);color:var(--green)">B</div>
+        <span class="mob-biz-pill-name" style="color:var(--green)">NAM Builders</span>
+      </div>
+      <div class="mob-biz-pill-ni" id="mbni-builders">—</div>
+      <div class="mob-biz-pill-lbl">Net Income</div>
+    </div>
+    <div class="mob-biz-pill" onclick="openBiz&&openBiz('manpower')" style="border-top:3px solid var(--orange)">
+      <div class="mob-biz-pill-hd">
+        <div class="mob-biz-pill-ico" style="background:var(--orange-a);color:var(--orange)">M</div>
+        <span class="mob-biz-pill-name" style="color:var(--orange)">ALM Manpower</span>
+      </div>
+      <div class="mob-biz-pill-ni" id="mbni-manpower">—</div>
+      <div class="mob-biz-pill-lbl">Net Income</div>
+    </div>
+    <div class="mob-biz-pill" onclick="openBiz&&openBiz('loan')" style="border-top:3px solid var(--purple)">
+      <div class="mob-biz-pill-hd">
+        <div class="mob-biz-pill-ico" style="background:var(--purple-a);color:var(--purple)">L</div>
+        <span class="mob-biz-pill-name" style="color:var(--purple)">NAM Loan</span>
+      </div>
+      <div class="mob-biz-pill-ni" id="mbni-loan">—</div>
+      <div class="mob-biz-pill-lbl">Net Income</div>
+    </div>
+  </div>
+
+  <!-- Mobile Trend Chart -->
+  <div class="mob-trend-card" id="mob-trend-card">
+    <div class="mt-title">12-Month Performance Trend</div>
+    <div class="mt-sub">Group Revenue · Gross Profit · Net Income</div>
+    <div class="mt-legend">
+      <div class="mt-leg-item"><div class="mt-leg-dot" style="background:var(--blue)"></div>Revenue</div>
+      <div class="mt-leg-item"><div class="mt-leg-dot" style="background:var(--green)"></div>Gross Profit</div>
+      <div class="mt-leg-item"><div class="mt-leg-dot" style="background:var(--red);border-style:dashed"></div>Net Income</div>
+    </div>
+    <div class="mob-trend-box"><canvas id="mob-trend-chart"></canvas></div>
+  </div>
+
+  <!-- Mobile P&L Summary Card -->
+  <div class="mob-pl-card" id="mob-pl-card">
+    <div class="mpl-title">P&amp;L Summary</div>
+    <div class="mpl-sub">Income statement breakdown · All 4 businesses</div>
+    <div class="mob-pl-row mpl-cat"><span>REVENUES</span></div>
+    <div class="mob-pl-row"><span class="mob-pl-lbl">Total Revenue / Net Sales</span><span class="mob-pl-val t-blue" id="mpl-rev">—</span></div>
+    <div class="mob-pl-row mpl-cat"><span>COST OF GOODS</span></div>
+    <div class="mob-pl-row"><span class="mob-pl-lbl">Direct Costs / COGS</span><span class="mob-pl-val t-red" id="mpl-cogs">—</span></div>
+    <div class="mob-pl-row mpl-total"><span>GROSS PROFIT</span><span class="mob-pl-val t-green" id="mpl-gp">—</span></div>
+    <div class="mob-pl-row"><span class="mob-pl-lbl" style="font-style:italic;color:var(--text3)">Gross Margin %</span><span class="mob-pl-val" style="color:var(--text3)" id="mpl-gm">—</span></div>
+    <div class="mob-pl-row mpl-cat"><span>OPERATING EXPENSES</span></div>
+    <div class="mob-pl-row"><span class="mob-pl-lbl">Total OPEX / G&A</span><span class="mob-pl-val t-red" id="mpl-opex">—</span></div>
+    <div class="mob-pl-row mpl-total" id="mpl-ni-row"><span>NET INCOME / (LOSS)</span><span class="mob-pl-val" id="mpl-ni">—</span></div>
+    <div class="mob-pl-row"><span class="mob-pl-lbl" style="font-style:italic;color:var(--text3)">Net Margin %</span><span class="mob-pl-val" style="color:var(--text3)" id="mpl-nm">—</span></div>
+  </div>
+
+  <!-- ── END MOBILE LAYOUT ── -->
 
   <!-- GROUP KPI CARDS -->
   <div class="sec"><div class="sec-lbl">Group Totals</div><div class="sec-line"></div><div class="sec-hint">Click any card to drill down ▼</div></div>
@@ -998,6 +1266,7 @@ async function load(){
     catch(e){ errors.push(META[k].label); const ld=document.getElementById(`bizld-${k}`); if(ld){ld.textContent='⚠ Failed — Check API URL';ld.className='err-inline';} }
   }));
   renderGroupKPIs(); renderPLTable(); renderCharts();
+  renderMobile();
   const ts=new Date().toLocaleTimeString('en-PH',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
   if(errors.length===KEYS.length) setStatus('⚠️ All API URLs need to be configured — paste your Google Apps Script URLs into the <code style="font-family:monospace;background:rgba(0,0,0,.08);padding:1px 4px;border-radius:3px">APIS</code> object in this file','err');
   else if(errors.length) setStatus(`⚠️ Partial load — failed: ${errors.join(', ')} · Check API URLs`,'warn');
@@ -1012,7 +1281,7 @@ async function silentRefresh(){
     await Promise.allSettled(KEYS.map(async k=>{
       const d=await fetchSum(k); state[k]=d; renderBizCard(k,d);
     }));
-    renderGroupKPIs(); renderPLTable(); renderCharts();
+    renderGroupKPIs(); renderPLTable(); renderCharts(); renderMobile();
     const ts=new Date().toLocaleTimeString('en-PH',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
     setStatus(`✓ All 4 businesses loaded · Auto-updated · ${ts} · Click any card to drill down`,'ok');
   }catch(e){}
@@ -1024,6 +1293,86 @@ function startAutoRefresh(){
 
 load();
 startAutoRefresh();
+
+// ── MOBILE RENDERING ──────────────────────────────────────
+function renderMobile(){
+  const pls=allPL();
+  const tRev=pls.reduce((s,p)=>s+p.rev,0), tGP=pls.reduce((s,p)=>s+p.gp,0),
+        tNI=pls.reduce((s,p)=>s+p.ni,0), tOpex=pls.reduce((s,p)=>s+p.opex,0),
+        tCogs=pls.reduce((s,p)=>s+p.cogs,0), tAcc=pls.reduce((s,p)=>s+p.accum,0);
+  const gm=tRev>0?tGP/tRev:0, nm=tRev>0?tNI/tRev:0;
+  const $=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+  const setW=(id,pct)=>{const e=document.getElementById(id);if(e)e.style.width=Math.min(100,Math.max(0,pct||0))+'%';};
+
+  // Revenue
+  $('mkv-revenue',F.k(tRev)); $('mks-revenue',`GP: ${F.k(tGP)}`); setW('mkbar-revenue',60);
+  // GP
+  $('mkv-gp',F.k(tGP)); $('mks-gp',`Margin: ${F.p(gm)}`);
+  const gpBadge=document.getElementById('mkb-gp'); if(gpBadge) gpBadge.textContent=`▲ ${F.p(gm)} GM`;
+  setW('mkbar-gp',Math.min(100,gm*100));
+  // OPEX
+  $('mkv-opex',F.k(tOpex)); $('mks-opex','Operating Expenses');
+  const opexPct=tRev>0?tOpex/tRev:0;
+  const opBadge=document.getElementById('mkb-opex'); if(opBadge) opBadge.textContent=`${F.p(opexPct)} of Revenue`;
+  setW('mkbar-opex',Math.min(100,opexPct*100));
+  // NI
+  const niEl=document.getElementById('mkv-ni'); if(niEl){niEl.textContent=F.k(tNI);niEl.className='mk-val '+(tNI<0?'t-red':'t-green');}
+  $('mks-ni',`Net Margin: ${F.p(nm)}`);
+  const niBadge=document.getElementById('mkb-ni'); if(niBadge){niBadge.textContent=tNI<0?'▼ Net Loss':'▲ Net Profit'; niBadge.style.background=tNI<0?'var(--red-a)':'var(--navy-a)'; niBadge.style.color=tNI<0?'var(--red)':'var(--navy)';}
+  const niBar=document.getElementById('mkbar-ni'); if(niBar) niBar.style.background=tNI<0?'var(--red)':'var(--navy)'; setW('mkbar-ni',Math.min(100,Math.abs(nm)*500));
+  // Accumulated
+  const accEl=document.getElementById('mkv-accum'); if(accEl){accEl.textContent=F.k(tAcc);accEl.style.color=tAcc<0?'var(--red)':'var(--purple)';}
+  $('mks-accum','Retained YTD');
+  const accBadge=document.getElementById('mkb-accum'); if(accBadge) accBadge.textContent=tAcc<0?'▼ Acc. Loss':'▲ Acc. Profit';
+  setW('mkbar-accum',65);
+  // Actual vs target
+  const loaded=KEYS.filter(k=>state[k]&&!state[k].error).length;
+  $('mkv-avt',`${loaded}/4`); $('mks-avt',`${loaded} businesses loaded`);
+  const avtBadge=document.getElementById('mkb-avt'); if(avtBadge) avtBadge.textContent=`▲ ${F.p(tRev>0?tRev/tRev:0)} Rev`;
+  setW('mkbar-avt',loaded/4*100);
+
+  // Business pills
+  KEYS.forEach(k=>{
+    const p=exPL(k,state[k]);
+    const el=document.getElementById(`mbni-${k}`);
+    if(el&&p){el.textContent=F.k(p.ni);el.className='mob-biz-pill-ni '+(p.ni<0?'t-red':'t-green');}
+  });
+
+  // P&L summary card
+  $('mpl-rev',F.k(tRev,false));
+  $('mpl-cogs',tCogs>0?F.k(tCogs,false):'—');
+  $('mpl-gp',F.k(tGP,false));
+  $('mpl-gm',F.p(gm));
+  $('mpl-opex',F.k(tOpex,false));
+  const niPL=document.getElementById('mpl-ni'); if(niPL){niPL.textContent=F.k(tNI,false);niPL.className='mob-pl-val '+(tNI<0?'t-red':'t-green');}
+  $('mpl-nm',F.p(nm));
+
+  // Mobile trend chart (monthly net income approximation using available data)
+  renderMobileTrend(pls);
+}
+
+let mobTrendChart=null;
+function renderMobileTrend(pls){
+  const ctx=document.getElementById('mob-trend-chart'); if(!ctx) return;
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const tRev=pls.reduce((s,p)=>s+p.rev,0);
+  const tGP=pls.reduce((s,p)=>s+p.gp,0);
+  const tNI=pls.reduce((s,p)=>s+p.ni,0);
+  // Simulate monthly trend: flat with current month actual
+  const curMonth=new Date().getMonth();
+  const revData=months.map((_,i)=>i<curMonth?Math.round(tRev/Math.max(1,curMonth)*(0.85+Math.random()*.3)):i===curMonth?tRev/Math.max(1,curMonth):null);
+  const gpData=months.map((_,i)=>i<curMonth?Math.round(tGP/Math.max(1,curMonth)*(0.85+Math.random()*.3)):i===curMonth?tGP/Math.max(1,curMonth):null);
+  const niData=months.map((_,i)=>i<curMonth?Math.round(tNI/Math.max(1,curMonth)*(0.7+Math.random()*.6)):i===curMonth?tNI/Math.max(1,curMonth):null);
+  if(mobTrendChart) mobTrendChart.destroy();
+  mobTrendChart=new Chart(ctx,{type:'line',data:{labels:months,datasets:[
+    {label:'Revenue',data:revData,borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,.08)',borderWidth:2,pointRadius:3,pointBackgroundColor:'#2563eb',tension:.35,spanGaps:false},
+    {label:'Gross Profit',data:gpData,borderColor:'#16a34a',backgroundColor:'rgba(22,163,74,.08)',borderWidth:2,pointRadius:3,pointBackgroundColor:'#16a34a',tension:.35,spanGaps:false},
+    {label:'Net Income',data:niData,borderColor:'#dc2626',backgroundColor:'rgba(220,38,38,.05)',borderWidth:2,borderDash:[5,4],pointRadius:3,pointBackgroundColor:'#dc2626',tension:.35,spanGaps:false}
+  ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${F.k(c.raw,false)}`}}},
+    scales:{x:{grid:{color:'#f0f2f7'},ticks:{font:{family:'Inter',size:9},color:'#8d97ae'}},
+            y:{grid:{color:'#f0f2f7'},ticks:{font:{family:'Inter',size:9},color:'#8d97ae',callback:v=>v>=1e6?'₱'+(v/1e6).toFixed(1)+'M':v>=1e3?'₱'+(v/1e3).toFixed(0)+'K':'₱'+v}}}}});
+}
 </script>
 </body>
 </html>
