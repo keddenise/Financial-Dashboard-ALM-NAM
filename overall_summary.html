@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Overall Summary — Group Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#eef0f6;--surface:#fff;--surface2:#f5f6fb;--border:#e2e5ef;
+  --text:#0d1526;--text2:#4e5a72;--text3:#8d97ae;
+  --blue:#2563eb;--blue2:#1d4ed8;--blue-a:#dbeafe;
+  --green:#16a34a;--green-a:#dcfce7;
+  --orange:#ea580c;--orange-a:#ffedd5;
+  --red:#dc2626;--red-a:#fee2e2;
+  --purple:#7c3aed;--purple-a:#ede9fe;
+  --navy:#1e3a5f;--navy-a:#e0e7ef;
+  --r:12px;--r2:16px;
+  --sh:0 1px 3px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04);
+  --sh2:0 4px 24px rgba(0,0,0,.10);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-size:13px;min-height:100vh}
+
+/* TOP BAR */
+.top{background:var(--surface);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:12px;padding:0 20px;height:56px;
+  position:sticky;top:0;z-index:200;box-shadow:var(--sh)}
+.brand{display:flex;align-items:center;gap:9px;min-width:200px}
+.av{width:32px;height:32px;background:var(--navy);border-radius:8px;
+  display:grid;place-items:center;color:#fff;font-weight:800;font-size:13px}
+.bn{font-size:12.5px;font-weight:700;line-height:1.15}
+.bs{font-size:10.5px;color:var(--text3)}
+.tabs{display:flex;gap:3px;flex:1}
+.tab{display:flex;align-items:center;gap:5px;padding:5px 13px;border-radius:20px;
+  font-size:12.5px;font-weight:500;color:var(--text2);cursor:pointer;border:none;
+  background:transparent;transition:all .15s;text-decoration:none}
+.tab:hover{background:var(--surface2)}
+.tab.on{background:var(--navy-a);color:var(--navy)}
+.dot{width:7px;height:7px;border-radius:50%;display:inline-block}
+.tr{display:flex;align-items:center;gap:8px;margin-left:auto}
+select.ctl{font-family:'Inter',sans-serif;font-size:12.5px;font-weight:500;
+  border:1px solid var(--border);border-radius:8px;padding:5px 22px 5px 9px;
+  background:var(--surface);color:var(--text);cursor:pointer;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%235a6478' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 7px center}
+.clk{font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:500;
+  color:var(--text2);background:var(--surface2);border:1px solid var(--border);
+  border-radius:8px;padding:5px 9px}
+.rfbtn{display:flex;align-items:center;gap:5px;padding:6px 14px;
+  background:var(--navy);color:#fff;border:none;border-radius:8px;
+  font-family:'Inter',sans-serif;font-size:12.5px;font-weight:600;cursor:pointer;transition:.15s}
+.rfbtn:hover{background:#162d4a}
+.rfbtn svg{transition:transform .4s}
+.rfbtn.spin svg{animation:rot .8s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+
+/* MAIN */
+.main{padding:18px 20px 48px}
+.sbar{display:flex;align-items:center;gap:7px;border-radius:10px;padding:8px 14px;margin-bottom:16px;font-size:12px;font-weight:500;display:none}
+.prow{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px}
+.ptitle{font-size:21px;font-weight:800}
+.psub{font-size:11.5px;color:var(--text3);margin-top:3px}
+.pbadge{font-size:11px;font-weight:700;background:var(--navy-a);color:var(--navy);padding:3px 10px;border-radius:8px}
+
+/* SECTION HEADERS */
+.sec{display:flex;align-items:center;gap:10px;margin:20px 0 10px}
+.sec-lbl{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:var(--text3);white-space:nowrap}
+.sec-line{flex:1;height:1px;background:var(--border)}
+.sec-hint{font-size:10px;color:var(--text3);white-space:nowrap}
+
+/* GROUP KPI CARDS */
+.gkrow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:1100px){.gkrow{grid-template-columns:repeat(2,1fr)}}
+
+.gkcard{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r2);
+  padding:15px 15px 13px;box-shadow:var(--sh);cursor:pointer;transition:all .18s;
+  position:relative;overflow:hidden}
+.gkcard:hover{box-shadow:var(--sh2);transform:translateY(-2px)}
+.gkcard.act{box-shadow:0 0 0 2.5px var(--ac),var(--sh2);border-color:var(--ac)}
+.gkcard-stripe{position:absolute;top:0;left:0;right:0;height:3px}
+.gkh{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:9px}
+.gkico{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;font-size:14px;font-weight:800}
+.gklbl{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--text3);margin-bottom:4px}
+.gkval{font-size:27px;font-weight:800;line-height:1.1;margin-bottom:3px;letter-spacing:-.5px}
+.gksub{font-size:11px;color:var(--text3);margin-bottom:9px}
+.gkbadge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:5px;font-size:10.5px;font-weight:700;margin-bottom:7px}
+.gkprog{height:3px;border-radius:2px;background:var(--border);overflow:hidden}
+.gkbar{height:100%;border-radius:2px;transition:width .7s cubic-bezier(.4,0,.2,1)}
+.gkhint{font-size:9.5px;color:var(--text3);margin-top:7px;display:flex;align-items:center;gap:3px}
+
+/* DRILL PANEL */
+.dpanel{background:var(--surface);border-radius:var(--r2);padding:18px;
+  margin:4px 0 14px;display:none;animation:sld .2s ease;box-shadow:var(--sh2);
+  border-left:3px solid var(--navy)}
+.dpanel.vis{display:block}
+@keyframes sld{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.dh{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px}
+.dtitle{font-size:15px;font-weight:800}
+.dsub{font-size:11.5px;color:var(--text3);margin-top:2px}
+.dcls{width:28px;height:28px;border-radius:50%;background:var(--surface2);
+  border:1px solid var(--border);display:grid;place-items:center;cursor:pointer;
+  font-size:12px;color:var(--text3);flex-shrink:0}
+.dcls:hover{background:var(--border)}
+.dstats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+@media(max-width:800px){.dstats{grid-template-columns:repeat(2,1fr)}}
+.dstat{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:12px}
+.dstat-v{font-size:18px;font-weight:800;margin-bottom:2px;letter-spacing:-.3px}
+.dstat-l{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--text3)}
+.dcont{display:grid;grid-template-columns:1.1fr 1fr;gap:16px}
+
+.cwrap{min-height:240px;display:flex;align-items:center;justify-content:center}
+.cwrap canvas{max-height:270px}
+.chartbox-d{position:relative;height:270px}
+
+/* VIEW TOGGLE */
+.vtog{display:flex;gap:5px;margin-bottom:12px}
+.vbtn{display:flex;align-items:center;gap:4px;padding:5px 12px;border-radius:8px;
+  border:1px solid var(--border);font-family:'Inter',sans-serif;font-size:12px;font-weight:600;
+  cursor:pointer;background:var(--surface2);color:var(--text2);transition:.15s}
+.vbtn.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+/* ITEMS LIST */
+.ilist-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text3);margin-bottom:8px}
+.irow{display:flex;align-items:center;gap:7px;padding:4.5px 0;border-bottom:1px solid var(--surface2)}
+.irow:last-child{border-bottom:none}
+.idot{width:8px;height:8px;border-radius:3px;flex-shrink:0}
+.iname{flex:1;font-size:12px;color:var(--text2)}
+.ibar-wrap{width:60px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.ibar-fill{height:100%;border-radius:2px;transition:width .6s ease}
+.iamt{font-size:12px;font-weight:700;font-family:'JetBrains Mono',monospace;white-space:nowrap}
+.ipct{font-size:10.5px;color:var(--text3);width:36px;text-align:right}
+
+/* WATERFALL */
+.wfall{display:flex;flex-direction:column;gap:5px}
+.wrow{display:flex;align-items:center;gap:8px}
+.wlbl{font-size:11.5px;color:var(--text2);width:140px;text-align:right;flex-shrink:0}
+.wbar-bg{flex:1;height:22px;background:var(--surface2);border-radius:5px;position:relative;overflow:hidden}
+.wbar{height:100%;border-radius:5px;position:absolute;top:0;transition:width .6s cubic-bezier(.4,0,.2,1)}
+.wbar.pos{background:var(--green)}
+.wbar.neg{background:var(--red)}
+.wbar.sub{background:var(--navy)}
+.wamt{font-size:12px;font-weight:700;font-family:'JetBrains Mono',monospace;width:95px;flex-shrink:0;text-align:right}
+.wpct{font-size:10px;color:var(--text3);width:40px;flex-shrink:0;text-align:right}
+
+/* TABLE */
+.dtbl{width:100%;border-collapse:collapse}
+.dtbl th{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;
+  color:var(--text3);padding:7px 8px;border-bottom:1.5px solid var(--border);text-align:right}
+.dtbl th:first-child{text-align:left}
+.dtbl td{font-size:12px;padding:5px 8px;border-bottom:1px solid var(--surface2)}
+.dtbl .mono{font-family:'JetBrains Mono',monospace;font-weight:600;text-align:right}
+.dtbl .rtot{font-weight:800;background:var(--surface2)}
+.dtbl tr:hover td{background:#f8f9fd}
+
+/* BIZ CARDS */
+.biz-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:1200px){.biz-grid{grid-template-columns:repeat(2,1fr)}}
+
+.bizcard{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r2);
+  padding:14px;box-shadow:var(--sh);transition:all .18s;position:relative;overflow:hidden;cursor:pointer}
+.bizcard:hover{box-shadow:var(--sh2);transform:translateY(-2px)}
+.bizcard.act{box-shadow:0 0 0 2.5px var(--bc),var(--sh2);border-color:var(--bc)}
+.bizcard-stripe{position:absolute;top:0;left:0;right:0;height:3px}
+.bizcard-hd{display:flex;align-items:center;gap:8px;margin:4px 0 10px}
+.bizico{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font-size:11px;font-weight:800;flex-shrink:0}
+.bizname{font-size:12px;font-weight:800}
+.biztype{font-size:10px;color:var(--text3)}
+.biz-ni-lbl{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--text3);margin-bottom:2px}
+.biz-ni-val{font-size:22px;font-weight:800;margin-bottom:8px}
+.biz-row{display:flex;justify-content:space-between;align-items:center;
+  padding:3.5px 0;border-bottom:1px solid var(--surface2)}
+.biz-row:last-of-type{border-bottom:none}
+.biz-row-l{font-size:11px;color:var(--text2)}
+.biz-row-v{font-size:11.5px;font-weight:700;font-family:'JetBrains Mono',monospace}
+.biz-badge{display:inline-flex;align-items:center;gap:2px;padding:2px 7px;
+  border-radius:5px;font-size:10px;font-weight:700;margin-top:7px}
+.bizprog{height:3px;border-radius:2px;background:var(--border);margin-top:7px;overflow:hidden}
+.bizbar{height:100%;border-radius:2px;transition:width .6s ease}
+.biz-hint{font-size:9.5px;color:var(--text3);margin-top:6px;opacity:.7}
+.ld-inline{font-size:11.5px;color:var(--text3);font-style:italic;padding:4px 0}
+.err-inline{font-size:11.5px;color:var(--red);padding:4px 0}
+
+/* BUSINESS DRILL LAYOUT */
+.bdrill-layout{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+
+/* P&L TABLE */
+.pl-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);
+  padding:18px;box-shadow:var(--sh);overflow-x:auto}
+.pl-hd{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+.pl-title{font-size:13.5px;font-weight:800}
+.pl-sub{font-size:11px;color:var(--text3);margin-top:2px}
+.leg{display:flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600}
+.leg-dot{width:9px;height:9px;border-radius:3px;flex-shrink:0}
+.pl-tbl{width:100%;border-collapse:collapse;min-width:680px}
+.pl-tbl th{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;
+  color:var(--text3);padding:8px 10px;border-bottom:2px solid var(--border);text-align:right;white-space:nowrap}
+.pl-tbl th:first-child{text-align:left;min-width:190px}
+.pl-tbl td{font-size:12px;padding:5.5px 10px;border-bottom:1px solid var(--surface2)}
+.pl-tbl .mono{font-family:'JetBrains Mono',monospace;font-weight:600;text-align:right;white-space:nowrap}
+.pl-tbl .row-cat{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;
+  color:var(--text3);background:var(--surface2);padding-top:10px}
+.pl-tbl .row-total{font-weight:800;font-size:12.5px;background:var(--navy-a)}
+.pl-tbl .row-pct td{font-size:11px;color:var(--text3);padding:2px 10px 6px}
+.pl-tbl tr:not(.row-cat):not(.row-total):not(.row-pct):hover td{background:#f8f9fd}
+.pl-tbl .pl-sub-row{padding-left:20px;color:var(--text2)}
+.cT{color:var(--blue)}.cB{color:var(--green)}.cM{color:var(--orange)}.cL{color:var(--purple)}.cG{color:var(--navy);font-weight:800}
+
+/* CHARTS */
+.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+.chartcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);padding:16px;box-shadow:var(--sh)}
+.cch{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px}
+.cct{font-size:13.5px;font-weight:800}
+.ccs{font-size:11px;color:var(--text3);margin-top:2px}
+.chartbox{position:relative;height:210px}
+.chartbox-md{position:relative;height:230px}
+
+/* UTILITIES */
+.t-red{color:var(--red)} .t-green{color:var(--green)} .t-navy{color:var(--navy)}
+.fw7{font-weight:700} .fw8{font-weight:800}
+.mt8{margin-top:8px} .mt12{margin-top:12px} .mt16{margin-top:16px}
+.mb12{margin-bottom:12px} .mb16{margin-bottom:16px}
+.ld-full{display:flex;align-items:center;justify-content:center;min-height:100px;font-size:13px;color:var(--text3)}
+
+/* ── RESPONSIVE — MOBILE ── */
+
+/* Prevent any horizontal overflow on the page */
+html, body { overflow-x: hidden; max-width: 100vw; }
+.main { overflow-x: hidden; }
+
+/* All tables get scroll wrappers */
+.tbl-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%; }
+.dtbl { min-width: 480px; }
+.pl-tbl { min-width: 580px; }
+
+/* Tab scroll fade hint */
+.tabs-wrap { position: relative; grid-area: tabs; }
+.tabs-wrap::after {
+  content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 44px;
+  background: linear-gradient(to right, transparent, var(--surface) 85%);
+  pointer-events: none;
+}
+
+/* Drill panels must not overflow */
+.dpanel { max-width: 100%; box-sizing: border-box; }
+
+/* Expense items 2-col → 1-col on mobile (JS-generated, override via class) */
+.exp-items-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
+
+@media(max-width:900px){
+  html, body { overflow-x: hidden; }
+
+  .top{
+    flex-wrap: wrap; height: auto; padding: 8px 14px 0; gap: 0;
+    display: grid;
+    grid-template-areas: 'brand controls' 'tabs tabs';
+    grid-template-columns: auto 1fr;
+  }
+  .brand { grid-area: brand; min-width: 0 !important; padding: 6px 0; align-items: center; }
+  .bn { font-size: 11.5px; } .bs { font-size: 10px; }
+  .av { width: 28px; height: 28px; font-size: 11px; }
+  .tr { grid-area: controls; justify-content: flex-end; gap: 5px; padding: 6px 0; margin-left: 0; }
+  select.ctl { font-size: 11px; padding: 3px 16px 3px 6px; border-radius: 6px; max-width: 130px; }
+  .clk { display: none; }
+  .rfbtn { font-size: 11px; padding: 5px 11px; border-radius: 6px; gap: 3px; }
+
+  .tabs-wrap {
+    grid-area: tabs;
+    border-top: 1px solid var(--border); margin: 0 -14px;
+  }
+  .tabs {
+    display: flex; flex-wrap: nowrap;
+    overflow-x: auto; overflow-y: hidden;
+    gap: 2px; padding: 6px 50px 8px 14px;
+    -webkit-overflow-scrolling: touch; scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab { white-space: nowrap; font-size: 11.5px; padding: 5px 11px; flex-shrink: 0; }
+
+  .main { padding: 10px 10px 32px; }
+
+  /* KPI cards */
+  .krow { grid-template-columns: repeat(2,1fr) !important; gap: 8px; }
+  .kcard { padding: 11px; } .kval { font-size: 16px; } .ksub { font-size: 10px; }
+  .kbadge { font-size: 9.5px; padding: 2px 6px; } .klbl { font-size: 9px; }
+
+  /* Group KPI cards (overall summary) */
+  .gkrow { grid-template-columns: repeat(2,1fr) !important; gap: 8px; }
+  .gkcard { padding: 12px; } .gkval { font-size: 20px; } .gksub { font-size: 10px; }
+
+  /* Biz cards */
+  .biz-grid { grid-template-columns: repeat(2,1fr) !important; gap: 8px; }
+  .bizcard { padding: 11px; } .biz-ni-val { font-size: 17px; }
+
+  /* Drill panels */
+  .dpanel { padding: 12px; width: 100%; max-width: 100%; overflow: hidden; }
+  .brow { grid-template-columns: 1fr !important; }
+  .dcont { grid-template-columns: 1fr !important; }
+  .bdrill-layout { grid-template-columns: 1fr !important; }
+  .dstats { grid-template-columns: repeat(2,1fr) !important; }
+  .dstats-3 { grid-template-columns: repeat(2,1fr) !important; }
+  .dstats-5 { grid-template-columns: repeat(2,1fr) !important; }
+  .chart-row { grid-template-columns: 1fr !important; }
+
+  /* Tables — always scrollable */
+  .tbl-scroll, .exp-scroll, .pl-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .dtbl { font-size: 10.5px; min-width: 420px; }
+  .dtbl th, .dtbl td { padding: 4px 5px; }
+  .pl-wrap { padding: 12px; }
+  .pl-tbl { font-size: 10.5px; min-width: 500px; }
+  .pl-tbl th, .pl-tbl td { padding: 4px 6px; }
+
+  /* Expense items: 2-col → 1-col */
+  .exp-items-grid { grid-template-columns: 1fr !important; }
+
+  /* Waterfall labels */
+  .wlbl { width: 80px; font-size: 10px; } .wamt { width: 60px; font-size: 10px; }
+
+  /* Sub-tabs */
+  .stabs { flex-direction: column; }
+  .avtabs { flex-direction: column; }
+
+  /* Charts */
+  .chartbox { height: 150px; } .chartbox-md { height: 170px; } .chartbox-d { height: 200px; }
+  .cwrap { min-height: 160px; } .cwrap canvas { max-height: 170px; }
+
+  /* Text */
+  .ptitle { font-size: 16px; }
+  .bbd, .bbdg { display: none; } .bct { font-size: 12px; } .bcs { font-size: 10px; }
+}
+
+@media(max-width:580px){
+  .gkrow { grid-template-columns: 1fr !important; }
+  .biz-grid { grid-template-columns: 1fr !important; }
+  select.ctl { max-width: 110px; }
+}
+
+@media(max-width:400px){
+  .krow { grid-template-columns: repeat(2,1fr) !important; gap: 6px; }
+  .kcard { padding: 9px; } .kval { font-size: 14px; }
+  .gkval { font-size: 17px; }
+  .tab { font-size: 10.5px; padding: 4px 8px; }
+  .dstats { grid-template-columns: repeat(2,1fr) !important; }
+  .dstats-3 { grid-template-columns: 1fr !important; }
+  select.ctl { max-width: 95px; font-size: 10px; }
+  .rfbtn .rf-label { display: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">
+    <div class="av">∑</div>
+    <div><div class="bn">NAM Group of Companies</div><div class="bs">Consolidated Overview</div></div>
+  </div>
+  <div class="tabs-wrap"><div class="tabs">
+    <a class="tab" href="index.html"><span class="dot" style="background:var(--blue)"></span>NAM Trading</a>
+    <a class="tab" href="nam_builders.html"><span class="dot" style="background:var(--green)"></span>NAM Builders</a>
+    <a class="tab" href="alm_manpower.html"><span class="dot" style="background:var(--orange)"></span>ALM Manpower</a>
+    <a class="tab" href="loan.html"><span class="dot" style="background:var(--purple)"></span>Loan</a>
+    <a class="tab on" href="overall_summary.html"><span class="dot" style="background:var(--navy)"></span>Overall Summary</a>
+  </div></div>
+  <div class="tr">
+    <select class="ctl" id="sy"><option value="2026">2026</option></select>
+    <select class="ctl" id="sm" onchange="load()">
+      <option value="YTD">All Months (YTD)</option>
+      <option value="January">January</option><option value="February">February</option>
+      <option value="March">March</option><option value="April">April</option>
+      <option value="May">May</option><option value="June">June</option>
+      <option value="July">July</option><option value="August">August</option>
+      <option value="September">September</option><option value="October">October</option>
+      <option value="November">November</option><option value="December">December</option>
+    </select>
+    <div class="clk" id="clk">--:--:-- --</div>
+    <button class="rfbtn" id="rfb" onclick="load()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M3 12a9 9 0 019-9 9.75 9.75 0 016.74 2.74L21 8"/><path d="M21 3v5h-5M21 12a9 9 0 01-9 9 9.75 9.75 0 01-6.74-2.74L3 16"/><path d="M8 16H3v5"/>
+      </svg><span class="rf-label">Refresh All</span>
+    </button>
+  </div>
+</header>
+
+<main class="main">
+  <div class="sbar" id="sbar"></div>
+
+  <div class="prow">
+    <div>
+      <div class="ptitle">Group Consolidated Summary — FY 2026</div>
+      <div class="psub">NAM Trading &nbsp;·&nbsp; NAM Builders &nbsp;·&nbsp; ALM Manpower &nbsp;·&nbsp; NAM Quick Cash Loan</div>
+    </div>
+    <div class="pbadge" id="pbadge">YTD</div>
+  </div>
+
+  <!-- GROUP KPI CARDS -->
+  <div class="sec"><div class="sec-lbl">Group Totals</div><div class="sec-line"></div><div class="sec-hint">Click any card to drill down ▼</div></div>
+  <div class="gkrow mb16">
+    <div class="gkcard" onclick="openGroup('revenue')" id="gkc-revenue" style="--ac:var(--blue)">
+      <div class="gkcard-stripe" style="background:var(--blue)"></div>
+      <div class="gkh">
+        <div class="gkico" style="background:var(--blue-a);color:var(--blue)">₱</div>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+      <div class="gklbl">Total Revenue</div>
+      <div class="gkval t-blue" id="gkv-revenue">—</div>
+      <div class="gksub" id="gks-revenue">All 4 businesses combined</div>
+      <div class="gkbadge" id="gkb-revenue" style="background:var(--blue-a);color:var(--blue)">—</div>
+      <div class="gkprog"><div class="gkbar" id="gkbar-revenue" style="background:var(--blue);width:0%"></div></div>
+      <div class="gkhint">▼ Revenue breakdown by business</div>
+    </div>
+    <div class="gkcard" onclick="openGroup('gp')" id="gkc-gp" style="--ac:var(--green)">
+      <div class="gkcard-stripe" style="background:var(--green)"></div>
+      <div class="gkh">
+        <div class="gkico" style="background:var(--green-a);color:var(--green)">↗</div>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+      <div class="gklbl">Total Gross Profit</div>
+      <div class="gkval t-green" id="gkv-gp">—</div>
+      <div class="gksub" id="gks-gp">Group gross margin: —</div>
+      <div class="gkbadge" id="gkb-gp" style="background:var(--green-a);color:var(--green)">—</div>
+      <div class="gkprog"><div class="gkbar" id="gkbar-gp" style="background:var(--green);width:0%"></div></div>
+      <div class="gkhint">▼ GP &amp; margin per business</div>
+    </div>
+    <div class="gkcard" onclick="openGroup('ni')" id="gkc-ni" style="--ac:var(--navy)">
+      <div class="gkcard-stripe" style="background:var(--navy)"></div>
+      <div class="gkh">
+        <div class="gkico" style="background:var(--navy-a);color:var(--navy)">★</div>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+      <div class="gklbl">Total Net Income</div>
+      <div class="gkval" id="gkv-ni">—</div>
+      <div class="gksub" id="gks-ni">Group net margin: —</div>
+      <div class="gkbadge" id="gkb-ni" style="background:var(--navy-a);color:var(--navy)">—</div>
+      <div class="gkprog"><div class="gkbar" id="gkbar-ni" style="background:var(--navy);width:0%"></div></div>
+      <div class="gkhint">▼ Full P&amp;L waterfall</div>
+    </div>
+    <div class="gkcard" onclick="openGroup('accum')" id="gkc-accum" style="--ac:var(--purple)">
+      <div class="gkcard-stripe" style="background:var(--purple)"></div>
+      <div class="gkh">
+        <div class="gkico" style="background:var(--purple-a);color:var(--purple)">∑</div>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+      <div class="gklbl">Accumulated Net Profit</div>
+      <div class="gkval" id="gkv-accum" style="color:var(--purple)">—</div>
+      <div class="gksub" id="gks-accum">Retained / Accumulated YTD</div>
+      <div class="gkbadge" id="gkb-accum" style="background:var(--purple-a);color:var(--purple)">—</div>
+      <div class="gkprog"><div class="gkbar" id="gkbar-accum" style="background:var(--purple);width:0%"></div></div>
+      <div class="gkhint">▼ Accumulated profit by business</div>
+    </div>
+  </div>
+
+  <!-- GROUP DRILL PANEL -->
+  <div class="dpanel" id="group-drill">
+    <div class="dh">
+      <div><div class="dtitle" id="gdtitle">Detail</div><div class="dsub" id="gdsub"></div></div>
+      <button class="dcls" onclick="closeGroupDrill()">✕</button>
+    </div>
+    <div id="gdcont"></div>
+  </div>
+
+  <!-- INDIVIDUAL BIZ CARDS -->
+  <div class="sec"><div class="sec-lbl">Individual Business Performance</div><div class="sec-line"></div><div class="sec-hint">Click to compare &amp; drill down ▼</div></div>
+  <div class="biz-grid mb16">
+    <!-- Trading -->
+    <div class="bizcard" onclick="openBiz('trading')" id="bizc-trading" style="--bc:var(--blue)">
+      <div class="bizcard-stripe" style="background:var(--blue)"></div>
+      <div class="bizcard-hd">
+        <div class="bizico" style="background:var(--blue-a);color:var(--blue)">T</div>
+        <div><div class="bizname" style="color:var(--blue)">NAM Trading</div><div class="biztype">Wholesale Distribution</div></div>
+      </div>
+      <div id="bizld-trading" class="ld-inline">Loading…</div>
+      <div id="bizdata-trading" style="display:none">
+        <div class="biz-ni-lbl">Net Income</div>
+        <div class="biz-ni-val" id="bni-trading">—</div>
+        <div class="biz-row"><span class="biz-row-l">Net Sales</span><span class="biz-row-v" id="brev-trading">—</span></div>
+        <div class="biz-row"><span class="biz-row-l">Gross Profit</span><span class="biz-row-v" id="bgp-trading">—</span></div>
+        <div class="biz-row"><span class="biz-row-l">Total OPEX</span><span class="biz-row-v" id="bopex-trading">—</span></div>
+        <div class="biz-row"><span class="biz-row-l">GM % / NM %</span><span class="biz-row-v" id="bmarg-trading">—</span></div>
+        <div class="biz-badge" id="bbadge-trading" style="background:var(--blue-a);color:var(--blue)">—</div>
+        <div class="bizprog mt8"><div class="bizbar" id="bbar-trading" style="background:var(--blue)"></div></div>
+        <div class="biz-hint">Click to see full breakdown ▼</div>
+      </div>
+    </div>
+    <!-- Builders -->
+    <div class="bizcard" onclick="openBiz('builders')" id="bizc-builders" style="--bc:var(--green)">
+      <div class="bizcard-stripe" style="background:var(--green)"></div>
+      <div class="bizcard-hd">
+        <div class="bizico" style="background:var(--green-a);color:var(--green)">B</div>
+        <div><div class="bizname" style="color:var(--green)">NAM Builders</div><div class="biztype">Construction / Project-Based</div></div>
+      </div>
+      <div id="bizld-builders" class="ld-inline">Loading…</div>
+      <div id="bizdata-builders" style="display:none">
+        <div class="biz-ni-lbl">Net Income</div>
+        <div class="biz-ni-val" id="bni-builders">—</div>
+        <div class="biz-row"><span class="biz-row-l">Contract Revenue</span><span class="biz-row-v" id="brev-builders">—</span></div>
+        <div class="biz-row"><span class="biz-row-l">Gross Profit</span><span class="biz-row-v" id="bgp-builders">—</span></div>
+        <div class="biz-row"><span class="biz-row-l">G&A OPEX</span><span class="biz-row-v" id="bopex-builders">—</span></div>
+        <div class="biz-row"><span class="biz-row-l">GM % / NM %</span><span class="biz-row-v" id="bmarg-builders">—</span></div>
+        <div class="biz-badge" id="bbadge-builders" style="background:var(--green-a);color:var(--green)">—</div>
+        <div class="bizprog mt8"><div class="bizbar" id="bbar-builders" style="background:var(--green)"></div></div>
+        <div class="biz-hint">Click to see full breakdown ▼</div>
+      </div>
+    </div>
+    <!-- Manpower -->
+    <div class="bizcard" onclick="openBiz('manpower')" id="bizc-manpower" style="--bc:var(--orange)">
+      <div class="bizcard-stripe" style="background:var(--orange)"></div>
+      <div class="bizcard-hd">
+        <div class="bizico" style="background:var(--orange-a);color:var(--orange)">M</div>
+        <div><div class="bizname" style="color:var(--orange)">ALM Manpower</div><div class="biztype">Manpower Outsourcing</div></div>
+      </div>
+      <div id="bizld-manpower" class="ld-inline">Loading…</div>
+      <div id="bizdata-manpower" style="display:none">
+        <div class="biz-ni-lbl">Net Income</div>
+        <div class="biz-ni-val" id="bni-manpower">—</div>
+        <div class="biz-row"><span class="biz-row-l">Total Revenue</span><span class="biz-row-v" id="brev-manpower">—</span></div>
+        <div class="biz-row"><span class="biz-row-l">Gross Profit</span><span class="biz-row-v" id="bgp-manpower">—</span></div>
+        <div class="biz-row"><span class="biz-row-l">G&A Expenses</span><span class="biz-row-v" id="bopex-manpower">—</span></div>
+        <div class="biz-row"><span class="biz-row-l">GM % / NM %</span><span class="biz-row-v" id="bmarg-manpower">—</span></div>
+        <div class="biz-badge" id="bbadge-manpower" style="background:var(--orange-a);color:var(--orange)">—</div>
+        <div class="bizprog mt8"><div class="bizbar" id="bbar-manpower" style="background:var(--orange)"></div></div>
+        <div class="biz-hint">Click to see full breakdown ▼</div>
+      </div>
+    </div>
+    <!-- Loan -->
+    <div class="bizcard" onclick="openBiz('loan')" id="bizc-loan" style="--bc:var(--purple)">
+      <div class="bizcard-stripe" style="background:var(--purple)"></div>
+      <div class="bizcard-hd">
+        <div class="bizico" style="background:var(--purple-a);color:var(--purple)">L</div>
+        <div><div class="bizname" style="color:var(--purple)">NAM Loan</div><div class="biztype">Lending / Microfinance</div></div>
+      </div>
+      <div id="bizld-loan" class="ld-inline">Loading…</div>
+      <div id="bizdata-loan" style="display:none">
+        <div class="biz-ni-lbl">Net Income</div>
+        <div class="biz-ni-val" id="bni-loan">—</div>
+        <div class="biz-row"><span class="biz-row-l">Total Revenue</span><span class="biz-row-v" id="brev-loan">—</span></div>
+        <div class="biz-row"><span class="biz-row-l">Gross Profit</span><span class="biz-row-v" id="bgp-loan">—</span></div>
+        <div class="biz-row"><span class="biz-row-l">Total Expenses</span><span class="biz-row-v" id="bopex-loan">—</span></div>
+        <div class="biz-row"><span class="biz-row-l">GP % / NM %</span><span class="biz-row-v" id="bmarg-loan">—</span></div>
+        <div class="biz-badge" id="bbadge-loan" style="background:var(--purple-a);color:var(--purple)">—</div>
+        <div class="bizprog mt8"><div class="bizbar" id="bbar-loan" style="background:var(--purple)"></div></div>
+        <div class="biz-hint">Click to see full breakdown ▼</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BIZ DRILL PANEL -->
+  <div class="dpanel" id="biz-drill">
+    <div class="dh">
+      <div><div class="dtitle" id="bdtitle">Business Detail</div><div class="dsub" id="bdsub"></div></div>
+      <button class="dcls" onclick="closeBizDrill()">✕</button>
+    </div>
+    <div id="bdcont"></div>
+  </div>
+
+  <!-- CONSOLIDATED P&L TABLE -->
+  <div class="sec"><div class="sec-lbl">Consolidated P&L Statement</div><div class="sec-line"></div></div>
+  <div class="pl-wrap mb16">
+    <div class="pl-hd">
+      <div><div class="pl-title">All Businesses Side by Side</div><div class="pl-sub">Period: <span id="pl-period">YTD</span> &nbsp;·&nbsp; All amounts in Philippine Peso (₱)</div></div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+        <div class="leg"><div class="leg-dot" style="background:var(--blue)"></div><span class="cT fw7">T</span>&nbsp;Trading</div>
+        <div class="leg"><div class="leg-dot" style="background:var(--green)"></div><span class="cB fw7">B</span>&nbsp;Builders</div>
+        <div class="leg"><div class="leg-dot" style="background:var(--orange)"></div><span class="cM fw7">M</span>&nbsp;Manpower</div>
+        <div class="leg"><div class="leg-dot" style="background:var(--purple)"></div><span class="cL fw7">L</span>&nbsp;Loan</div>
+      </div>
+    </div>
+    <table class="pl-tbl">
+      <thead>
+        <tr>
+          <th style="text-align:left">Line Item</th>
+          <th class="cT">NAM Trading</th>
+          <th class="cB">NAM Builders</th>
+          <th class="cM">ALM Manpower</th>
+          <th class="cL">NAM Loan</th>
+          <th class="cG">GROUP TOTAL</th>
+        </tr>
+      </thead>
+      <tbody id="pl-body">
+        <tr><td colspan="6" style="text-align:center;color:var(--text3);padding:24px">Loading…</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- CHARTS -->
+  <div class="sec"><div class="sec-lbl">Performance Charts</div><div class="sec-line"></div></div>
+  <div class="chart-row mb16">
+    <div class="chartcard">
+      <div class="cch"><div><div class="cct">Net Income by Business</div><div class="ccs">Green = profit · Red = loss</div></div></div>
+      <div class="chartbox-md"><canvas id="ch-ni"></canvas></div>
+    </div>
+    <div class="chartcard">
+      <div class="cch"><div><div class="cct">Revenue vs Gross Profit</div><div class="ccs">Light = revenue · Dark = gross profit</div></div></div>
+      <div class="chartbox-md"><canvas id="ch-revgp"></canvas></div>
+    </div>
+  </div>
+  <div class="chartcard">
+    <div class="cch"><div><div class="cct">Revenue Share</div><div class="ccs">Each business's share of total group revenue</div></div></div>
+    <div style="display:grid;grid-template-columns:200px 1fr;gap:24px;align-items:center">
+      <div style="position:relative;height:190px"><canvas id="ch-pie"></canvas></div>
+      <div id="contrib-list"></div>
+    </div>
+  </div>
+</main>
+
+<script>
+// ══════════════════════════════════════════════
+// ⚠️  PASTE YOUR APPS SCRIPT WEB APP URLS HERE
+const APIS = {
+  trading:  'https://script.google.com/macros/s/AKfycby4ijTcYO1v5WTzx3rvszsOx37KNqPIzKaDC0_XdWSquSbVfLFK112zfr6w5mRYX6rK/exec',
+  builders: 'https://script.google.com/macros/s/AKfycbzVk5XeT8DR3U5dqn-PQpuK6pqGgg97nnq1-DCvmlabjqa4nwJyRauoaQYxdXmXt1U/exec',
+  manpower: 'https://script.google.com/macros/s/AKfycbwE8ZVI2zLrkkc-DAUzoulZTy9-m3Jg5TlN1bmal3WNPKFS2z-A_HAojCQlUjQ5Mxs0-g/exec',
+  loan:     'https://script.google.com/macros/s/AKfycbydh4VmXIWnsLYI739TNc7dshsaeVXV1wAar8jUsThioFem4cM3ujHWed9ONQ4xftk/exec',
+};
+// ══════════════════════════════════════════════
+
+const META = {
+  trading:  { label:'NAM Trading',      type:'Wholesale Distribution', color:'#2563eb', colorA:'#dbeafe', letter:'T' },
+  builders: { label:'NAM Builders',     type:'Construction',           color:'#16a34a', colorA:'#dcfce7', letter:'B' },
+  manpower: { label:'ALM Manpower',     type:'Manpower Outsourcing',   color:'#ea580c', colorA:'#ffedd5', letter:'M' },
+  loan:     { label:'NAM Loan',         type:'Lending / Microfinance', color:'#7c3aed', colorA:'#ede9fe', letter:'L' },
+};
+const KEYS = ['trading','builders','manpower','loan'];
+const COLORS = KEYS.map(k=>META[k].color);
+
+let state = {};
+let charts = {}, dchart = {};
+let activeGroup = null, activeBiz = null;
+
+// ── Formatting ──────────────────────────────────────────
+const F = {
+  k(n, c=true){ if(n===null||n===undefined||isNaN(n)) return '—'; const neg=n<0,a=Math.abs(n); let s=c?(a>=1e6?'₱'+(a/1e6).toFixed(2)+'M':a>=1e3?'₱'+(a/1e3).toFixed(1)+'K':'₱'+a.toFixed(0)):'₱'+a.toLocaleString('en-PH',{minimumFractionDigits:2,maximumFractionDigits:2}); return neg?'('+s+')':s; },
+  p(n){ if(n===null||n===undefined||isNaN(n)) return '—'; return (n*100).toFixed(1)+'%'; },
+  pp(n){ return Math.min(100,Math.max(0,(n||0)*100)); }
+};
+
+// ── Clock ────────────────────────────────────────────────
+function tick(){ const d=new Date(),h=d.getHours(),m=String(d.getMinutes()).padStart(2,'0'),s=String(d.getSeconds()).padStart(2,'0'),ap=h>=12?'PM':'AM',hh=String(h%12||12).padStart(2,'0'); document.getElementById('clk').textContent=`${hh}:${m}:${s} ${ap}`; }
+setInterval(tick,1000); tick();
+
+// ── Fetch ─────────────────────────────────────────────────
+async function fetchSum(key){ const mo=document.getElementById('sm').value, yr=document.getElementById('sy').value; const r=await fetch(`${APIS[key]}?action=summary&year=${yr}&month=${encodeURIComponent(mo)}`); if(!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); }
+
+// ── Extract P&L ───────────────────────────────────────────
+function exPL(key, data){
+  if(!data||data.error) return null;
+  const k=data.kpis||{};
+  if(key==='trading')  return {rev:k.netSales||0, gp:k.grossProfit||0, cogs:(k.netSales||0)-(k.grossProfit||0), opex:k.totalOpex||0, ni:k.netIncome||0, nm:k.netMargin||0, gm:k.grossMargin||0, accum:(data.bonus?.accumNetProfit)||0};
+  if(key==='builders') return {rev:k.netSales||0, gp:k.grossProfit||0, cogs:(k.netSales||0)-(k.grossProfit||0), opex:k.totalOpex||0, ni:k.netIncome||0, nm:k.netMargin||0, gm:k.grossMargin||0, accum:(data.bonus?.accumNetProfit)||0};
+  if(key==='manpower') return {rev:k.totalRevenue||0, gp:k.grossProfit||0, cogs:(k.totalRevenue||0)-(k.grossProfit||0), opex:k.gaExpenses||0, ni:k.netIncome||0, nm:k.netMargin||0, gm:k.grossMargin||0, accum:(data.bonus?.accumNetProfit)||0};
+  if(key==='loan')     return {rev:k.totalRevenue||0, gp:k.grossProfit||0, cogs:(k.totalRevenue||0)-(k.grossProfit||0), opex:k.totalExpenses||0, ni:k.netIncome||0, nm:k.netMargin||0, gm:k.gpMargin||0, accum:k.retainedEnd||0};
+  return null;
+}
+function allPL(){ return KEYS.map(k=>exPL(k,state[k])||{rev:0,gp:0,cogs:0,opex:0,ni:0,nm:0,gm:0,accum:0}); }
+
+// ── Chart helpers ─────────────────────────────────────────
+const TICK={font:{family:'Inter',size:10},color:'#8d97ae'};
+const GRID={color:'#f0f2f7'};
+const YAX={callback:v=>v>=1e6?'₱'+(v/1e6).toFixed(1)+'M':v>=1e3?'₱'+(v/1e3).toFixed(0)+'K':'₱'+v};
+const TT={callbacks:{label:c=>` ${c.dataset.label}: ${F.k(c.raw,false)}`}};
+function mkC(id,cfg,isDrill=false){ const ctx=document.getElementById(id); if(!ctx) return null; const store=isDrill?dchart:charts; if(store[id]) store[id].destroy(); return store[id]=new Chart(ctx,cfg); }
+
+// ── Render biz card ───────────────────────────────────────
+function renderBizCard(key, data){
+  const ld=document.getElementById(`bizld-${key}`), dd=document.getElementById(`bizdata-${key}`);
+  const p=exPL(key,data);
+  if(!p){ if(ld){ld.textContent='⚠ Failed — Check API URL';ld.className='err-inline';} return; }
+  if(ld) ld.style.display='none';
+  if(dd) dd.style.display='block';
+  const $=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+  const niNeg=p.ni<0;
+  const niEl=document.getElementById(`bni-${key}`);
+  if(niEl){niEl.textContent=F.k(p.ni);niEl.className='biz-ni-val '+(niNeg?'t-red':'t-green');}
+  $(`brev-${key}`,F.k(p.rev)); $(`bgp-${key}`,F.k(p.gp)); $(`bopex-${key}`,F.k(p.opex));
+  $(`bmarg-${key}`,`${F.p(p.gm)} / ${F.p(p.nm)}`);
+  const badge=document.getElementById(`bbadge-${key}`); if(badge) badge.textContent=niNeg?'▼ Net Loss':'▲ Net Profit';
+  const bar=document.getElementById(`bbar-${key}`); if(bar) bar.style.width=Math.min(100,Math.abs(p.nm)*500)+'%';
+}
+
+// ── Render group KPIs ─────────────────────────────────────
+function renderGroupKPIs(){
+  const pls=allPL();
+  const tRev=pls.reduce((s,p)=>s+p.rev,0), tGP=pls.reduce((s,p)=>s+p.gp,0),
+        tNI=pls.reduce((s,p)=>s+p.ni,0), tAcc=pls.reduce((s,p)=>s+p.accum,0);
+  const gm=tRev>0?tGP/tRev:0, nm=tRev>0?tNI/tRev:0;
+  const $=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+  const wd=(id,pct)=>{const e=document.getElementById(id);if(e)e.style.width=Math.min(100,Math.max(0,pct||0))+'%';};
+
+  $('gkv-revenue',F.k(tRev)); $('gks-revenue',`GP: ${F.k(tGP)} · Margin: ${F.p(gm)}`); $('gkb-revenue',`${KEYS.filter(k=>state[k]&&!state[k].error).length}/4 loaded`); wd('gkbar-revenue',60);
+  $('gkv-gp',F.k(tGP)); $('gks-gp',`Group gross margin: ${F.p(gm)}`); $('gkb-gp',`${F.p(gm)} GM`); wd('gkbar-gp',F.pp(gm/0.5));
+  const niEl=document.getElementById('gkv-ni'); const niNeg=tNI<0;
+  if(niEl){niEl.textContent=F.k(tNI);niEl.className='gkval '+(niNeg?'t-red':'t-green');}
+  $('gks-ni',`Group net margin: ${F.p(nm)}`); $('gkb-ni',niNeg?'▼ Net Loss':'▲ Net Profit');
+  const niBar=document.getElementById('gkbar-ni'); if(niBar){niBar.style.background=niNeg?'var(--red)':'var(--navy)';wd('gkbar-ni',F.pp(Math.abs(nm)/0.2));}
+  const accEl=document.getElementById('gkv-accum'); if(accEl){accEl.textContent=F.k(tAcc);accEl.style.color=tAcc<0?'var(--red)':'var(--purple)';}
+  $('gks-accum',tAcc<0?'Net accumulated loss YTD':'Total accumulated profit YTD');
+  $('gkb-accum',tAcc<0?'▼ Accumulated Loss':'▲ Accumulated Profit');
+  const accBar=document.getElementById('gkbar-accum'); if(accBar) accBar.style.background=tAcc<0?'var(--red)':'var(--purple)';
+  wd('gkbar-accum',65);
+  return {tRev,tGP,tNI,tAcc,gm,nm};
+}
+
+// ══ GROUP DRILL PANELS ══
+function openGroup(type){
+  if(activeGroup===type){closeGroupDrill();return;}
+  activeGroup=type;
+  Object.values(dchart).forEach(c=>c&&c.destroy()); dchart={};
+  ['revenue','gp','ni','accum'].forEach(t=>{const e=document.getElementById(`gkc-${t}`);if(e)e.classList.toggle('act',t===type);});
+  const dp=document.getElementById('group-drill');
+  dp.className='dpanel vis';
+  const colors={'revenue':'var(--blue)','gp':'var(--green)','ni':'var(--navy)','accum':'var(--purple)'};
+  dp.style.borderLeftColor=colors[type]||'var(--navy)';
+  const titles={'revenue':'Total Revenue — Group Breakdown','gp':'Gross Profit — Group Breakdown','ni':'Net Income — Group P&L Waterfall','accum':'Accumulated Net Profit — By Business'};
+  const subs={'revenue':'How each business contributes to total group revenue','gp':'Gross profit & gross margin per business','ni':'Full consolidated income statement waterfall','accum':'Retained earnings / accumulated profit per entity'};
+  document.getElementById('gdtitle').textContent=titles[type];
+  document.getElementById('gdsub').textContent=subs[type]+' · '+(document.getElementById('sm').value==='YTD'?'YTD':document.getElementById('sm').value)+' 2026';
+  setTimeout(()=>dp.scrollIntoView({behavior:'smooth',block:'nearest'}),80);
+  const pls=allPL(); const cont=document.getElementById('gdcont');
+  if(type==='revenue') renderGDRevenue(pls,cont);
+  else if(type==='gp') renderGDGP(pls,cont);
+  else if(type==='ni') renderGDNI(pls,cont);
+  else if(type==='accum') renderGDAccum(pls,cont);
+}
+function closeGroupDrill(){
+  activeGroup=null;
+  document.getElementById('group-drill').className='dpanel';
+  ['revenue','gp','ni','accum'].forEach(t=>{const e=document.getElementById(`gkc-${t}`);if(e)e.classList.remove('act');});
+  Object.values(dchart).forEach(c=>c&&c.destroy()); dchart={};
+}
+
+function ilistRow(k,i,val,total,extra=''){
+  const m=META[k], pct=total>0?val/total:0, neg=val<0;
+  return `<div class="irow"><div class="idot" style="background:${m.color}"></div><div class="iname">${m.label}</div>
+    <div class="ibar-wrap"><div class="ibar-fill" style="width:${F.pp(total>0?Math.max(0,val)/total:0)}%;background:${m.color}"></div></div>
+    <div class="iamt" style="color:${neg?'var(--red)':'inherit'}">${F.k(val)}</div><div class="ipct">${extra||F.p(pct)}</div></div>`;
+}
+
+function renderGDRevenue(pls,cont){
+  const tot=pls.reduce((s,p)=>s+p.rev,0);
+  cont.innerHTML=`<div class="dstats">${pls.map((p,i)=>`<div class="dstat"><div class="dstat-v" style="color:${COLORS[i]}">${F.k(p.rev)}</div><div class="dstat-l">${META[KEYS[i]].label}</div></div>`).join('')}</div>
+  <div class="dcont">
+    <div><div class="chartbox-d"><canvas id="dc-rev"></canvas></div></div>
+    <div><div class="ilist-lbl">Revenue by Business</div>${KEYS.map((k,i)=>ilistRow(k,i,pls[i].rev,tot)).join('')}
+      <div style="display:flex;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)"><span class="fw7">Total</span><span class="fw7" style="font-family:'JetBrains Mono',monospace">${F.k(tot,false)}</span></div>
+    </div></div>`;
+  mkC('dc-rev',{type:'bar',data:{labels:KEYS.map(k=>META[k].label),datasets:[{label:'Revenue',data:pls.map(p=>p.rev),backgroundColor:COLORS.map(c=>c+'cc'),borderColor:COLORS,borderWidth:1.5,borderRadius:8}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},...TT},scales:{x:{grid:GRID,ticks:TICK},y:{grid:GRID,ticks:{...TICK,...YAX}}}}},true);
+}
+
+function renderGDGP(pls,cont){
+  const totGP=pls.reduce((s,p)=>s+Math.max(0,p.gp),0);
+  cont.innerHTML=`<div class="dstats">${pls.map((p,i)=>`<div class="dstat"><div class="dstat-v" style="color:${COLORS[i]}">${F.k(p.gp)}</div><div class="dstat-l">${META[KEYS[i]].letter} · GM: ${F.p(p.gm)}</div></div>`).join('')}</div>
+  <div class="dcont">
+    <div><div class="chartbox-d"><canvas id="dc-gp"></canvas></div></div>
+    <div>
+      <div class="ilist-lbl">Gross Profit Contribution</div>${KEYS.map((k,i)=>ilistRow(k,i,pls[i].gp,totGP)).join('')}
+      <div class="ilist-lbl mt12">Gross Margin %</div>${KEYS.map((k,i)=>ilistRow(k,i,pls[i].gm,1,F.p(pls[i].gm))).join('')}
+    </div></div>`;
+  mkC('dc-gp',{type:'bar',data:{labels:KEYS.map(k=>META[k].label),datasets:[
+    {label:'Revenue',data:pls.map(p=>p.rev),backgroundColor:COLORS.map(c=>c+'33'),borderColor:COLORS,borderWidth:1.5,borderRadius:6},
+    {label:'Gross Profit',data:pls.map(p=>p.gp),backgroundColor:COLORS.map(c=>c+'99'),borderColor:COLORS,borderWidth:1.5,borderRadius:6}]},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{labels:{font:{family:'Inter',size:10},boxWidth:10}},...TT},scales:{x:{grid:GRID,ticks:TICK},y:{grid:GRID,ticks:{...TICK,...YAX}}}}},true);
+}
+
+function renderGDNI(pls,cont){
+  const tRev=pls.reduce((s,p)=>s+p.rev,0), tCOGS=pls.reduce((s,p)=>s+p.cogs,0),
+        tGP=pls.reduce((s,p)=>s+p.gp,0), tOpex=pls.reduce((s,p)=>s+p.opex,0),
+        tNI=pls.reduce((s,p)=>s+p.ni,0); const base=tRev||1;
+  const wf=[{label:'Total Revenue',val:tRev,type:'pos'},{label:'(-) Direct Costs',val:-tCOGS,type:'neg'},{label:'= Gross Profit',val:tGP,type:'sub',bold:true},{label:'(-) Total OPEX',val:-tOpex,type:'neg'},{label:'= Net Income',val:tNI,type:'sub',bold:true}];
+  cont.innerHTML=`<div class="dstats">
+    <div class="dstat"><div class="dstat-v">${F.k(tRev)}</div><div class="dstat-l">Total Revenue</div></div>
+    <div class="dstat"><div class="dstat-v t-green">${F.k(tGP)}</div><div class="dstat-l">Gross Profit · ${F.p(tGP/base)} GM</div></div>
+    <div class="dstat"><div class="dstat-v t-red">${F.k(tOpex)}</div><div class="dstat-l">Total OPEX · ${F.p(tOpex/base)}</div></div>
+    <div class="dstat"><div class="dstat-v ${tNI<0?'t-red':'t-green'}">${F.k(tNI)}</div><div class="dstat-l">Net Income · ${F.p(tNI/base)} NM</div></div>
+  </div>
+  <div class="dcont">
+    <div>
+      <div class="ilist-lbl">Group P&L Waterfall</div>
+      <div class="wfall mt8">${wf.map(r=>{
+        const bw=Math.min(100,Math.abs(r.val)/base*100), cl=r.type==='pos'?'var(--green)':r.type==='neg'?'var(--red)':'var(--navy)';
+        return `<div class="wrow"><div class="wlbl" style="font-weight:${r.bold?700:400}">${r.label}</div>
+          <div class="wbar-bg"><div class="wbar ${r.type==='pos'?'pos':r.type==='neg'?'neg':'sub'}" style="width:${bw}%"></div></div>
+          <div class="wamt" style="color:${cl}">${F.k(r.val)}</div>
+          <div class="wpct">${r.type!=='sub'?F.p(Math.abs(r.val)/base):''}</div></div>`;
+      }).join('')}</div>
+    </div>
+    <div>
+      <div class="ilist-lbl">Net Income by Business</div>${KEYS.map((k,i)=>{const p=pls[i],m=META[k],neg=p.ni<0;
+        return `<div class="irow"><div class="idot" style="background:${m.color}"></div><div class="iname">${m.label}</div>
+          <div class="ibar-wrap"><div class="ibar-fill" style="width:${Math.min(100,Math.abs(p.ni)/base*100)}%;background:${neg?'var(--red)':m.color}"></div></div>
+          <div class="iamt" style="color:${neg?'var(--red)':'inherit'}">${F.k(p.ni)}</div><div class="ipct">${F.p(p.nm)}</div></div>`;}).join('')}
+      <div class="ilist-lbl mt12">OPEX by Business</div>${KEYS.map((k,i)=>{const p=pls[i],m=META[k];
+        return `<div class="irow"><div class="idot" style="background:${m.color}"></div><div class="iname">${m.label}</div>
+          <div class="ibar-wrap"><div class="ibar-fill" style="width:${Math.min(100,p.opex/base*100)}%;background:${m.color}"></div></div>
+          <div class="iamt">${F.k(p.opex)}</div><div class="ipct">${F.p(p.rev>0?p.opex/p.rev:0)}</div></div>`;}).join('')}
+    </div>
+  </div>`;
+}
+
+function renderGDAccum(pls,cont){
+  const tot=pls.reduce((s,p)=>s+p.accum,0), maxA=Math.max(...pls.map(p=>Math.abs(p.accum)),1);
+  cont.innerHTML=`<div class="dstats">${pls.map((p,i)=>`<div class="dstat"><div class="dstat-v" style="color:${p.accum<0?'var(--red)':COLORS[i]}">${F.k(p.accum)}</div><div class="dstat-l">${META[KEYS[i]].label}</div></div>`).join('')}</div>
+  <div class="dcont">
+    <div><div class="chartbox-d"><canvas id="dc-accum"></canvas></div></div>
+    <div>
+      <div class="ilist-lbl">Accumulated Net Profit by Business</div>
+      ${KEYS.map((k,i)=>{const p=pls[i],m=META[k],neg=p.accum<0;
+        return `<div class="irow"><div class="idot" style="background:${m.color}"></div><div class="iname">${m.label}</div>
+          <div class="ibar-wrap"><div class="ibar-fill" style="width:${Math.min(100,Math.abs(p.accum)/maxA*100)}%;background:${neg?'var(--red)':m.color}"></div></div>
+          <div class="iamt" style="color:${neg?'var(--red)':'inherit'}">${F.k(p.accum)}</div></div>`;}).join('')}
+      <div style="display:flex;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
+        <span class="fw7">Group Total</span><span class="fw7 ${tot<0?'t-red':'t-green'}" style="font-family:'JetBrains Mono',monospace">${F.k(tot,false)}</span>
+      </div>
+      <div class="ilist-lbl mt12">What is Accumulated Net Profit?</div>
+      <div style="font-size:11.5px;color:var(--text2);line-height:1.65">The running total of each business's net profit/loss over the year. For Trading &amp; Builders, this is from the Performance Bonus sheet (Accumulated NP). For Loan Corp., it's the Retained Earnings at end of period.</div>
+    </div>
+  </div>`;
+  mkC('dc-accum',{type:'bar',data:{labels:KEYS.map(k=>META[k].label),datasets:[{label:'Accumulated Net Profit',data:pls.map(p=>p.accum),
+    backgroundColor:pls.map((p,i)=>p.accum<0?'rgba(220,38,38,.65)':COLORS[i]+'bb'),borderColor:pls.map((p,i)=>p.accum<0?'#dc2626':COLORS[i]),borderWidth:1.5,borderRadius:8}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},...TT},scales:{x:{grid:GRID,ticks:TICK},y:{grid:GRID,ticks:{...TICK,...YAX}}}}},true);
+}
+
+// ══ BIZ DRILL PANELS ══
+function openBiz(key){
+  if(activeBiz===key){closeBizDrill();return;}
+  activeBiz=key;
+  Object.values(dchart).forEach(c=>c&&c.destroy()); dchart={};
+  KEYS.forEach(k=>{const e=document.getElementById(`bizc-${k}`);if(e)e.classList.toggle('act',k===key);});
+  const dp=document.getElementById('biz-drill');
+  dp.className='dpanel vis'; dp.style.borderLeftColor=META[key].color;
+  const m=META[key], p=exPL(key,state[key]);
+  document.getElementById('bdtitle').textContent=`${m.label} — Detailed Breakdown`;
+  document.getElementById('bdsub').textContent=`${m.type} · `+(document.getElementById('sm').value==='YTD'?'YTD':document.getElementById('sm').value)+' 2026';
+  setTimeout(()=>dp.scrollIntoView({behavior:'smooth',block:'nearest'}),80);
+  const cont=document.getElementById('bdcont');
+  if(!p){cont.innerHTML='<div class="ld-full">No data available — check API URL</div>';return;}
+  const pls=allPL(), niNeg=p.ni<0, base=p.rev||1;
+  const wf=[{label:'Revenue',val:p.rev,type:'pos'},{label:'(-) Direct Costs',val:-p.cogs,type:'neg'},{label:'= Gross Profit',val:p.gp,type:'sub',bold:true},{label:'(-) OPEX',val:-p.opex,type:'neg'},{label:'= Net Income',val:p.ni,type:'sub',bold:true}];
+  cont.innerHTML=`<div class="dstats">
+    <div class="dstat"><div class="dstat-v" style="color:${m.color}">${F.k(p.rev)}</div><div class="dstat-l">Total Revenue</div></div>
+    <div class="dstat"><div class="dstat-v t-green">${F.k(p.gp)}</div><div class="dstat-l">Gross Profit · ${F.p(p.gm)} GM</div></div>
+    <div class="dstat"><div class="dstat-v">${F.k(p.opex)}</div><div class="dstat-l">OPEX · ${F.p(p.rev?p.opex/p.rev:0)} of Rev</div></div>
+    <div class="dstat"><div class="dstat-v ${niNeg?'t-red':'t-green'}">${F.k(p.ni)}</div><div class="dstat-l">Net Income · ${F.p(p.nm)} NM</div></div>
+  </div>
+  <div class="bdrill-layout">
+    <div>
+      <div class="ilist-lbl">P&L Waterfall</div>
+      <div class="wfall mt8">${wf.map(r=>{
+        const bw=Math.min(100,Math.abs(r.val)/base*100), cl=r.type==='pos'?m.color:r.type==='neg'?'var(--red)':'var(--navy)';
+        return `<div class="wrow"><div class="wlbl" style="font-weight:${r.bold?700:400}">${r.label}</div>
+          <div class="wbar-bg"><div class="wbar ${r.type==='pos'?'pos':r.type==='neg'?'neg':'sub'}" style="width:${bw}%;${r.type==='pos'?'background:'+m.color:''}"></div></div>
+          <div class="wamt" style="color:${cl}">${F.k(r.val)}</div>
+          <div class="wpct">${r.type!=='sub'?F.p(Math.abs(r.val)/base):''}</div></div>`;}).join('')}
+      </div>
+      <div class="mt12" style="padding-top:12px;border-top:1px solid var(--border)">
+        <div class="ilist-lbl">Summary Table</div>
+        <div class="tbl-scroll"><table class="dtbl" style="margin-top:6px">
+          <thead><tr><th style="text-align:left">Item</th><th>Amount (₱)</th><th>% of Rev</th></tr></thead>
+          <tbody>
+            <tr><td>Total Revenue</td><td class="mono">${F.k(p.rev,false)}</td><td class="mono">100%</td></tr>
+            <tr><td>Direct Costs</td><td class="mono t-red">${F.k(p.cogs,false)}</td><td class="mono t-red">${F.p(p.cogs/base)}</td></tr>
+            <tr class="rtot"><td>Gross Profit</td><td class="mono t-green">${F.k(p.gp,false)}</td><td class="mono t-green">${F.p(p.gm)}</td></tr>
+            <tr><td>OPEX / G&A</td><td class="mono t-red">${F.k(p.opex,false)}</td><td class="mono t-red">${F.p(p.opex/base)}</td></tr>
+            <tr class="rtot"><td>Net Income</td><td class="mono ${niNeg?'t-red':'t-green'}">${F.k(p.ni,false)}</td><td class="mono ${niNeg?'t-red':'t-green'}">${F.p(p.nm)}</td></tr>
+            <tr><td>Accum. Net Profit</td><td class="mono">${F.k(p.accum,false)}</td><td class="mono">—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div>
+      <div class="ilist-lbl">How this business compares — Revenue</div>
+      ${(()=>{const maxR=Math.max(...pls.map(q=>q.rev),1); return KEYS.map((k,i)=>{const q=pls[i],mk=META[k],isThis=k===key;
+        return `<div class="irow" style="${isThis?'background:'+mk.colorA+';border-radius:6px;padding:4px 6px':''}">`
+          +`<div class="idot" style="background:${mk.color}"></div><div class="iname" style="${isThis?'font-weight:700':''}">${mk.label}${isThis?' ◀':''}</div>`
+          +`<div class="ibar-wrap"><div class="ibar-fill" style="width:${Math.min(100,q.rev/maxR*100)}%;background:${mk.color}"></div></div>`
+          +`<div class="iamt">${F.k(q.rev)}</div></div>`;}).join('');})()}
+      <div class="ilist-lbl mt12">How this business compares — Net Income</div>
+      ${(()=>{const maxN=Math.max(...pls.map(q=>Math.abs(q.ni)),1); return KEYS.map((k,i)=>{const q=pls[i],mk=META[k],neg=q.ni<0,isThis=k===key;
+        return `<div class="irow" style="${isThis?'background:'+mk.colorA+';border-radius:6px;padding:4px 6px':''}">`
+          +`<div class="idot" style="background:${mk.color}"></div><div class="iname" style="${isThis?'font-weight:700':''}">${mk.label}${isThis?' ◀':''}</div>`
+          +`<div class="ibar-wrap"><div class="ibar-fill" style="width:${Math.min(100,Math.abs(q.ni)/maxN*100)}%;background:${neg?'var(--red)':mk.color}"></div></div>`
+          +`<div class="iamt" style="color:${neg?'var(--red)':'inherit'}">${F.k(q.ni)}</div><div class="ipct">${F.p(q.nm)}</div></div>`;}).join('');})()}
+      <div style="margin-top:16px;text-align:center">
+        <a href="${key==='trading'?'nam_trading.html':key==='builders'?'nam_builders.html':key==='manpower'?'alm_manpower.html':'loan.html'}"
+          style="display:inline-flex;align-items:center;gap:6px;padding:9px 20px;background:${m.color};color:#fff;border-radius:8px;font-size:12.5px;font-weight:700;text-decoration:none;transition:.15s"
+          onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+          Open ${m.label} Full Dashboard →
+        </a>
+      </div>
+    </div>
+  </div>`;
+}
+function closeBizDrill(){
+  activeBiz=null;
+  document.getElementById('biz-drill').className='dpanel';
+  KEYS.forEach(k=>{const e=document.getElementById(`bizc-${k}`);if(e)e.classList.remove('act');});
+  Object.values(dchart).forEach(c=>c&&c.destroy()); dchart={};
+}
+
+// ── P&L TABLE ─────────────────────────────────────────────
+function renderPLTable(){
+  const pls=allPL();
+  const tRev=pls.reduce((s,p)=>s+p.rev,0), tCOGS=pls.reduce((s,p)=>s+p.cogs,0),
+        tGP=pls.reduce((s,p)=>s+p.gp,0), tOpex=pls.reduce((s,p)=>s+p.opex,0),
+        tNI=pls.reduce((s,p)=>s+p.ni,0), tAcc=pls.reduce((s,p)=>s+p.accum,0);
+  const mc=(v,cls='')=>`<td class="mono ${cls}">${v===0?'—':F.k(v,false)}</td>`;
+  const mp=(v)=>`<td class="mono" style="color:var(--text3)">${F.p(v)}</td>`;
+  const mg=(v,cls='')=>`<td class="mono cG ${cls}">${v===0?'—':F.k(v,false)}</td>`;
+  document.getElementById('pl-body').innerHTML=`
+    <tr class="row-cat"><td colspan="6">REVENUES</td></tr>
+    <tr><td class="pl-sub-row">Total Revenue / Net Sales</td>${pls.map(p=>mc(p.rev,'fw7')).join('')}${mg(tRev,'fw8')}</tr>
+    <tr class="row-cat"><td colspan="6">COST OF GOODS / DIRECT COSTS</td></tr>
+    <tr><td class="pl-sub-row">Direct Costs / COGS</td>${pls.map(p=>`<td class="mono t-red">${p.cogs>0?F.k(p.cogs,false):'—'}</td>`).join('')}<td class="mono cG fw7 t-red">${tCOGS>0?F.k(tCOGS,false):'—'}</td></tr>
+    <tr class="row-total"><td>GROSS PROFIT</td>${pls.map(p=>`<td class="mono t-green fw8">${F.k(p.gp,false)}</td>`).join('')}<td class="mono cG fw8 t-green">${F.k(tGP,false)}</td></tr>
+    <tr class="row-pct"><td class="pl-sub-row" style="font-style:italic">Gross Margin %</td>${pls.map(p=>mp(p.gm)).join('')}<td class="mono" style="color:var(--text3)">${F.p(tRev>0?tGP/tRev:0)}</td></tr>
+    <tr class="row-cat"><td colspan="6">OPERATING / G&A EXPENSES</td></tr>
+    <tr><td class="pl-sub-row">Total OPEX / G&A Expenses</td>${pls.map(p=>`<td class="mono t-red">${F.k(p.opex,false)}</td>`).join('')}<td class="mono cG fw7 t-red">${F.k(tOpex,false)}</td></tr>
+    <tr class="row-total" style="color:${tNI<0?'var(--red)':'var(--navy)'}"><td>NET INCOME / (LOSS)</td>${pls.map(p=>`<td class="mono fw8 ${p.ni<0?'t-red':'t-green'}">${F.k(p.ni,false)}</td>`).join('')}<td class="mono cG fw8 ${tNI<0?'t-red':'t-green'}">${F.k(tNI,false)}</td></tr>
+    <tr class="row-pct"><td class="pl-sub-row" style="font-style:italic">Net Margin %</td>${pls.map(p=>mp(p.nm)).join('')}<td class="mono" style="color:var(--text3)">${F.p(tRev>0?tNI/tRev:0)}</td></tr>
+    <tr class="row-cat"><td colspan="6">ACCUMULATED NET PROFIT / RETAINED EARNINGS</td></tr>
+    <tr><td class="pl-sub-row">Accumulated Net Profit YTD</td>${pls.map(p=>`<td class="mono fw7 ${p.accum<0?'t-red':''}">${F.k(p.accum,false)}</td>`).join('')}<td class="mono cG fw8 ${tAcc<0?'t-red':''}">${F.k(tAcc,false)}</td></tr>`;
+}
+
+// ── BOTTOM CHARTS ─────────────────────────────────────────
+function renderCharts(){
+  const pls=allPL();
+  const short=KEYS.map(k=>META[k].label.replace('NAM ','').replace('ALM ',''));
+  const tRev=pls.reduce((s,p)=>s+p.rev,0)||1;
+
+  // Net Income bar
+  mkC('ch-ni',{type:'bar',data:{labels:short,datasets:[{label:'Net Income',data:pls.map(p=>p.ni),
+    backgroundColor:pls.map((p,i)=>p.ni<0?'rgba(220,38,38,.65)':COLORS[i]+'bb'),
+    borderColor:pls.map((p,i)=>p.ni<0?'#dc2626':COLORS[i]),borderWidth:1.5,borderRadius:8}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},...TT},scales:{x:{grid:GRID,ticks:TICK},y:{grid:GRID,ticks:{...TICK,...YAX}}}}});
+
+  // Rev vs GP grouped
+  mkC('ch-revgp',{type:'bar',data:{labels:short,datasets:[
+    {label:'Revenue',data:pls.map(p=>p.rev),backgroundColor:COLORS.map(c=>c+'33'),borderColor:COLORS,borderWidth:1.5,borderRadius:6},
+    {label:'Gross Profit',data:pls.map(p=>p.gp),backgroundColor:COLORS.map(c=>c+'99'),borderColor:COLORS,borderWidth:1.5,borderRadius:6}]},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+      plugins:{legend:{labels:{font:{family:'Inter',size:10},boxWidth:10}},...TT},scales:{x:{grid:GRID,ticks:TICK},y:{grid:GRID,ticks:{...TICK,...YAX}}}}});
+
+  // Revenue share doughnut
+  mkC('ch-pie',{type:'doughnut',data:{labels:KEYS.map(k=>META[k].label),datasets:[{data:pls.map(p=>p.rev),
+    backgroundColor:COLORS.map(c=>c+'cc'),borderColor:COLORS,borderWidth:2,hoverOffset:8}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{display:false},
+      tooltip:{callbacks:{label:c=>` ${c.label}: ${F.k(c.raw,false)} (${F.p(c.raw/tRev)})`}}}}});
+
+  document.getElementById('contrib-list').innerHTML=KEYS.map((k,i)=>{
+    const p=pls[i], m=META[k], pct=p.rev/tRev;
+    return `<div style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <div style="display:flex;align-items:center;gap:6px">
+          <div style="width:9px;height:9px;border-radius:3px;background:${m.color}"></div>
+          <span style="font-size:12px;font-weight:700;color:${m.color}">${m.label}</span>
+          <span style="font-size:10.5px;color:var(--text3)">${m.type}</span>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <span style="font-size:12px;font-weight:700;font-family:'JetBrains Mono',monospace">${F.k(p.rev,false)}</span>
+          <span style="font-size:10.5px;font-weight:700;color:${m.color};background:${m.colorA};padding:1px 6px;border-radius:4px">${F.p(pct)}</span>
+        </div>
+      </div>
+      <div style="height:5px;background:var(--border);border-radius:3px;overflow:hidden">
+        <div style="height:100%;width:${F.pp(pct)}%;background:${m.color};border-radius:3px;transition:width .7s ease"></div>
+      </div>
+    </div>`;}).join('');
+}
+
+// ── Status bar ─────────────────────────────────────────────
+function setStatus(html,type){
+  const sb=document.getElementById('sbar');
+  const s={info:'background:var(--navy-a);border:1px solid #b5c9e0;color:var(--navy)',
+           ok:'background:var(--green-a);border:1px solid #86efac;color:var(--green)',
+           err:'background:var(--red-a);border:1px solid #fca5a5;color:var(--red)',
+           warn:'background:var(--orange-a);border:1px solid #fdba74;color:var(--orange)'};
+  sb.style.cssText=(s[type]||s.info); sb.style.display='flex'; sb.innerHTML=html;
+}
+
+// ── MAIN LOAD ─────────────────────────────────────────────
+async function load(){
+  const btn=document.getElementById('rfb'); btn.classList.add('spin');
+  const mo=document.getElementById('sm').value, period=mo==='YTD'?'YTD':mo.slice(0,3);
+  document.getElementById('pbadge').textContent=period;
+  document.getElementById('pl-period').textContent=mo==='YTD'?'Full Year (YTD)':mo+' 2026';
+  closeGroupDrill(); closeBizDrill();
+  KEYS.forEach(k=>{ state[k]=null;
+    const ld=document.getElementById(`bizld-${k}`),dd=document.getElementById(`bizdata-${k}`);
+    if(ld){ld.style.display='block';ld.textContent='Loading…';ld.className='ld-inline';}
+    if(dd) dd.style.display='none';
+  });
+  setStatus('⏳ Fetching data from all 4 businesses…','info');
+  const errors=[];
+  await Promise.allSettled(KEYS.map(async k=>{
+    try{ const d=await fetchSum(k); state[k]=d; renderBizCard(k,d); }
+    catch(e){ errors.push(META[k].label); const ld=document.getElementById(`bizld-${k}`); if(ld){ld.textContent='⚠ Failed — Check API URL';ld.className='err-inline';} }
+  }));
+  renderGroupKPIs(); renderPLTable(); renderCharts();
+  const ts=new Date().toLocaleTimeString('en-PH',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  if(errors.length===KEYS.length) setStatus('⚠️ All API URLs need to be configured — paste your Google Apps Script URLs into the <code style="font-family:monospace;background:rgba(0,0,0,.08);padding:1px 4px;border-radius:3px">APIS</code> object in this file','err');
+  else if(errors.length) setStatus(`⚠️ Partial load — failed: ${errors.join(', ')} · Check API URLs`,'warn');
+  else setStatus(`✓ All 4 businesses loaded · ${ts} · Click any card to drill down`,'ok');
+  btn.classList.remove('spin');
+}
+
+// ── Auto-refresh every 30 seconds (silent) ──────────────────
+let autoRefreshTimer = null;
+async function silentRefresh(){
+  try{
+    await Promise.allSettled(KEYS.map(async k=>{
+      const d=await fetchSum(k); state[k]=d; renderBizCard(k,d);
+    }));
+    renderGroupKPIs(); renderPLTable(); renderCharts();
+    const ts=new Date().toLocaleTimeString('en-PH',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    setStatus(`✓ All 4 businesses loaded · Auto-updated · ${ts} · Click any card to drill down`,'ok');
+  }catch(e){}
+}
+function startAutoRefresh(){
+  if(autoRefreshTimer) clearInterval(autoRefreshTimer);
+  autoRefreshTimer=setInterval(silentRefresh,30000);
+}
+
+load();
+startAutoRefresh();
+</script>
+</body>
+</html>
