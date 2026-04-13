@@ -1191,7 +1191,7 @@ function openBiz(key){
           +`<div class="ibar-wrap"><div class="ibar-fill" style="width:${Math.min(100,Math.abs(q.ni)/maxN*100)}%;background:${neg?'var(--red)':mk.color}"></div></div>`
           +`<div class="iamt" style="color:${neg?'var(--red)':'inherit'}">${F.k(q.ni)}</div><div class="ipct">${F.p(q.nm)}</div></div>`;}).join('');})()}
       <div style="margin-top:16px;text-align:center">
-        <a href="${key==='trading'?'nam_trading.html':key==='builders'?'nam_builders.html':key==='manpower'?'alm_manpower.html':'loan.html'}"
+        <a href="${key==='trading'?'index.html':key==='builders'?'nam_builders.html':key==='manpower'?'alm_manpower.html':'loan.html'}"
           style="display:inline-flex;align-items:center;gap:6px;padding:9px 20px;background:${m.color};color:#fff;border-radius:8px;font-size:12.5px;font-weight:700;text-decoration:none;transition:.15s"
           onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
           Open ${m.label} Full Dashboard →
