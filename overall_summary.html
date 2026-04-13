@@ -72,8 +72,9 @@ select.ctl{font-family:'Inter',sans-serif;font-size:12.5px;font-weight:500;
 .sec-hint{font-size:10px;color:var(--text3);white-space:nowrap}
 
 /* GROUP KPI CARDS */
-.gkrow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-@media(max-width:1100px){.gkrow{grid-template-columns:repeat(2,1fr)}}
+.gkrow{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+@media(max-width:1300px){.gkrow{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:900px){.gkrow{grid-template-columns:repeat(2,1fr)}}
 
 .gkcard{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r2);
   padding:15px 15px 13px;box-shadow:var(--sh);cursor:pointer;transition:all .18s;
@@ -591,6 +592,16 @@ html, body { overflow-x: hidden; max-width: 100vw; }
       <div class="mk-badge" id="mkb-ni" style="background:var(--navy-a);color:var(--navy)">—</div>
       <div class="mk-bar-bg"><div class="mk-bar" id="mkbar-ni" style="background:var(--navy);width:0%"></div></div>
     </div>
+    <!-- Performance Bonus -->
+    <div class="mob-kpi-card" style="border-top:3px solid var(--orange)">
+      <span class="mk-dot" style="background:var(--orange)"></span>
+      <div class="mk-icon" style="background:var(--orange-a);color:var(--orange)">🏆</div>
+      <div class="mk-lbl">Performance Bonus</div>
+      <div class="mk-val" id="mkv-bonus" style="color:var(--orange)">—</div>
+      <div class="mk-sub" id="mks-bonus">Deducted from Net Income</div>
+      <div class="mk-badge" id="mkb-bonus" style="background:var(--orange-a);color:var(--orange)">—</div>
+      <div class="mk-bar-bg"><div class="mk-bar" id="mkbar-bonus" style="background:var(--orange);width:0%"></div></div>
+    </div>
     <!-- Accumulated -->
     <div class="mob-kpi-card" onclick="openGroup&&openGroup('accum')" style="border-top:3px solid var(--purple)">
       <span class="mk-dot" style="background:var(--purple)"></span>
@@ -726,6 +737,18 @@ html, body { overflow-x: hidden; max-width: 100vw; }
       <div class="gkbadge" id="gkb-ni" style="background:var(--navy-a);color:var(--navy)">—</div>
       <div class="gkprog"><div class="gkbar" id="gkbar-ni" style="background:var(--navy);width:0%"></div></div>
       <div class="gkhint">▼ Full P&amp;L waterfall</div>
+    </div>
+    <div class="gkcard" onclick="openGroup('bonus')" id="gkc-bonus" style="--ac:var(--orange)">
+      <div class="gkcard-stripe" style="background:var(--orange)"></div>
+      <div class="gkh">
+        <div class="gkico" style="background:var(--orange-a);color:var(--orange)">🏆</div>
+      </div>
+      <div class="gklbl">Performance Bonus</div>
+      <div class="gkval" id="gkv-bonus" style="color:var(--orange)">—</div>
+      <div class="gksub" id="gks-bonus">Deducted from Net Income</div>
+      <div class="gkbadge" id="gkb-bonus" style="background:var(--orange-a);color:var(--orange)">—</div>
+      <div class="gkprog"><div class="gkbar" id="gkbar-bonus" style="background:var(--orange);width:0%"></div></div>
+      <div class="gkhint">▼ Bonus breakdown per business</div>
     </div>
     <div class="gkcard" onclick="openGroup('accum')" id="gkc-accum" style="--ac:var(--purple)">
       <div class="gkcard-stripe" style="background:var(--purple)"></div>
@@ -984,12 +1007,20 @@ function renderGroupKPIs(){
   if(niEl){niEl.textContent=F.k(tNI);niEl.className='gkval '+(niNeg?'t-red':'t-green');}
   $('gks-ni',`Group net margin: ${F.p(nm)}`); $('gkb-ni',niNeg?'▼ Net Loss':'▲ Net Profit');
   const niBar=document.getElementById('gkbar-ni'); if(niBar){niBar.style.background=niNeg?'var(--red)':'var(--navy)';wd('gkbar-ni',F.pp(Math.abs(nm)/0.2));}
+  // Performance Bonus = Total Net Income - Accumulated Net Profit
+  const tBonus = tNI - tAcc;
+  const bonusEl=document.getElementById('gkv-bonus'); if(bonusEl){bonusEl.textContent=F.k(tBonus);bonusEl.style.color=tBonus>0?'var(--orange)':'var(--text2)';}
+  $('gks-bonus',`Net Income − Accumulated Profit`);
+  $('gkb-bonus',tBonus>0?`▲ ${F.p(tNI>0?tBonus/tNI:0)} of Net Income`:'No bonus allocated');
+  const bonusBar=document.getElementById('gkbar-bonus'); if(bonusBar) bonusBar.style.background=tBonus>0?'var(--orange)':'var(--border)';
+  wd('gkbar-bonus', tNI>0 ? Math.min(100, (tBonus/tNI)*100) : 0);
+
   const accEl=document.getElementById('gkv-accum'); if(accEl){accEl.textContent=F.k(tAcc);accEl.style.color=tAcc<0?'var(--red)':'var(--purple)';}
   $('gks-accum',tAcc<0?'Net accumulated loss YTD':'Total accumulated profit YTD');
   $('gkb-accum',tAcc<0?'▼ Accumulated Loss':'▲ Accumulated Profit');
   const accBar=document.getElementById('gkbar-accum'); if(accBar) accBar.style.background=tAcc<0?'var(--red)':'var(--purple)';
   wd('gkbar-accum',65);
-  return {tRev,tGP,tNI,tAcc,gm,nm};
+  return {tRev,tGP,tNI,tAcc,tBonus,gm,nm};
 }
 
 // ══ GROUP DRILL PANELS ══
@@ -999,13 +1030,13 @@ function openGroup(type){
   if(activeGroup===type){closeGroupDrill();return;}
   activeGroup=type;
   Object.values(dchart).forEach(c=>c&&c.destroy()); dchart={};
-  ['revenue','gp','ni','accum'].forEach(t=>{const e=document.getElementById(`gkc-${t}`);if(e)e.classList.toggle('act',t===type);});
+  ['revenue','gp','ni','bonus','accum'].forEach(t=>{const e=document.getElementById(`gkc-${t}`);if(e)e.classList.toggle('act',t===type);});
   const dp=document.getElementById('group-drill');
   dp.className='dpanel vis';
-  const colors={'revenue':'var(--blue)','gp':'var(--green)','ni':'var(--navy)','accum':'var(--purple)'};
+  const colors={'revenue':'var(--blue)','gp':'var(--green)','ni':'var(--navy)','bonus':'var(--orange)','accum':'var(--purple)'};
   dp.style.borderLeftColor=colors[type]||'var(--navy)';
-  const titles={'revenue':'Total Revenue — Group Breakdown','gp':'Gross Profit — Group Breakdown','ni':'Net Income — Group P&L Waterfall','accum':'Accumulated Net Profit — By Business'};
-  const subs={'revenue':'How each business contributes to total group revenue','gp':'Gross profit & gross margin per business','ni':'Full consolidated income statement waterfall','accum':'Retained earnings / accumulated profit per entity'};
+  const titles={'revenue':'Total Revenue — Group Breakdown','gp':'Gross Profit — Group Breakdown','ni':'Net Income — Group P&L Waterfall','bonus':'Performance Bonus — By Business','accum':'Accumulated Net Profit — By Business'};
+  const subs={'revenue':'How each business contributes to total group revenue','gp':'Gross profit & gross margin per business','ni':'Full consolidated income statement waterfall','bonus':'Performance bonus per business (Net Income − Accumulated Net Profit)','accum':'Retained earnings / accumulated profit per entity'};
   document.getElementById('gdtitle').textContent=titles[type];
   document.getElementById('gdsub').textContent=subs[type]+' · '+(document.getElementById('sm').value==='YTD'?'YTD':document.getElementById('sm').value)+' 2026';
 
@@ -1022,12 +1053,13 @@ function openGroup(type){
   if(type==='revenue') renderGDRevenue(pls,cont);
   else if(type==='gp') renderGDGP(pls,cont);
   else if(type==='ni') renderGDNI(pls,cont);
+  else if(type==='bonus') renderGDBonus(pls,cont);
   else if(type==='accum') renderGDAccum(pls,cont);
 }
 function closeGroupDrill(){
   activeGroup=null;
   document.getElementById('group-drill').className='dpanel';
-  ['revenue','gp','ni','accum'].forEach(t=>{const e=document.getElementById(`gkc-${t}`);if(e)e.classList.remove('act');});
+  ['revenue','gp','ni','bonus','accum'].forEach(t=>{const e=document.getElementById(`gkc-${t}`);if(e)e.classList.remove('act');});
   Object.values(dchart).forEach(c=>c&&c.destroy()); dchart={};
 }
 
@@ -1098,6 +1130,58 @@ function renderGDNI(pls,cont){
           <div class="iamt">${F.k(p.opex)}</div><div class="ipct">${F.p(p.rev>0?p.opex/p.rev:0)}</div></div>`;}).join('')}
     </div>
   </div>`;
+}
+
+function renderGDBonus(pls,cont){
+  const bonuses=pls.map(p=>p.ni-p.accum);
+  const tot=bonuses.reduce((s,v)=>s+v,0);
+  const tNI=pls.reduce((s,p)=>s+p.ni,0);
+  const maxB=Math.max(...bonuses.map(v=>Math.abs(v)),1);
+  cont.innerHTML=`
+  <div class="dstats">${KEYS.map((k,i)=>{const b=bonuses[i],neg=b<0;
+    return `<div class="dstat"><div class="dstat-v" style="color:${neg?'var(--red)':COLORS[i]}">${F.k(b)}</div><div class="dstat-l">${META[k].label}</div></div>`;
+  }).join('')}</div>
+  <div class="dcont">
+    <div><div class="chartbox-d"><canvas id="dc-bonus"></canvas></div></div>
+    <div>
+      <div class="ilist-lbl">Performance Bonus per Business</div>
+      ${KEYS.map((k,i)=>{const b=bonuses[i],p=pls[i],m=META[k],neg=b<0;
+        return `<div class="irow">
+          <div class="idot" style="background:${m.color}"></div>
+          <div class="iname">${m.label}</div>
+          <div class="ibar-wrap"><div class="ibar-fill" style="width:${Math.min(100,Math.abs(b)/maxB*100)}%;background:${neg?'var(--red)':m.color}"></div></div>
+          <div class="iamt" style="color:${neg?'var(--red)':'inherit'}">${F.k(b)}</div>
+          <div class="ipct">${p.ni!==0?F.p(Math.abs(b/p.ni)):'-'}</div>
+        </div>`;}).join('')}
+      <div style="display:flex;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
+        <span class="fw7">Group Total Bonus</span>
+        <span class="fw7 ${tot<0?'t-red':'t-orange'}" style="font-family:'JetBrains Mono',monospace;color:${tot<0?'var(--red)':'var(--orange)'}">${F.k(tot,false)}</span>
+      </div>
+      <div class="ilist-lbl mt12">How it's computed</div>
+      <div style="font-size:11.5px;color:var(--text2);line-height:1.65">
+        For each business: <strong>Performance Bonus = Net Income − Accumulated Net Profit</strong>.<br>
+        Group total: <strong>${F.k(tNI,false)} (NI) − ${F.k(tNI-tot,false)} (Accum) = ${F.k(tot,false)}</strong>
+      </div>
+      <div class="ilist-lbl mt12">Net Income vs Bonus vs Accumulated</div>
+      ${KEYS.map((k,i)=>{const p=pls[i],b=bonuses[i],m=META[k];
+        return `<div class="irow" style="flex-wrap:wrap;gap:4px;padding:6px 0">
+          <div class="idot" style="background:${m.color}"></div>
+          <div class="iname" style="font-weight:700">${m.label}</div>
+          <div style="flex:1;font-size:11px;color:var(--text2);text-align:right">
+            NI: <span style="font-family:'JetBrains Mono',monospace;font-weight:600">${F.k(p.ni)}</span>
+            &nbsp;−&nbsp; Bonus: <span style="font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--orange)">${F.k(b)}</span>
+            &nbsp;=&nbsp; Accum: <span style="font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--purple)">${F.k(p.accum)}</span>
+          </div>
+        </div>`;}).join('')}
+    </div>
+  </div>`;
+  mkC('dc-bonus',{type:'bar',data:{labels:KEYS.map(k=>META[k].label),datasets:[
+    {label:'Net Income',data:pls.map(p=>p.ni),backgroundColor:COLORS.map(c=>c+'44'),borderColor:COLORS,borderWidth:1.5,borderRadius:6},
+    {label:'Performance Bonus',data:bonuses,backgroundColor:bonuses.map(b=>b<0?'rgba(220,38,38,.6)':'rgba(234,88,12,.7)'),borderColor:bonuses.map(b=>b<0?'#dc2626':'#ea580c'),borderWidth:1.5,borderRadius:6},
+    {label:'Accumulated NP',data:pls.map(p=>p.accum),backgroundColor:pls.map((p,i)=>p.accum<0?'rgba(220,38,38,.4)':COLORS[i]+'33'),borderColor:pls.map((p,i)=>p.accum<0?'#dc2626':COLORS[i]),borderWidth:1.5,borderRadius:6}
+  ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+    plugins:{legend:{labels:{font:{family:'Inter',size:10},boxWidth:10}},...TT},
+    scales:{x:{grid:GRID,ticks:TICK},y:{grid:GRID,ticks:{...TICK,...YAX}}}}},true);
 }
 
 function renderGDAccum(pls,cont){
@@ -1359,6 +1443,12 @@ function renderMobile(){
   $('mks-ni',`Net Margin: ${F.p(nm)}`);
   const niBadge=document.getElementById('mkb-ni'); if(niBadge){niBadge.textContent=tNI<0?'▼ Net Loss':'▲ Net Profit'; niBadge.style.background=tNI<0?'var(--red-a)':'var(--navy-a)'; niBadge.style.color=tNI<0?'var(--red)':'var(--navy)';}
   const niBar=document.getElementById('mkbar-ni'); if(niBar) niBar.style.background=tNI<0?'var(--red)':'var(--navy)'; setW('mkbar-ni',Math.min(100,Math.abs(nm)*500));
+  // Performance Bonus
+  const tBonus=tNI-tAcc;
+  const bonusMEl=document.getElementById('mkv-bonus'); if(bonusMEl){bonusMEl.textContent=F.k(tBonus);bonusMEl.style.color=tBonus>0?'var(--orange)':'var(--text2)';}
+  $('mks-bonus','Net Income − Accumulated Profit');
+  const bonusMBadge=document.getElementById('mkb-bonus'); if(bonusMBadge) bonusMBadge.textContent=tBonus>0?`▲ ${F.p(tNI>0?tBonus/tNI:0)} of NI`:'No bonus';
+  setW('mkbar-bonus', tNI>0 ? Math.min(100,(tBonus/tNI)*100) : 0);
   // Accumulated
   const accEl=document.getElementById('mkv-accum'); if(accEl){accEl.textContent=F.k(tAcc);accEl.style.color=tAcc<0?'var(--red)':'var(--purple)';}
   $('mks-accum','Retained YTD');
