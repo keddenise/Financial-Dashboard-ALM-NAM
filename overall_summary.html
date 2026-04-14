@@ -56,8 +56,6 @@ select.ctl{font-family:'Inter',sans-serif;font-size:12.5px;font-weight:500;
 .rfbtn svg{transition:transform .4s}
 .rfbtn.spin svg{animation:rot .8s linear infinite}
 @keyframes rot{to{transform:rotate(360deg)}}
-.range-sep{font-size:11px;color:var(--text3);font-weight:600;flex-shrink:0}
-.range-label{font-size:10.5px;color:var(--text3);font-weight:600;flex-shrink:0}
 
 /* MAIN */
 .main{padding:18px 20px 48px}
@@ -189,7 +187,6 @@ select.ctl{font-family:'Inter',sans-serif;font-size:12.5px;font-weight:500;
 /* BUSINESS DRILL LAYOUT */
 .bdrill-layout{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 
-
 /* P&L TABLE */
 .pl-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);
   padding:18px;box-shadow:var(--sh);overflow-x:auto}
@@ -214,7 +211,6 @@ select.ctl{font-family:'Inter',sans-serif;font-size:12.5px;font-weight:500;
 
 /* CHARTS */
 .chart-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-
 .chartcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);padding:16px;box-shadow:var(--sh)}
 .cch{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px}
 .cct{font-size:13.5px;font-weight:800}
@@ -230,33 +226,23 @@ select.ctl{font-family:'Inter',sans-serif;font-size:12.5px;font-weight:500;
 .ld-full{display:flex;align-items:center;justify-content:center;min-height:100px;font-size:13px;color:var(--text3)}
 
 /* ── RESPONSIVE — MOBILE ── */
-
-/* Prevent any horizontal overflow on the page */
 html, body { overflow-x: hidden; max-width: 100vw; }
 .main { overflow-x: hidden; }
-
-/* All tables get scroll wrappers */
 .tbl-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%; }
 .dtbl { min-width: 480px; }
 .pl-tbl { min-width: 580px; }
-
-/* Tab scroll fade hint */
 .tabs-wrap { position: relative; grid-area: tabs; }
 .tabs-wrap::after {
   content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 44px;
   background: linear-gradient(to right, transparent, var(--surface) 85%);
   pointer-events: none;
 }
-
-/* Drill panels must not overflow */
 .dpanel { max-width: 100%; box-sizing: border-box; }
-
-/* Expense items 2-col → 1-col on mobile (JS-generated, override via class) */
 .exp-items-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
 
-/* ── MOBILE KPI CARDS (matching NAM Builders style) ── */
+/* ── MOBILE KPI CARDS ── */
 .mob-kpi-grid {
-  display: none; /* hidden on desktop */
+  display: none;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
   margin-bottom: 14px;
@@ -273,138 +259,52 @@ html, body { overflow-x: hidden; max-width: 100vw; }
   transition: all .18s;
 }
 .mob-kpi-card:active { transform: scale(0.98); }
-.mob-kpi-card .mk-dot {
-  width: 9px; height: 9px; border-radius: 50%;
-  display: inline-block; margin-bottom: 10px;
-}
-.mob-kpi-card .mk-icon {
-  position: absolute; top: 12px; right: 12px;
-  width: 28px; height: 28px; border-radius: 8px;
-  display: grid; place-items: center;
-  font-size: 13px; font-weight: 800;
-}
-.mob-kpi-card .mk-lbl {
-  font-size: 9.5px; font-weight: 700; letter-spacing: .5px;
-  text-transform: uppercase; color: var(--text3); margin-bottom: 3px;
-}
-.mob-kpi-card .mk-val {
-  font-size: 22px; font-weight: 800; line-height: 1.1;
-  margin-bottom: 2px; letter-spacing: -.4px;
-}
-.mob-kpi-card .mk-sub {
-  font-size: 10px; color: var(--text3); margin-bottom: 8px;
-}
-.mob-kpi-card .mk-badge {
-  display: inline-flex; align-items: center; gap: 3px;
-  padding: 2px 8px; border-radius: 5px;
-  font-size: 10px; font-weight: 700; margin-bottom: 7px;
-}
-.mob-kpi-card .mk-bar-bg {
-  height: 3px; background: var(--border);
-  border-radius: 2px; overflow: hidden;
-}
-.mob-kpi-card .mk-bar {
-  height: 100%; border-radius: 2px;
-  transition: width .7s cubic-bezier(.4,0,.2,1);
-}
-/* Mobile trend chart card */
-.mob-trend-card {
-  display: none;
-  background: var(--surface);
-  border: 1.5px solid var(--border);
-  border-radius: 14px;
-  padding: 16px;
-  box-shadow: var(--sh);
-  margin-bottom: 14px;
-}
+.mob-kpi-card .mk-dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; margin-bottom: 10px; }
+.mob-kpi-card .mk-icon { position: absolute; top: 12px; right: 12px; width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center; font-size: 13px; font-weight: 800; }
+.mob-kpi-card .mk-lbl { font-size: 9.5px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: var(--text3); margin-bottom: 3px; }
+.mob-kpi-card .mk-val { font-size: 22px; font-weight: 800; line-height: 1.1; margin-bottom: 2px; letter-spacing: -.4px; }
+.mob-kpi-card .mk-sub { font-size: 10px; color: var(--text3); margin-bottom: 8px; }
+.mob-kpi-card .mk-badge { display: inline-flex; align-items: center; gap: 3px; padding: 2px 8px; border-radius: 5px; font-size: 10px; font-weight: 700; margin-bottom: 7px; }
+.mob-kpi-card .mk-bar-bg { height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.mob-kpi-card .mk-bar { height: 100%; border-radius: 2px; transition: width .7s cubic-bezier(.4,0,.2,1); }
+
+/* Mobile drill panel anchor */
+.mob-drill-anchor { width: 100%; }
+
+/* Mobile trend chart */
+.mob-trend-card { display: none; background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px; padding: 16px; box-shadow: var(--sh); margin-bottom: 14px; }
 .mob-trend-card .mt-title { font-size: 13px; font-weight: 800; margin-bottom: 2px; }
 .mob-trend-card .mt-sub { font-size: 10.5px; color: var(--text3); margin-bottom: 12px; }
-.mob-trend-card .mt-legend {
-  display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 10px;
-}
-.mob-trend-card .mt-leg-item {
-  display: flex; align-items: center; gap: 4px;
-  font-size: 10px; font-weight: 600; color: var(--text2);
-}
-.mob-trend-card .mt-leg-dot {
-  width: 20px; height: 3px; border-radius: 2px;
-}
+.mob-trend-card .mt-legend { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+.mob-trend-card .mt-leg-item { display: flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 600; color: var(--text2); }
+.mob-trend-card .mt-leg-dot { width: 20px; height: 3px; border-radius: 2px; }
 .mob-trend-box { position: relative; height: 180px; }
 
-/* Mobile P&L summary card */
-.mob-pl-card {
-  display: none;
-  background: var(--surface);
-  border: 1.5px solid var(--border);
-  border-radius: 14px;
-  padding: 16px;
-  box-shadow: var(--sh);
-  margin-bottom: 14px;
-}
+/* Mobile P&L summary */
+.mob-pl-card { display: none; background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px; padding: 16px; box-shadow: var(--sh); margin-bottom: 14px; }
 .mob-pl-card .mpl-title { font-size: 13px; font-weight: 800; margin-bottom: 2px; }
 .mob-pl-card .mpl-sub { font-size: 10.5px; color: var(--text3); margin-bottom: 12px; }
-.mob-pl-row {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 6px 0; border-bottom: 1px solid var(--surface2);
-}
+.mob-pl-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--surface2); }
 .mob-pl-row:last-child { border-bottom: none; }
-.mob-pl-row.mpl-cat {
-  font-size: 9.5px; font-weight: 800; text-transform: uppercase;
-  letter-spacing: .5px; color: var(--text3); padding: 10px 0 4px;
-  border-bottom: none;
-}
-.mob-pl-row.mpl-total {
-  font-weight: 800; font-size: 13px;
-  background: var(--navy-a); margin: 0 -16px; padding: 8px 16px;
-  border-bottom: none;
-}
+.mob-pl-row.mpl-cat { font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; color: var(--text3); padding: 10px 0 4px; border-bottom: none; }
+.mob-pl-row.mpl-total { font-weight: 800; font-size: 13px; background: var(--navy-a); margin: 0 -16px; padding: 8px 16px; border-bottom: none; }
 .mob-pl-lbl { font-size: 11.5px; color: var(--text2); }
 .mob-pl-val { font-size: 12px; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
 
-/* Mobile biz pills row */
-.mob-biz-row {
-  display: none;
-  gap: 8px;
-  margin-bottom: 14px;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  padding-bottom: 2px;
-}
+/* Mobile biz pills */
+.mob-biz-row { display: none; gap: 8px; margin-bottom: 14px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: 2px; }
 .mob-biz-row::-webkit-scrollbar { display: none; }
-.mob-biz-pill {
-  flex-shrink: 0;
-  background: var(--surface);
-  border: 1.5px solid var(--border);
-  border-radius: 12px;
-  padding: 10px 14px;
-  min-width: 130px;
-  cursor: pointer;
-  transition: all .15s;
-  box-shadow: var(--sh);
-}
+.mob-biz-pill { flex-shrink: 0; background: var(--surface); border: 1.5px solid var(--border); border-radius: 12px; padding: 10px 14px; min-width: 130px; cursor: pointer; transition: all .15s; box-shadow: var(--sh); }
 .mob-biz-pill:active { transform: scale(0.97); }
-.mob-biz-pill-hd {
-  display: flex; align-items: center; gap: 6px; margin-bottom: 6px;
-}
-.mob-biz-pill-ico {
-  width: 22px; height: 22px; border-radius: 6px;
-  display: grid; place-items: center;
-  font-size: 10px; font-weight: 800; flex-shrink: 0;
-}
+.mob-biz-pill-hd { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+.mob-biz-pill-ico { width: 22px; height: 22px; border-radius: 6px; display: grid; place-items: center; font-size: 10px; font-weight: 800; flex-shrink: 0; }
 .mob-biz-pill-name { font-size: 11px; font-weight: 800; }
 .mob-biz-pill-ni { font-size: 16px; font-weight: 800; margin-bottom: 2px; }
 .mob-biz-pill-lbl { font-size: 9.5px; color: var(--text3); }
 
 @media(max-width:900px){
   html, body { overflow-x: hidden; }
-
-  .top{
-    flex-wrap: wrap; height: auto; padding: 8px 14px 0; gap: 0;
-    display: grid;
-    grid-template-areas: 'brand controls' 'tabs tabs';
-    grid-template-columns: auto 1fr;
-  }
+  .top{ flex-wrap: wrap; height: auto; padding: 8px 14px 0; gap: 0; display: grid; grid-template-areas: 'brand controls' 'tabs tabs'; grid-template-columns: auto 1fr; }
   .brand { grid-area: brand; min-width: 0 !important; padding: 6px 0; align-items: center; }
   .bn { font-size: 11.5px; } .bs { font-size: 10px; }
   .av { width: 28px; height: 28px; font-size: 11px; }
@@ -412,20 +312,10 @@ html, body { overflow-x: hidden; max-width: 100vw; }
   select.ctl { font-size: 11px; padding: 3px 16px 3px 6px; border-radius: 6px; max-width: 130px; }
   .clk { display: none; }
   .rfbtn { font-size: 11px; padding: 5px 11px; border-radius: 6px; gap: 3px; }
-
-  .tabs-wrap {
-    grid-area: tabs;
-    border-top: 1px solid var(--border); margin: 0 -14px;
-  }
-  .tabs {
-    display: flex; flex-wrap: nowrap;
-    overflow-x: auto; overflow-y: hidden;
-    gap: 2px; padding: 6px 50px 8px 14px;
-    -webkit-overflow-scrolling: touch; scrollbar-width: none;
-  }
+  .tabs-wrap { grid-area: tabs; border-top: 1px solid var(--border); margin: 0 -14px; }
+  .tabs { display: flex; flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; gap: 2px; padding: 6px 50px 8px 14px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
   .tabs::-webkit-scrollbar { display: none; }
   .tab { white-space: nowrap; font-size: 11.5px; padding: 5px 11px; flex-shrink: 0; }
-
   .main { padding: 10px 10px 32px; }
 
   /* Show mobile-specific components */
@@ -434,71 +324,40 @@ html, body { overflow-x: hidden; max-width: 100vw; }
   .mob-pl-card { display: block !important; }
   .mob-biz-row { display: flex !important; }
 
-  /* Hide desktop-only sections on mobile (shown via mobile cards instead) */
+  /* Hide desktop-only on mobile */
   .gkrow { display: none !important; }
   .biz-grid { display: none !important; }
   .chart-row { display: none !important; }
   .chartcard { display: none !important; }
   .pl-wrap { display: none !important; }
 
-  /* Drill panels — allow them to show on mobile */
+  /* Drill panels on mobile */
   .dpanel { padding: 12px; width: 100%; max-width: 100%; overflow: hidden; }
   .dpanel.vis { display: block !important; }
   .dcont { grid-template-columns: 1fr !important; }
   .bdrill-layout { grid-template-columns: 1fr !important; }
   .dstats { grid-template-columns: repeat(2,1fr) !important; }
-  .dstats-3 { grid-template-columns: repeat(2,1fr) !important; }
-  .dstats-5 { grid-template-columns: repeat(2,1fr) !important; }
-  .chart-row { grid-template-columns: 1fr !important; }
   .chartbox { height: 180px; } .chartbox-md { height: 180px; } .chartbox-d { height: 200px; }
   .cwrap { min-height: 160px; } .cwrap canvas { max-height: 180px; }
   .tbl-scroll, .exp-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
   .dtbl { font-size: 10.5px; min-width: 420px; }
   .dtbl th, .dtbl td { padding: 4px 5px; }
   .wlbl { width: 80px; font-size: 10px; } .wamt { width: 60px; font-size: 10px; }
-  /* Keep section labels but make them smaller */
   .sec { margin: 14px 0 8px; }
   .sec-lbl { font-size: 9.5px; }
-  .sec-hint { font-size: 9.5px; }
-
-  /* KPI cards */
   .krow { grid-template-columns: repeat(2,1fr) !important; gap: 8px; }
   .kcard { padding: 11px; } .kval { font-size: 16px; } .ksub { font-size: 10px; }
-  .kbadge { font-size: 9.5px; padding: 2px 6px; } .klbl { font-size: 9px; }
-
-  /* Drill panels */
   .brow { grid-template-columns: 1fr !important; }
-  .dcont { grid-template-columns: 1fr !important; }
-  .bdrill-layout { grid-template-columns: 1fr !important; }
-  .dstats { grid-template-columns: repeat(2,1fr) !important; }
-  .dstats-3 { grid-template-columns: repeat(2,1fr) !important; }
-  .dstats-5 { grid-template-columns: repeat(2,1fr) !important; }
-
-  /* Waterfall labels */
-  .wlbl { width: 80px; font-size: 10px; } .wamt { width: 60px; font-size: 10px; }
-
-  /* Sub-tabs */
-  .stabs { flex-direction: column; }
-  .avtabs { flex-direction: column; }
-
-  /* Text */
   .ptitle { font-size: 16px; }
-  .bbd, .bbdg { display: none; } .bct { font-size: 12px; } .bcs { font-size: 10px; }
 }
-
 @media(max-width:580px){
   .mob-kpi-grid { grid-template-columns: 1fr 1fr !important; }
   select.ctl { max-width: 110px; }
 }
-
 @media(max-width:400px){
   .mob-kpi-grid { grid-template-columns: 1fr 1fr !important; gap: 8px; }
   .mob-kpi-card .mk-val { font-size: 18px; }
-  .krow { grid-template-columns: repeat(2,1fr) !important; gap: 6px; }
-  .kcard { padding: 9px; } .kval { font-size: 14px; }
   .tab { font-size: 10.5px; padding: 4px 8px; }
-  .dstats { grid-template-columns: repeat(2,1fr) !important; }
-  .dstats-3 { grid-template-columns: 1fr !important; }
   select.ctl { max-width: 95px; font-size: 10px; }
   .rfbtn .rf-label { display: none; }
 }
@@ -508,7 +367,7 @@ html, body { overflow-x: hidden; max-width: 100vw; }
 
 <header class="top">
   <div class="brand">
-    <div class="av">∑</div>
+    <div class="av">&#8721;</div>
     <div><div class="bn">NAM Group of Companies</div><div class="bs">Consolidated Overview</div></div>
   </div>
   <div class="tabs-wrap"><div class="tabs">
@@ -529,7 +388,7 @@ html, body { overflow-x: hidden; max-width: 100vw; }
       <option value="September">Sep</option><option value="October">Oct</option>
       <option value="November">Nov</option><option value="December">Dec</option>
     </select>
-    <span id="range-to" style="color:var(--text3);font-size:11px;font-weight:600;display:none">→</span>
+    <span id="range-to" style="color:var(--text3);font-size:11px;font-weight:600;display:none">&#8594;</span>
     <select class="ctl" id="sm-end" onchange="onRangeChange()" style="display:none">
       <option value="January">Jan</option><option value="February">Feb</option>
       <option value="March">Mar</option><option value="April">Apr</option>
@@ -550,353 +409,344 @@ html, body { overflow-x: hidden; max-width: 100vw; }
 <main class="main">
   <div class="sbar" id="sbar"></div>
 
-  <!-- ── MOBILE LAYOUT (hidden on desktop, shown on mobile) ── -->
-
-  <!-- Mobile page header -->
+  <!-- PAGE HEADER -->
   <div class="prow">
     <div>
-      <div class="ptitle">Group Consolidated Summary — FY 2026</div>
-      <div class="psub">NAM Trading &nbsp;·&nbsp; NAM Builders &nbsp;·&nbsp; ALM Manpower &nbsp;·&nbsp; NAM Quick Cash Loan</div>
+      <div class="ptitle">Group Consolidated Summary &#8212; FY 2026</div>
+      <div class="psub">NAM Trading &nbsp;&middot;&nbsp; NAM Builders &nbsp;&middot;&nbsp; ALM Manpower &nbsp;&middot;&nbsp; NAM Quick Cash Loan</div>
     </div>
     <div class="pbadge" id="pbadge">YTD</div>
   </div>
 
-  <!-- Mobile Group KPI Cards (2×3 grid, NAM Builders style) -->
+  <!-- ══ MOBILE LAYOUT ══ -->
+
+  <!-- Mobile Group KPI Cards -->
   <div class="mob-kpi-grid" id="mob-kpi-grid">
-    <!-- Revenue -->
-    <div class="mob-kpi-card" onclick="openGroup&&openGroup('revenue')" style="border-top:3px solid var(--blue)">
+    <div class="mob-kpi-card" onclick="window.openGroup('revenue')" style="border-top:3px solid var(--blue)">
       <span class="mk-dot" style="background:var(--blue)"></span>
-      <div class="mk-icon" style="background:var(--blue-a);color:var(--blue)">₱</div>
+      <div class="mk-icon" style="background:var(--blue-a);color:var(--blue)">&#8369;</div>
       <div class="mk-lbl">Total Revenue</div>
-      <div class="mk-val t-blue" id="mkv-revenue">—</div>
+      <div class="mk-val t-blue" id="mkv-revenue">&#8212;</div>
       <div class="mk-sub" id="mks-revenue">All businesses</div>
       <div class="mk-badge" id="mkb-revenue" style="background:var(--blue-a);color:var(--blue)">YTD Revenue</div>
       <div class="mk-bar-bg"><div class="mk-bar" id="mkbar-revenue" style="background:var(--blue);width:0%"></div></div>
     </div>
-    <!-- Gross Profit -->
-    <div class="mob-kpi-card" onclick="openGroup&&openGroup('gp')" style="border-top:3px solid var(--green)">
+    <div class="mob-kpi-card" onclick="window.openGroup('gp')" style="border-top:3px solid var(--green)">
       <span class="mk-dot" style="background:var(--green)"></span>
-      <div class="mk-icon" style="background:var(--green-a);color:var(--green)">↗</div>
+      <div class="mk-icon" style="background:var(--green-a);color:var(--green)">&#8599;</div>
       <div class="mk-lbl">Gross Profit</div>
-      <div class="mk-val t-green" id="mkv-gp">—</div>
-      <div class="mk-sub" id="mks-gp">Margin: —</div>
-      <div class="mk-badge" id="mkb-gp" style="background:var(--green-a);color:var(--green)">▲ 100.0% GM</div>
+      <div class="mk-val t-green" id="mkv-gp">&#8212;</div>
+      <div class="mk-sub" id="mks-gp">Margin: &#8212;</div>
+      <div class="mk-badge" id="mkb-gp" style="background:var(--green-a);color:var(--green)">&#9650; 100.0% GM</div>
       <div class="mk-bar-bg"><div class="mk-bar" id="mkbar-gp" style="background:var(--green);width:0%"></div></div>
     </div>
-    <!-- Total OPEX -->
-    <div class="mob-kpi-card" style="border-top:3px solid var(--orange)">
+    <div class="mob-kpi-card" onclick="window.openGroup('opex')" style="border-top:3px solid var(--orange)">
       <span class="mk-dot" style="background:var(--orange)"></span>
-      <div class="mk-icon" style="background:var(--orange-a);color:var(--orange)">≡</div>
+      <div class="mk-icon" style="background:var(--orange-a);color:var(--orange)">&#8801;</div>
       <div class="mk-lbl">Total OPEX</div>
-      <div class="mk-val" id="mkv-opex" style="color:var(--orange)">—</div>
+      <div class="mk-val" id="mkv-opex" style="color:var(--orange)">&#8212;</div>
       <div class="mk-sub" id="mks-opex">Operating Expenses</div>
-      <div class="mk-badge" id="mkb-opex" style="background:var(--orange-a);color:var(--orange)">— of Revenue</div>
+      <div class="mk-badge" id="mkb-opex" style="background:var(--orange-a);color:var(--orange)">&#8212; of Revenue</div>
       <div class="mk-bar-bg"><div class="mk-bar" id="mkbar-opex" style="background:var(--orange);width:0%"></div></div>
     </div>
-    <!-- Net Income -->
-    <div class="mob-kpi-card" onclick="openGroup&&openGroup('ni')" style="border-top:3px solid var(--navy)">
+    <div class="mob-kpi-card" onclick="window.openGroup('ni')" style="border-top:3px solid var(--navy)">
       <span class="mk-dot" style="background:var(--navy)"></span>
-      <div class="mk-icon" style="background:var(--navy-a);color:var(--navy)">★</div>
+      <div class="mk-icon" style="background:var(--navy-a);color:var(--navy)">&#9733;</div>
       <div class="mk-lbl">Net Income</div>
-      <div class="mk-val" id="mkv-ni">—</div>
-      <div class="mk-sub" id="mks-ni">Net Margin: —</div>
-      <div class="mk-badge" id="mkb-ni" style="background:var(--navy-a);color:var(--navy)">—</div>
+      <div class="mk-val" id="mkv-ni">&#8212;</div>
+      <div class="mk-sub" id="mks-ni">Net Margin: &#8212;</div>
+      <div class="mk-badge" id="mkb-ni" style="background:var(--navy-a);color:var(--navy)">&#8212;</div>
       <div class="mk-bar-bg"><div class="mk-bar" id="mkbar-ni" style="background:var(--navy);width:0%"></div></div>
     </div>
-    <!-- Performance Bonus -->
-    <div class="mob-kpi-card" style="border-top:3px solid var(--orange)">
+    <div class="mob-kpi-card" onclick="window.openGroup('bonus')" style="border-top:3px solid var(--orange)">
       <span class="mk-dot" style="background:var(--orange)"></span>
-      <div class="mk-icon" style="background:var(--orange-a);color:var(--orange)">🏆</div>
+      <div class="mk-icon" style="background:var(--orange-a);color:var(--orange)">&#127942;</div>
       <div class="mk-lbl">Performance Bonus</div>
-      <div class="mk-val" id="mkv-bonus" style="color:var(--orange)">—</div>
-      <div class="mk-sub" id="mks-bonus">Deducted from Net Income</div>
-      <div class="mk-badge" id="mkb-bonus" style="background:var(--orange-a);color:var(--orange)">—</div>
+      <div class="mk-val" id="mkv-bonus" style="color:var(--orange)">&#8212;</div>
+      <div class="mk-sub" id="mks-bonus">Net Income &#8722; Accumulated Profit</div>
+      <div class="mk-badge" id="mkb-bonus" style="background:var(--orange-a);color:var(--orange)">&#8212;</div>
       <div class="mk-bar-bg"><div class="mk-bar" id="mkbar-bonus" style="background:var(--orange);width:0%"></div></div>
     </div>
-    <!-- Accumulated -->
-    <div class="mob-kpi-card" onclick="openGroup&&openGroup('accum')" style="border-top:3px solid var(--purple)">
+    <div class="mob-kpi-card" onclick="window.openGroup('accum')" style="border-top:3px solid var(--purple)">
       <span class="mk-dot" style="background:var(--purple)"></span>
-      <div class="mk-icon" style="background:var(--purple-a);color:var(--purple)">∑</div>
+      <div class="mk-icon" style="background:var(--purple-a);color:var(--purple)">&#8721;</div>
       <div class="mk-lbl">Accumulated Profit</div>
-      <div class="mk-val" id="mkv-accum" style="color:var(--purple)">—</div>
+      <div class="mk-val" id="mkv-accum" style="color:var(--purple)">&#8212;</div>
       <div class="mk-sub" id="mks-accum">Retained YTD</div>
-      <div class="mk-badge" id="mkb-accum" style="background:var(--purple-a);color:var(--purple)">—</div>
+      <div class="mk-badge" id="mkb-accum" style="background:var(--purple-a);color:var(--purple)">&#8212;</div>
       <div class="mk-bar-bg"><div class="mk-bar" id="mkbar-accum" style="background:var(--purple);width:0%"></div></div>
     </div>
-    <!-- Businesses loaded -->
     <div class="mob-kpi-card" style="border-top:3px solid var(--text3)">
       <span class="mk-dot" style="background:var(--text3)"></span>
-      <div class="mk-icon" style="background:var(--surface2);color:var(--text2)">⊞</div>
-      <div class="mk-lbl">Actual vs Target</div>
-      <div class="mk-val" id="mkv-avt" style="color:var(--navy)">—</div>
-      <div class="mk-sub" id="mks-avt">Rev / Exp ratio</div>
-      <div class="mk-badge" id="mkb-avt" style="background:var(--navy-a);color:var(--navy)">—</div>
+      <div class="mk-icon" style="background:var(--surface2);color:var(--text2)">&#8862;</div>
+      <div class="mk-lbl">Businesses Loaded</div>
+      <div class="mk-val" id="mkv-avt" style="color:var(--navy)">&#8212;</div>
+      <div class="mk-sub" id="mks-avt">Businesses loaded</div>
+      <div class="mk-badge" id="mkb-avt" style="background:var(--navy-a);color:var(--navy)">&#8212;</div>
       <div class="mk-bar-bg"><div class="mk-bar" id="mkbar-avt" style="background:var(--navy);width:0%"></div></div>
     </div>
   </div>
 
-  <!-- Mobile Group Drill Panel (injected here on mobile) -->
-  <div id="mob-group-drill-anchor"></div>
+  <!-- ★ FIX: Mobile Group Drill Panel placed RIGHT HERE, after mob-kpi-grid -->
+  <div id="mob-group-drill-anchor" class="mob-drill-anchor"></div>
 
-  <!-- Mobile Business Pills (horizontal scroll) -->
+  <!-- Mobile Business Pills -->
   <div class="mob-biz-row" id="mob-biz-row">
-    <div class="mob-biz-pill" onclick="openBiz&&openBiz('trading')" style="border-top:3px solid var(--blue)">
+    <div class="mob-biz-pill" onclick="window.openBiz('trading')" style="border-top:3px solid var(--blue)">
       <div class="mob-biz-pill-hd">
         <div class="mob-biz-pill-ico" style="background:var(--blue-a);color:var(--blue)">T</div>
         <span class="mob-biz-pill-name" style="color:var(--blue)">NAM Trading</span>
       </div>
-      <div class="mob-biz-pill-ni t-green" id="mbni-trading">—</div>
+      <div class="mob-biz-pill-ni t-green" id="mbni-trading">&#8212;</div>
       <div class="mob-biz-pill-lbl">Net Income</div>
     </div>
-    <div class="mob-biz-pill" onclick="openBiz&&openBiz('builders')" style="border-top:3px solid var(--green)">
+    <div class="mob-biz-pill" onclick="window.openBiz('builders')" style="border-top:3px solid var(--green)">
       <div class="mob-biz-pill-hd">
         <div class="mob-biz-pill-ico" style="background:var(--green-a);color:var(--green)">B</div>
         <span class="mob-biz-pill-name" style="color:var(--green)">NAM Builders</span>
       </div>
-      <div class="mob-biz-pill-ni" id="mbni-builders">—</div>
+      <div class="mob-biz-pill-ni" id="mbni-builders">&#8212;</div>
       <div class="mob-biz-pill-lbl">Net Income</div>
     </div>
-    <div class="mob-biz-pill" onclick="openBiz&&openBiz('manpower')" style="border-top:3px solid var(--orange)">
+    <div class="mob-biz-pill" onclick="window.openBiz('manpower')" style="border-top:3px solid var(--orange)">
       <div class="mob-biz-pill-hd">
         <div class="mob-biz-pill-ico" style="background:var(--orange-a);color:var(--orange)">M</div>
         <span class="mob-biz-pill-name" style="color:var(--orange)">ALM Manpower</span>
       </div>
-      <div class="mob-biz-pill-ni" id="mbni-manpower">—</div>
+      <div class="mob-biz-pill-ni" id="mbni-manpower">&#8212;</div>
       <div class="mob-biz-pill-lbl">Net Income</div>
     </div>
-    <div class="mob-biz-pill" onclick="openBiz&&openBiz('loan')" style="border-top:3px solid var(--purple)">
+    <div class="mob-biz-pill" onclick="window.openBiz('loan')" style="border-top:3px solid var(--purple)">
       <div class="mob-biz-pill-hd">
         <div class="mob-biz-pill-ico" style="background:var(--purple-a);color:var(--purple)">L</div>
         <span class="mob-biz-pill-name" style="color:var(--purple)">NAM Loan</span>
       </div>
-      <div class="mob-biz-pill-ni" id="mbni-loan">—</div>
+      <div class="mob-biz-pill-ni" id="mbni-loan">&#8212;</div>
       <div class="mob-biz-pill-lbl">Net Income</div>
     </div>
   </div>
 
-  <!-- Mobile Biz Drill Panel (injected here on mobile) -->
-  <div id="mob-biz-drill-anchor"></div>
+  <!-- ★ FIX: Mobile Biz Drill Panel placed RIGHT HERE, after mob-biz-row -->
+  <div id="mob-biz-drill-anchor" class="mob-drill-anchor"></div>
 
   <!-- Mobile Trend Chart -->
   <div class="mob-trend-card" id="mob-trend-card">
     <div class="mt-title">12-Month Performance Trend</div>
-    <div class="mt-sub">Group Revenue · Gross Profit · Net Income</div>
+    <div class="mt-sub">Group Revenue &middot; Gross Profit &middot; Net Income</div>
     <div class="mt-legend">
       <div class="mt-leg-item"><div class="mt-leg-dot" style="background:var(--blue)"></div>Revenue</div>
       <div class="mt-leg-item"><div class="mt-leg-dot" style="background:var(--green)"></div>Gross Profit</div>
-      <div class="mt-leg-item"><div class="mt-leg-dot" style="background:var(--red);border-style:dashed"></div>Net Income</div>
+      <div class="mt-leg-item"><div class="mt-leg-dot" style="background:var(--red)"></div>Net Income</div>
     </div>
     <div class="mob-trend-box"><canvas id="mob-trend-chart"></canvas></div>
   </div>
 
-  <!-- Mobile P&L Summary Card -->
+  <!-- Mobile P&L Summary -->
   <div class="mob-pl-card" id="mob-pl-card">
     <div class="mpl-title">P&amp;L Summary</div>
-    <div class="mpl-sub">Income statement breakdown · All 4 businesses</div>
+    <div class="mpl-sub">Income statement breakdown &middot; All 4 businesses</div>
     <div class="mob-pl-row mpl-cat"><span>REVENUES</span></div>
-    <div class="mob-pl-row"><span class="mob-pl-lbl">Total Revenue / Net Sales</span><span class="mob-pl-val t-blue" id="mpl-rev">—</span></div>
+    <div class="mob-pl-row"><span class="mob-pl-lbl">Total Revenue / Net Sales</span><span class="mob-pl-val t-blue" id="mpl-rev">&#8212;</span></div>
     <div class="mob-pl-row mpl-cat"><span>COST OF GOODS</span></div>
-    <div class="mob-pl-row"><span class="mob-pl-lbl">Direct Costs / COGS</span><span class="mob-pl-val t-red" id="mpl-cogs">—</span></div>
-    <div class="mob-pl-row mpl-total"><span>GROSS PROFIT</span><span class="mob-pl-val t-green" id="mpl-gp">—</span></div>
-    <div class="mob-pl-row"><span class="mob-pl-lbl" style="font-style:italic;color:var(--text3)">Gross Margin %</span><span class="mob-pl-val" style="color:var(--text3)" id="mpl-gm">—</span></div>
+    <div class="mob-pl-row"><span class="mob-pl-lbl">Direct Costs / COGS</span><span class="mob-pl-val t-red" id="mpl-cogs">&#8212;</span></div>
+    <div class="mob-pl-row mpl-total"><span>GROSS PROFIT</span><span class="mob-pl-val t-green" id="mpl-gp">&#8212;</span></div>
+    <div class="mob-pl-row"><span class="mob-pl-lbl" style="font-style:italic;color:var(--text3)">Gross Margin %</span><span class="mob-pl-val" style="color:var(--text3)" id="mpl-gm">&#8212;</span></div>
     <div class="mob-pl-row mpl-cat"><span>OPERATING EXPENSES</span></div>
-    <div class="mob-pl-row"><span class="mob-pl-lbl">Total OPEX / G&A</span><span class="mob-pl-val t-red" id="mpl-opex">—</span></div>
-    <div class="mob-pl-row mpl-total" id="mpl-ni-row"><span>NET INCOME / (LOSS)</span><span class="mob-pl-val" id="mpl-ni">—</span></div>
-    <div class="mob-pl-row"><span class="mob-pl-lbl" style="font-style:italic;color:var(--text3)">Net Margin %</span><span class="mob-pl-val" style="color:var(--text3)" id="mpl-nm">—</span></div>
+    <div class="mob-pl-row"><span class="mob-pl-lbl">Total OPEX / G&amp;A</span><span class="mob-pl-val t-red" id="mpl-opex">&#8212;</span></div>
+    <div class="mob-pl-row mpl-total"><span>NET INCOME / (LOSS)</span><span class="mob-pl-val" id="mpl-ni">&#8212;</span></div>
+    <div class="mob-pl-row"><span class="mob-pl-lbl" style="font-style:italic;color:var(--text3)">Net Margin %</span><span class="mob-pl-val" style="color:var(--text3)" id="mpl-nm">&#8212;</span></div>
   </div>
 
-  <!-- ── END MOBILE LAYOUT ── -->
+  <!-- ══ END MOBILE LAYOUT ══ -->
 
-  <!-- GROUP KPI CARDS -->
-  <div class="sec"><div class="sec-lbl">Group Totals</div><div class="sec-line"></div><div class="sec-hint">Click any card to drill down ▼</div></div>
+  <!-- GROUP KPI CARDS (desktop) -->
+  <div class="sec"><div class="sec-lbl">Group Totals</div><div class="sec-line"></div><div class="sec-hint">Click any card to drill down &#9660;</div></div>
   <div class="gkrow mb16">
-    <div class="gkcard" onclick="openGroup('revenue')" id="gkc-revenue" style="--ac:var(--blue)">
+    <div class="gkcard" onclick="window.openGroup('revenue')" id="gkc-revenue" style="--ac:var(--blue)">
       <div class="gkcard-stripe" style="background:var(--blue)"></div>
       <div class="gkh">
-        <div class="gkico" style="background:var(--blue-a);color:var(--blue)">₱</div>
+        <div class="gkico" style="background:var(--blue-a);color:var(--blue)">&#8369;</div>
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
       </div>
       <div class="gklbl">Total Revenue</div>
-      <div class="gkval t-blue" id="gkv-revenue">—</div>
+      <div class="gkval t-blue" id="gkv-revenue">&#8212;</div>
       <div class="gksub" id="gks-revenue">All 4 businesses combined</div>
-      <div class="gkbadge" id="gkb-revenue" style="background:var(--blue-a);color:var(--blue)">—</div>
+      <div class="gkbadge" id="gkb-revenue" style="background:var(--blue-a);color:var(--blue)">&#8212;</div>
       <div class="gkprog"><div class="gkbar" id="gkbar-revenue" style="background:var(--blue);width:0%"></div></div>
-      <div class="gkhint">▼ Revenue breakdown by business</div>
+      <div class="gkhint">&#9660; Revenue breakdown by business</div>
     </div>
-    <div class="gkcard" onclick="openGroup('gp')" id="gkc-gp" style="--ac:var(--green)">
+    <div class="gkcard" onclick="window.openGroup('gp')" id="gkc-gp" style="--ac:var(--green)">
       <div class="gkcard-stripe" style="background:var(--green)"></div>
       <div class="gkh">
-        <div class="gkico" style="background:var(--green-a);color:var(--green)">↗</div>
+        <div class="gkico" style="background:var(--green-a);color:var(--green)">&#8599;</div>
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
       </div>
       <div class="gklbl">Total Gross Profit</div>
-      <div class="gkval t-green" id="gkv-gp">—</div>
-      <div class="gksub" id="gks-gp">Group gross margin: —</div>
-      <div class="gkbadge" id="gkb-gp" style="background:var(--green-a);color:var(--green)">—</div>
+      <div class="gkval t-green" id="gkv-gp">&#8212;</div>
+      <div class="gksub" id="gks-gp">Group gross margin: &#8212;</div>
+      <div class="gkbadge" id="gkb-gp" style="background:var(--green-a);color:var(--green)">&#8212;</div>
       <div class="gkprog"><div class="gkbar" id="gkbar-gp" style="background:var(--green);width:0%"></div></div>
-      <div class="gkhint">▼ GP &amp; margin per business</div>
+      <div class="gkhint">&#9660; GP &amp; margin per business</div>
     </div>
-    <div class="gkcard" onclick="openGroup('opex')" id="gkc-opex" style="--ac:var(--orange)">
+    <div class="gkcard" onclick="window.openGroup('opex')" id="gkc-opex" style="--ac:var(--orange)">
       <div class="gkcard-stripe" style="background:var(--orange)"></div>
       <div class="gkh">
-        <div class="gkico" style="background:var(--orange-a);color:var(--orange)">≡</div>
+        <div class="gkico" style="background:var(--orange-a);color:var(--orange)">&#8801;</div>
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
       </div>
       <div class="gklbl">Total OPEX</div>
-      <div class="gkval" id="gkv-opex" style="color:var(--orange)">—</div>
-      <div class="gksub" id="gks-opex">Operating Expenses · All businesses</div>
-      <div class="gkbadge" id="gkb-opex" style="background:var(--orange-a);color:var(--orange)">—</div>
+      <div class="gkval" id="gkv-opex" style="color:var(--orange)">&#8212;</div>
+      <div class="gksub" id="gks-opex">Operating Expenses &middot; All businesses</div>
+      <div class="gkbadge" id="gkb-opex" style="background:var(--orange-a);color:var(--orange)">&#8212;</div>
       <div class="gkprog"><div class="gkbar" id="gkbar-opex" style="background:var(--orange);width:0%"></div></div>
-      <div class="gkhint">▼ OPEX breakdown by business</div>
+      <div class="gkhint">&#9660; OPEX breakdown by business</div>
     </div>
-    <div class="gkcard" onclick="openGroup('ni')" id="gkc-ni" style="--ac:var(--navy)">
+    <div class="gkcard" onclick="window.openGroup('ni')" id="gkc-ni" style="--ac:var(--navy)">
       <div class="gkcard-stripe" style="background:var(--navy)"></div>
       <div class="gkh">
-        <div class="gkico" style="background:var(--navy-a);color:var(--navy)">★</div>
+        <div class="gkico" style="background:var(--navy-a);color:var(--navy)">&#9733;</div>
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
       </div>
       <div class="gklbl">Total Net Income</div>
-      <div class="gkval" id="gkv-ni">—</div>
-      <div class="gksub" id="gks-ni">Group net margin: —</div>
-      <div class="gkbadge" id="gkb-ni" style="background:var(--navy-a);color:var(--navy)">—</div>
+      <div class="gkval" id="gkv-ni">&#8212;</div>
+      <div class="gksub" id="gks-ni">Group net margin: &#8212;</div>
+      <div class="gkbadge" id="gkb-ni" style="background:var(--navy-a);color:var(--navy)">&#8212;</div>
       <div class="gkprog"><div class="gkbar" id="gkbar-ni" style="background:var(--navy);width:0%"></div></div>
-      <div class="gkhint">▼ Full P&amp;L waterfall</div>
+      <div class="gkhint">&#9660; Full P&amp;L waterfall</div>
     </div>
-    <div class="gkcard" onclick="openGroup('bonus')" id="gkc-bonus" style="--ac:var(--orange)">
+    <!-- ★ FIX: Added chevron svg to bonus card + proper onclick -->
+    <div class="gkcard" onclick="window.openGroup('bonus')" id="gkc-bonus" style="--ac:var(--orange)">
       <div class="gkcard-stripe" style="background:var(--orange)"></div>
       <div class="gkh">
-        <div class="gkico" style="background:var(--orange-a);color:var(--orange)">🏆</div>
+        <div class="gkico" style="background:var(--orange-a);color:var(--orange)">&#127942;</div>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
       </div>
       <div class="gklbl">Performance Bonus</div>
-      <div class="gkval" id="gkv-bonus" style="color:var(--orange)">—</div>
+      <div class="gkval" id="gkv-bonus" style="color:var(--orange)">&#8212;</div>
       <div class="gksub" id="gks-bonus">Deducted from Net Income</div>
-      <div class="gkbadge" id="gkb-bonus" style="background:var(--orange-a);color:var(--orange)">—</div>
+      <div class="gkbadge" id="gkb-bonus" style="background:var(--orange-a);color:var(--orange)">&#8212;</div>
       <div class="gkprog"><div class="gkbar" id="gkbar-bonus" style="background:var(--orange);width:0%"></div></div>
-      <div class="gkhint">▼ Bonus breakdown per business</div>
+      <div class="gkhint">&#9660; Bonus breakdown per business</div>
     </div>
-    <div class="gkcard" onclick="openGroup('accum')" id="gkc-accum" style="--ac:var(--purple)">
+    <div class="gkcard" onclick="window.openGroup('accum')" id="gkc-accum" style="--ac:var(--purple)">
       <div class="gkcard-stripe" style="background:var(--purple)"></div>
       <div class="gkh">
-        <div class="gkico" style="background:var(--purple-a);color:var(--purple)">∑</div>
+        <div class="gkico" style="background:var(--purple-a);color:var(--purple)">&#8721;</div>
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
       </div>
       <div class="gklbl">Accumulated Net Profit</div>
-      <div class="gkval" id="gkv-accum" style="color:var(--purple)">—</div>
+      <div class="gkval" id="gkv-accum" style="color:var(--purple)">&#8212;</div>
       <div class="gksub" id="gks-accum">Retained / Accumulated YTD</div>
-      <div class="gkbadge" id="gkb-accum" style="background:var(--purple-a);color:var(--purple)">—</div>
+      <div class="gkbadge" id="gkb-accum" style="background:var(--purple-a);color:var(--purple)">&#8212;</div>
       <div class="gkprog"><div class="gkbar" id="gkbar-accum" style="background:var(--purple);width:0%"></div></div>
-      <div class="gkhint">▼ Accumulated profit by business</div>
+      <div class="gkhint">&#9660; Accumulated profit by business</div>
     </div>
   </div>
 
-  <!-- GROUP DRILL PANEL -->
+  <!-- GROUP DRILL PANEL (desktop — stays here; moved on mobile via JS) -->
   <div class="dpanel" id="group-drill">
     <div class="dh">
       <div><div class="dtitle" id="gdtitle">Detail</div><div class="dsub" id="gdsub"></div></div>
-      <button class="dcls" onclick="closeGroupDrill()">✕</button>
+      <button class="dcls" onclick="window.closeGroupDrill()">&#10005;</button>
     </div>
     <div id="gdcont"></div>
   </div>
 
   <!-- INDIVIDUAL BIZ CARDS -->
-  <div class="sec"><div class="sec-lbl">Individual Business Performance</div><div class="sec-line"></div><div class="sec-hint">Click to compare &amp; drill down ▼</div></div>
+  <div class="sec"><div class="sec-lbl">Individual Business Performance</div><div class="sec-line"></div><div class="sec-hint">Click to compare &amp; drill down &#9660;</div></div>
   <div class="biz-grid mb16">
-    <!-- Trading -->
-    <div class="bizcard" onclick="openBiz('trading')" id="bizc-trading" style="--bc:var(--blue)">
+    <div class="bizcard" onclick="window.openBiz('trading')" id="bizc-trading" style="--bc:var(--blue)">
       <div class="bizcard-stripe" style="background:var(--blue)"></div>
       <div class="bizcard-hd">
         <div class="bizico" style="background:var(--blue-a);color:var(--blue)">T</div>
         <div><div class="bizname" style="color:var(--blue)">NAM Trading</div><div class="biztype">Wholesale Distribution</div></div>
       </div>
-      <div id="bizld-trading" class="ld-inline">Loading…</div>
+      <div id="bizld-trading" class="ld-inline">Loading&#8230;</div>
       <div id="bizdata-trading" style="display:none">
         <div class="biz-ni-lbl">Net Income</div>
-        <div class="biz-ni-val" id="bni-trading">—</div>
-        <div class="biz-row"><span class="biz-row-l">Net Sales</span><span class="biz-row-v" id="brev-trading">—</span></div>
-        <div class="biz-row"><span class="biz-row-l">Gross Profit</span><span class="biz-row-v" id="bgp-trading">—</span></div>
-        <div class="biz-row"><span class="biz-row-l">Total OPEX</span><span class="biz-row-v" id="bopex-trading">—</span></div>
-        <div class="biz-row"><span class="biz-row-l">GM % / NM %</span><span class="biz-row-v" id="bmarg-trading">—</span></div>
-        <div class="biz-badge" id="bbadge-trading" style="background:var(--blue-a);color:var(--blue)">—</div>
+        <div class="biz-ni-val" id="bni-trading">&#8212;</div>
+        <div class="biz-row"><span class="biz-row-l">Net Sales</span><span class="biz-row-v" id="brev-trading">&#8212;</span></div>
+        <div class="biz-row"><span class="biz-row-l">Gross Profit</span><span class="biz-row-v" id="bgp-trading">&#8212;</span></div>
+        <div class="biz-row"><span class="biz-row-l">Total OPEX</span><span class="biz-row-v" id="bopex-trading">&#8212;</span></div>
+        <div class="biz-row"><span class="biz-row-l">GM % / NM %</span><span class="biz-row-v" id="bmarg-trading">&#8212;</span></div>
+        <div class="biz-badge" id="bbadge-trading" style="background:var(--blue-a);color:var(--blue)">&#8212;</div>
         <div class="bizprog mt8"><div class="bizbar" id="bbar-trading" style="background:var(--blue)"></div></div>
-        <div class="biz-hint">Click to see full breakdown ▼</div>
+        <div class="biz-hint">Click to see full breakdown &#9660;</div>
       </div>
     </div>
-    <!-- Builders -->
-    <div class="bizcard" onclick="openBiz('builders')" id="bizc-builders" style="--bc:var(--green)">
+    <div class="bizcard" onclick="window.openBiz('builders')" id="bizc-builders" style="--bc:var(--green)">
       <div class="bizcard-stripe" style="background:var(--green)"></div>
       <div class="bizcard-hd">
         <div class="bizico" style="background:var(--green-a);color:var(--green)">B</div>
         <div><div class="bizname" style="color:var(--green)">NAM Builders</div><div class="biztype">Construction / Project-Based</div></div>
       </div>
-      <div id="bizld-builders" class="ld-inline">Loading…</div>
+      <div id="bizld-builders" class="ld-inline">Loading&#8230;</div>
       <div id="bizdata-builders" style="display:none">
         <div class="biz-ni-lbl">Net Income</div>
-        <div class="biz-ni-val" id="bni-builders">—</div>
-        <div class="biz-row"><span class="biz-row-l">Contract Revenue</span><span class="biz-row-v" id="brev-builders">—</span></div>
-        <div class="biz-row"><span class="biz-row-l">Gross Profit</span><span class="biz-row-v" id="bgp-builders">—</span></div>
-        <div class="biz-row"><span class="biz-row-l">G&A OPEX</span><span class="biz-row-v" id="bopex-builders">—</span></div>
-        <div class="biz-row"><span class="biz-row-l">GM % / NM %</span><span class="biz-row-v" id="bmarg-builders">—</span></div>
-        <div class="biz-badge" id="bbadge-builders" style="background:var(--green-a);color:var(--green)">—</div>
+        <div class="biz-ni-val" id="bni-builders">&#8212;</div>
+        <div class="biz-row"><span class="biz-row-l">Contract Revenue</span><span class="biz-row-v" id="brev-builders">&#8212;</span></div>
+        <div class="biz-row"><span class="biz-row-l">Gross Profit</span><span class="biz-row-v" id="bgp-builders">&#8212;</span></div>
+        <div class="biz-row"><span class="biz-row-l">G&amp;A OPEX</span><span class="biz-row-v" id="bopex-builders">&#8212;</span></div>
+        <div class="biz-row"><span class="biz-row-l">GM % / NM %</span><span class="biz-row-v" id="bmarg-builders">&#8212;</span></div>
+        <div class="biz-badge" id="bbadge-builders" style="background:var(--green-a);color:var(--green)">&#8212;</div>
         <div class="bizprog mt8"><div class="bizbar" id="bbar-builders" style="background:var(--green)"></div></div>
-        <div class="biz-hint">Click to see full breakdown ▼</div>
+        <div class="biz-hint">Click to see full breakdown &#9660;</div>
       </div>
     </div>
-    <!-- Manpower -->
-    <div class="bizcard" onclick="openBiz('manpower')" id="bizc-manpower" style="--bc:var(--orange)">
+    <div class="bizcard" onclick="window.openBiz('manpower')" id="bizc-manpower" style="--bc:var(--orange)">
       <div class="bizcard-stripe" style="background:var(--orange)"></div>
       <div class="bizcard-hd">
         <div class="bizico" style="background:var(--orange-a);color:var(--orange)">M</div>
         <div><div class="bizname" style="color:var(--orange)">ALM Manpower</div><div class="biztype">Manpower Outsourcing</div></div>
       </div>
-      <div id="bizld-manpower" class="ld-inline">Loading…</div>
+      <div id="bizld-manpower" class="ld-inline">Loading&#8230;</div>
       <div id="bizdata-manpower" style="display:none">
         <div class="biz-ni-lbl">Net Income</div>
-        <div class="biz-ni-val" id="bni-manpower">—</div>
-        <div class="biz-row"><span class="biz-row-l">Total Revenue</span><span class="biz-row-v" id="brev-manpower">—</span></div>
-        <div class="biz-row"><span class="biz-row-l">Gross Profit</span><span class="biz-row-v" id="bgp-manpower">—</span></div>
-        <div class="biz-row"><span class="biz-row-l">G&A Expenses</span><span class="biz-row-v" id="bopex-manpower">—</span></div>
-        <div class="biz-row"><span class="biz-row-l">GM % / NM %</span><span class="biz-row-v" id="bmarg-manpower">—</span></div>
-        <div class="biz-badge" id="bbadge-manpower" style="background:var(--orange-a);color:var(--orange)">—</div>
+        <div class="biz-ni-val" id="bni-manpower">&#8212;</div>
+        <div class="biz-row"><span class="biz-row-l">Total Revenue</span><span class="biz-row-v" id="brev-manpower">&#8212;</span></div>
+        <div class="biz-row"><span class="biz-row-l">Gross Profit</span><span class="biz-row-v" id="bgp-manpower">&#8212;</span></div>
+        <div class="biz-row"><span class="biz-row-l">G&amp;A Expenses</span><span class="biz-row-v" id="bopex-manpower">&#8212;</span></div>
+        <div class="biz-row"><span class="biz-row-l">GM % / NM %</span><span class="biz-row-v" id="bmarg-manpower">&#8212;</span></div>
+        <div class="biz-badge" id="bbadge-manpower" style="background:var(--orange-a);color:var(--orange)">&#8212;</div>
         <div class="bizprog mt8"><div class="bizbar" id="bbar-manpower" style="background:var(--orange)"></div></div>
-        <div class="biz-hint">Click to see full breakdown ▼</div>
+        <div class="biz-hint">Click to see full breakdown &#9660;</div>
       </div>
     </div>
-    <!-- Loan -->
-    <div class="bizcard" onclick="openBiz('loan')" id="bizc-loan" style="--bc:var(--purple)">
+    <div class="bizcard" onclick="window.openBiz('loan')" id="bizc-loan" style="--bc:var(--purple)">
       <div class="bizcard-stripe" style="background:var(--purple)"></div>
       <div class="bizcard-hd">
         <div class="bizico" style="background:var(--purple-a);color:var(--purple)">L</div>
         <div><div class="bizname" style="color:var(--purple)">NAM Loan</div><div class="biztype">Lending / Microfinance</div></div>
       </div>
-      <div id="bizld-loan" class="ld-inline">Loading…</div>
+      <div id="bizld-loan" class="ld-inline">Loading&#8230;</div>
       <div id="bizdata-loan" style="display:none">
         <div class="biz-ni-lbl">Net Income</div>
-        <div class="biz-ni-val" id="bni-loan">—</div>
-        <div class="biz-row"><span class="biz-row-l">Total Revenue</span><span class="biz-row-v" id="brev-loan">—</span></div>
-        <div class="biz-row"><span class="biz-row-l">Gross Profit</span><span class="biz-row-v" id="bgp-loan">—</span></div>
-        <div class="biz-row"><span class="biz-row-l">Total Expenses</span><span class="biz-row-v" id="bopex-loan">—</span></div>
-        <div class="biz-row"><span class="biz-row-l">GP % / NM %</span><span class="biz-row-v" id="bmarg-loan">—</span></div>
-        <div class="biz-badge" id="bbadge-loan" style="background:var(--purple-a);color:var(--purple)">—</div>
+        <div class="biz-ni-val" id="bni-loan">&#8212;</div>
+        <div class="biz-row"><span class="biz-row-l">Total Revenue</span><span class="biz-row-v" id="brev-loan">&#8212;</span></div>
+        <div class="biz-row"><span class="biz-row-l">Gross Profit</span><span class="biz-row-v" id="bgp-loan">&#8212;</span></div>
+        <div class="biz-row"><span class="biz-row-l">Total Expenses</span><span class="biz-row-v" id="bopex-loan">&#8212;</span></div>
+        <div class="biz-row"><span class="biz-row-l">GP % / NM %</span><span class="biz-row-v" id="bmarg-loan">&#8212;</span></div>
+        <div class="biz-badge" id="bbadge-loan" style="background:var(--purple-a);color:var(--purple)">&#8212;</div>
         <div class="bizprog mt8"><div class="bizbar" id="bbar-loan" style="background:var(--purple)"></div></div>
-        <div class="biz-hint">Click to see full breakdown ▼</div>
+        <div class="biz-hint">Click to see full breakdown &#9660;</div>
       </div>
     </div>
   </div>
 
-  <!-- BIZ DRILL PANEL -->
+  <!-- BIZ DRILL PANEL (desktop — stays here; moved on mobile via JS) -->
   <div class="dpanel" id="biz-drill">
     <div class="dh">
       <div><div class="dtitle" id="bdtitle">Business Detail</div><div class="dsub" id="bdsub"></div></div>
-      <button class="dcls" onclick="closeBizDrill()">✕</button>
+      <button class="dcls" onclick="window.closeBizDrill()">&#10005;</button>
     </div>
     <div id="bdcont"></div>
   </div>
 
   <!-- CONSOLIDATED P&L TABLE -->
-  <div class="sec"><div class="sec-lbl">Consolidated P&L Statement</div><div class="sec-line"></div></div>
+  <div class="sec"><div class="sec-lbl">Consolidated P&amp;L Statement</div><div class="sec-line"></div></div>
   <div class="pl-wrap mb16">
     <div class="pl-hd">
-      <div><div class="pl-title">All Businesses Side by Side</div><div class="pl-sub">Period: <span id="pl-period">YTD</span> &nbsp;·&nbsp; All amounts in Philippine Peso (₱)</div></div>
+      <div><div class="pl-title">All Businesses Side by Side</div><div class="pl-sub">Period: <span id="pl-period">YTD</span> &nbsp;&middot;&nbsp; All amounts in Philippine Peso (&#8369;)</div></div>
       <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
         <div class="leg"><div class="leg-dot" style="background:var(--blue)"></div><span class="cT fw7">T</span>&nbsp;Trading</div>
         <div class="leg"><div class="leg-dot" style="background:var(--green)"></div><span class="cB fw7">B</span>&nbsp;Builders</div>
@@ -916,7 +766,7 @@ html, body { overflow-x: hidden; max-width: 100vw; }
         </tr>
       </thead>
       <tbody id="pl-body">
-        <tr><td colspan="6" style="text-align:center;color:var(--text3);padding:24px">Loading…</td></tr>
+        <tr><td colspan="6" style="text-align:center;color:var(--text3);padding:24px">Loading&#8230;</td></tr>
       </tbody>
     </table>
   </div>
@@ -925,11 +775,11 @@ html, body { overflow-x: hidden; max-width: 100vw; }
   <div class="sec"><div class="sec-lbl">Performance Charts</div><div class="sec-line"></div></div>
   <div class="chart-row mb16">
     <div class="chartcard">
-      <div class="cch"><div><div class="cct">Net Income by Business</div><div class="ccs">Green = profit · Red = loss</div></div></div>
+      <div class="cch"><div><div class="cct">Net Income by Business</div><div class="ccs">Green = profit &middot; Red = loss</div></div></div>
       <div class="chartbox-md"><canvas id="ch-ni"></canvas></div>
     </div>
     <div class="chartcard">
-      <div class="cch"><div><div class="cct">Revenue vs Gross Profit</div><div class="ccs">Light = revenue · Dark = gross profit</div></div></div>
+      <div class="cch"><div><div class="cct">Revenue vs Gross Profit</div><div class="ccs">Light = revenue &middot; Dark = gross profit</div></div></div>
       <div class="chartbox-md"><canvas id="ch-revgp"></canvas></div>
     </div>
   </div>
@@ -954,10 +804,10 @@ const APIS = {
 // ══════════════════════════════════════════════
 
 const META = {
-  trading:  { label:'NAM Trading',      type:'Wholesale Distribution', color:'#2563eb', colorA:'#dbeafe', letter:'T' },
-  builders: { label:'NAM Builders',     type:'Construction',           color:'#16a34a', colorA:'#dcfce7', letter:'B' },
-  manpower: { label:'ALM Manpower',     type:'Manpower Outsourcing',   color:'#ea580c', colorA:'#ffedd5', letter:'M' },
-  loan:     { label:'NAM Loan',         type:'Lending / Microfinance', color:'#7c3aed', colorA:'#ede9fe', letter:'L' },
+  trading:  { label:'NAM Trading',  type:'Wholesale Distribution', color:'#2563eb', colorA:'#dbeafe', letter:'T' },
+  builders: { label:'NAM Builders', type:'Construction',           color:'#16a34a', colorA:'#dcfce7', letter:'B' },
+  manpower: { label:'ALM Manpower', type:'Manpower Outsourcing',   color:'#ea580c', colorA:'#ffedd5', letter:'M' },
+  loan:     { label:'NAM Loan',     type:'Lending / Microfinance', color:'#7c3aed', colorA:'#ede9fe', letter:'L' },
 };
 const KEYS = ['trading','builders','manpower','loan'];
 const COLORS = KEYS.map(k=>META[k].color);
@@ -968,8 +818,8 @@ let activeGroup = null, activeBiz = null;
 
 // ── Formatting ──────────────────────────────────────────
 const F = {
-  k(n, c=true){ if(n===null||n===undefined||isNaN(n)) return '—'; const neg=n<0,a=Math.abs(n); let s=c?(a>=1e6?'₱'+(a/1e6).toFixed(2)+'M':a>=1e3?'₱'+(a/1e3).toFixed(1)+'K':'₱'+a.toFixed(0)):'₱'+a.toLocaleString('en-PH',{minimumFractionDigits:2,maximumFractionDigits:2}); return neg?'('+s+')':s; },
-  p(n){ if(n===null||n===undefined||isNaN(n)) return '—'; return (n*100).toFixed(1)+'%'; },
+  k(n,c=true){ if(n===null||n===undefined||isNaN(n))return'—';const neg=n<0,a=Math.abs(n);let s=c?(a>=1e6?'₱'+(a/1e6).toFixed(2)+'M':a>=1e3?'₱'+(a/1e3).toFixed(1)+'K':'₱'+a.toFixed(0)):'₱'+a.toLocaleString('en-PH',{minimumFractionDigits:2,maximumFractionDigits:2});return neg?'('+s+')':s; },
+  p(n){ if(n===null||n===undefined||isNaN(n))return'—';return(n*100).toFixed(1)+'%'; },
   pp(n){ return Math.min(100,Math.max(0,(n||0)*100)); }
 };
 
@@ -977,53 +827,49 @@ const F = {
 function tick(){ const d=new Date(),h=d.getHours(),m=String(d.getMinutes()).padStart(2,'0'),s=String(d.getSeconds()).padStart(2,'0'),ap=h>=12?'PM':'AM',hh=String(h%12||12).padStart(2,'0'); document.getElementById('clk').textContent=`${hh}:${m}:${s} ${ap}`; }
 setInterval(tick,1000); tick();
 
-// ── Month range helpers (matches NAM Trading logic) ───────
+// ── Month range helpers ───────────────────────────────────
 const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
 function getRangeParam(){
   const s=document.getElementById('sm-start').value;
   if(s==='YTD') return 'YTD';
   const e=document.getElementById('sm-end').value;
   if(s===e) return s;
-  const si=MONTHS.indexOf(s), ei=MONTHS.indexOf(e);
-  return si<=ei ? `${s}-${e}` : `${e}-${s}`;
+  const si=MONTHS.indexOf(s),ei=MONTHS.indexOf(e);
+  return si<=ei?`${s}-${e}`:`${e}-${s}`;
 }
 function getRangeLabel(){
   const s=document.getElementById('sm-start').value;
   if(s==='YTD') return 'YTD';
   const e=document.getElementById('sm-end').value;
   if(s===e) return s.slice(0,3);
-  const si=MONTHS.indexOf(s), ei=MONTHS.indexOf(e);
-  return si<=ei ? `${s.slice(0,3)}–${e.slice(0,3)}` : `${e.slice(0,3)}–${s.slice(0,3)}`;
+  const si=MONTHS.indexOf(s),ei=MONTHS.indexOf(e);
+  return si<=ei?`${s.slice(0,3)}–${e.slice(0,3)}`:`${e.slice(0,3)}–${s.slice(0,3)}`;
 }
 function onRangeChange(){
   const s=document.getElementById('sm-start').value;
   const isYTD=(s==='YTD');
-  document.getElementById('sm-end').style.display   = isYTD ? 'none' : '';
-  document.getElementById('range-to').style.display = isYTD ? 'none' : '';
+  document.getElementById('sm-end').style.display=isYTD?'none':'';
+  document.getElementById('range-to').style.display=isYTD?'none':'';
   if(!isYTD){
     const endSel=document.getElementById('sm-end');
-    const si=MONTHS.indexOf(s), ei=MONTHS.indexOf(endSel.value);
+    const si=MONTHS.indexOf(s),ei=MONTHS.indexOf(endSel.value);
     if(ei<si) endSel.value=s;
   }
   load();
 }
-// Keep getMonthRange as a compatibility shim used in load() and drill subs
-function getMonthRange(){
-  const param=getRangeParam(), label=getRangeLabel();
-  return {label, apiMonth:param};
-}
+function getMonthRange(){ return {label:getRangeLabel(),apiMonth:getRangeParam()}; }
 
 // ── Fetch ─────────────────────────────────────────────────
-async function fetchSum(key){ const month=getRangeParam(), yr=document.getElementById('sy').value; const r=await fetch(`${APIS[key]}?action=summary&year=${yr}&month=${encodeURIComponent(month)}`); if(!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); }
+async function fetchSum(key){ const month=getRangeParam(),yr=document.getElementById('sy').value; const r=await fetch(`${APIS[key]}?action=summary&year=${yr}&month=${encodeURIComponent(month)}`); if(!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); }
 
 // ── Extract P&L ───────────────────────────────────────────
-function exPL(key, data){
+function exPL(key,data){
   if(!data||data.error) return null;
   const k=data.kpis||{};
-  if(key==='trading')  return {rev:k.netSales||0, gp:k.grossProfit||0, cogs:(k.netSales||0)-(k.grossProfit||0), opex:k.totalOpex||0, ni:k.netIncome||0, nm:k.netMargin||0, gm:k.grossMargin||0, accum:(data.bonus?.accumNetProfit)||0};
-  if(key==='builders') return {rev:k.netSales||0, gp:k.grossProfit||0, cogs:(k.netSales||0)-(k.grossProfit||0), opex:k.totalOpex||0, ni:k.netIncome||0, nm:k.netMargin||0, gm:k.grossMargin||0, accum:(data.bonus?.accumNetProfit)||0};
-  if(key==='manpower') return {rev:k.totalRevenue||0, gp:k.grossProfit||0, cogs:(k.totalRevenue||0)-(k.grossProfit||0), opex:k.gaExpenses||0, ni:k.netIncome||0, nm:k.netMargin||0, gm:k.grossMargin||0, accum:(data.bonus?.accumNetProfit)||0};
-  if(key==='loan')     return {rev:k.totalRevenue||0, gp:k.grossProfit||0, cogs:(k.totalRevenue||0)-(k.grossProfit||0), opex:k.totalExpenses||0, ni:k.netIncome||0, nm:k.netMargin||0, gm:k.gpMargin||0, accum:k.retainedEnd||0};
+  if(key==='trading')  return {rev:k.netSales||0,gp:k.grossProfit||0,cogs:(k.netSales||0)-(k.grossProfit||0),opex:k.totalOpex||0,ni:k.netIncome||0,nm:k.netMargin||0,gm:k.grossMargin||0,accum:(data.bonus?.accumNetProfit)||0};
+  if(key==='builders') return {rev:k.netSales||0,gp:k.grossProfit||0,cogs:(k.netSales||0)-(k.grossProfit||0),opex:k.totalOpex||0,ni:k.netIncome||0,nm:k.netMargin||0,gm:k.grossMargin||0,accum:(data.bonus?.accumNetProfit)||0};
+  if(key==='manpower') return {rev:k.totalRevenue||0,gp:k.grossProfit||0,cogs:(k.totalRevenue||0)-(k.grossProfit||0),opex:k.gaExpenses||0,ni:k.netIncome||0,nm:k.netMargin||0,gm:k.grossMargin||0,accum:(data.bonus?.accumNetProfit)||0};
+  if(key==='loan')     return {rev:k.totalRevenue||0,gp:k.grossProfit||0,cogs:(k.totalRevenue||0)-(k.grossProfit||0),opex:k.totalExpenses||0,ni:k.netIncome||0,nm:k.netMargin||0,gm:k.gpMargin||0,accum:k.retainedEnd||0};
   return null;
 }
 function allPL(){ return KEYS.map(k=>exPL(k,state[k])||{rev:0,gp:0,cogs:0,opex:0,ni:0,nm:0,gm:0,accum:0}); }
@@ -1033,102 +879,126 @@ const TICK={font:{family:'Inter',size:10},color:'#8d97ae'};
 const GRID={color:'#f0f2f7'};
 const YAX={callback:v=>v>=1e6?'₱'+(v/1e6).toFixed(1)+'M':v>=1e3?'₱'+(v/1e3).toFixed(0)+'K':'₱'+v};
 const TT={callbacks:{label:c=>` ${c.dataset.label}: ${F.k(c.raw,false)}`}};
-function mkC(id,cfg,isDrill=false){ const ctx=document.getElementById(id); if(!ctx) return null; const store=isDrill?dchart:charts; if(store[id]) store[id].destroy(); return store[id]=new Chart(ctx,cfg); }
+function mkC(id,cfg,isDrill=false){ const ctx=document.getElementById(id);if(!ctx)return null;const store=isDrill?dchart:charts;if(store[id])store[id].destroy();return store[id]=new Chart(ctx,cfg); }
 
 // ── Render biz card ───────────────────────────────────────
-function renderBizCard(key, data){
-  const ld=document.getElementById(`bizld-${key}`), dd=document.getElementById(`bizdata-${key}`);
+function renderBizCard(key,data){
+  const ld=document.getElementById(`bizld-${key}`),dd=document.getElementById(`bizdata-${key}`);
   const p=exPL(key,data);
-  if(!p){ if(ld){ld.textContent='⚠ Failed — Check API URL';ld.className='err-inline';} return; }
+  if(!p){if(ld){ld.textContent='⚠ Failed — Check API URL';ld.className='err-inline';}return;}
   if(ld) ld.style.display='none';
   if(dd) dd.style.display='block';
   const $=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
   const niNeg=p.ni<0;
   const niEl=document.getElementById(`bni-${key}`);
   if(niEl){niEl.textContent=F.k(p.ni);niEl.className='biz-ni-val '+(niNeg?'t-red':'t-green');}
-  $(`brev-${key}`,F.k(p.rev)); $(`bgp-${key}`,F.k(p.gp)); $(`bopex-${key}`,F.k(p.opex));
+  $(`brev-${key}`,F.k(p.rev));$(`bgp-${key}`,F.k(p.gp));$(`bopex-${key}`,F.k(p.opex));
   $(`bmarg-${key}`,`${F.p(p.gm)} / ${F.p(p.nm)}`);
-  const badge=document.getElementById(`bbadge-${key}`); if(badge) badge.textContent=niNeg?'▼ Net Loss':'▲ Net Profit';
-  const bar=document.getElementById(`bbar-${key}`); if(bar) bar.style.width=Math.min(100,Math.abs(p.nm)*500)+'%';
+  const badge=document.getElementById(`bbadge-${key}`);if(badge)badge.textContent=niNeg?'▼ Net Loss':'▲ Net Profit';
+  const bar=document.getElementById(`bbar-${key}`);if(bar)bar.style.width=Math.min(100,Math.abs(p.nm)*500)+'%';
 }
 
 // ── Render group KPIs ─────────────────────────────────────
 function renderGroupKPIs(){
   const pls=allPL();
-  const tRev=pls.reduce((s,p)=>s+p.rev,0), tGP=pls.reduce((s,p)=>s+p.gp,0),
-        tNI=pls.reduce((s,p)=>s+p.ni,0), tAcc=pls.reduce((s,p)=>s+p.accum,0),
+  const tRev=pls.reduce((s,p)=>s+p.rev,0),tGP=pls.reduce((s,p)=>s+p.gp,0),
+        tNI=pls.reduce((s,p)=>s+p.ni,0),tAcc=pls.reduce((s,p)=>s+p.accum,0),
         tOpex=pls.reduce((s,p)=>s+p.opex,0);
-  const gm=tRev>0?tGP/tRev:0, nm=tRev>0?tNI/tRev:0, opexPct=tRev>0?tOpex/tRev:0;
+  const gm=tRev>0?tGP/tRev:0,nm=tRev>0?tNI/tRev:0,opexPct=tRev>0?tOpex/tRev:0;
   const $=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
   const wd=(id,pct)=>{const e=document.getElementById(id);if(e)e.style.width=Math.min(100,Math.max(0,pct||0))+'%';};
 
-  $('gkv-revenue',F.k(tRev)); $('gks-revenue',`GP: ${F.k(tGP)} · Margin: ${F.p(gm)}`); $('gkb-revenue',`${KEYS.filter(k=>state[k]&&!state[k].error).length}/4 loaded`); wd('gkbar-revenue',60);
-  $('gkv-gp',F.k(tGP)); $('gks-gp',`Group gross margin: ${F.p(gm)}`); $('gkb-gp',`${F.p(gm)} GM`); wd('gkbar-gp',F.pp(gm/0.5));
-  // OPEX card
-  $('gkv-opex',F.k(tOpex)); $('gks-opex',`${F.p(opexPct)} of Revenue · All 4 businesses`); $('gkb-opex',`${F.p(opexPct)} OPEX Ratio`); wd('gkbar-opex',F.pp(opexPct/0.5));
-  const niEl=document.getElementById('gkv-ni'); const niNeg=tNI<0;
+  $('gkv-revenue',F.k(tRev));$('gks-revenue',`GP: ${F.k(tGP)} · Margin: ${F.p(gm)}`);$('gkb-revenue',`${KEYS.filter(k=>state[k]&&!state[k].error).length}/4 loaded`);wd('gkbar-revenue',60);
+  $('gkv-gp',F.k(tGP));$('gks-gp',`Group gross margin: ${F.p(gm)}`);$('gkb-gp',`${F.p(gm)} GM`);wd('gkbar-gp',F.pp(gm/0.5));
+  $('gkv-opex',F.k(tOpex));$('gks-opex',`${F.p(opexPct)} of Revenue · All 4 businesses`);$('gkb-opex',`${F.p(opexPct)} OPEX Ratio`);wd('gkbar-opex',F.pp(opexPct/0.5));
+  const niEl=document.getElementById('gkv-ni');const niNeg=tNI<0;
   if(niEl){niEl.textContent=F.k(tNI);niEl.className='gkval '+(niNeg?'t-red':'t-green');}
-  $('gks-ni',`Group net margin: ${F.p(nm)}`); $('gkb-ni',niNeg?'▼ Net Loss':'▲ Net Profit');
-  const niBar=document.getElementById('gkbar-ni'); if(niBar){niBar.style.background=niNeg?'var(--red)':'var(--navy)';wd('gkbar-ni',F.pp(Math.abs(nm)/0.2));}
-  // Performance Bonus = Total Net Income - Accumulated Net Profit
-  const tBonus = tNI - tAcc;
-  const bonusEl=document.getElementById('gkv-bonus'); if(bonusEl){bonusEl.textContent=F.k(tBonus);bonusEl.style.color=tBonus>0?'var(--orange)':'var(--text2)';}
-  $('gks-bonus',`Net Income − Accumulated Profit`);
+  $('gks-ni',`Group net margin: ${F.p(nm)}`);$('gkb-ni',niNeg?'▼ Net Loss':'▲ Net Profit');
+  const niBar=document.getElementById('gkbar-ni');if(niBar){niBar.style.background=niNeg?'var(--red)':'var(--navy)';wd('gkbar-ni',F.pp(Math.abs(nm)/0.2));}
+  const tBonus=tNI-tAcc;
+  const bonusEl=document.getElementById('gkv-bonus');if(bonusEl){bonusEl.textContent=F.k(tBonus);bonusEl.style.color=tBonus>0?'var(--orange)':'var(--text2)';}
+  $('gks-bonus','Net Income − Accumulated Profit');
   $('gkb-bonus',tBonus>0?`▲ ${F.p(tNI>0?tBonus/tNI:0)} of Net Income`:'No bonus allocated');
-  const bonusBar=document.getElementById('gkbar-bonus'); if(bonusBar) bonusBar.style.background=tBonus>0?'var(--orange)':'var(--border)';
-  wd('gkbar-bonus', tNI>0 ? Math.min(100, (tBonus/tNI)*100) : 0);
-
-  const accEl=document.getElementById('gkv-accum'); if(accEl){accEl.textContent=F.k(tAcc);accEl.style.color=tAcc<0?'var(--red)':'var(--purple)';}
+  const bonusBar=document.getElementById('gkbar-bonus');if(bonusBar)bonusBar.style.background=tBonus>0?'var(--orange)':'var(--border)';
+  wd('gkbar-bonus',tNI>0?Math.min(100,(tBonus/tNI)*100):0);
+  const accEl=document.getElementById('gkv-accum');if(accEl){accEl.textContent=F.k(tAcc);accEl.style.color=tAcc<0?'var(--red)':'var(--purple)';}
   $('gks-accum',tAcc<0?'Net accumulated loss YTD':'Total accumulated profit YTD');
   $('gkb-accum',tAcc<0?'▼ Accumulated Loss':'▲ Accumulated Profit');
-  const accBar=document.getElementById('gkbar-accum'); if(accBar) accBar.style.background=tAcc<0?'var(--red)':'var(--purple)';
+  const accBar=document.getElementById('gkbar-accum');if(accBar)accBar.style.background=tAcc<0?'var(--red)':'var(--purple)';
   wd('gkbar-accum',65);
   return {tRev,tGP,tNI,tAcc,tBonus,tOpex,gm,nm,opexPct};
 }
 
-// ══ GROUP DRILL PANELS ══
-const isMobile=()=>window.innerWidth<=900;
+// ── isMobile helper ───────────────────────────────────────
+function isMobile(){ return window.innerWidth<=900; }
 
-function openGroup(type){
-  if(activeGroup===type){closeGroupDrill();return;}
+// ══ GROUP DRILL PANELS ══
+
+// ★ FIX: Proper mobile drill panel positioning
+// On mobile, we physically move the drill panel after the anchor element.
+// On desktop, we put it back to its original position (after gkrow).
+function positionGroupDrill(){
+  const dp=document.getElementById('group-drill');
+  if(isMobile()){
+    const anchor=document.getElementById('mob-group-drill-anchor');
+    // Insert after anchor
+    anchor.parentNode.insertBefore(dp,anchor.nextSibling);
+  } else {
+    // Put back after gkrow on desktop: it naturally lives after .gkrow .mb16 in DOM
+    // Just leave it wherever it is on desktop since it's always visible in document flow
+    const gkrow=document.querySelector('.gkrow.mb16');
+    if(gkrow&&gkrow.nextSibling!==dp){
+      gkrow.parentNode.insertBefore(dp,gkrow.nextSibling);
+    }
+  }
+}
+
+function positionBizDrill(){
+  const dp=document.getElementById('biz-drill');
+  if(isMobile()){
+    const anchor=document.getElementById('mob-biz-drill-anchor');
+    anchor.parentNode.insertBefore(dp,anchor.nextSibling);
+  } else {
+    const bizGrid=document.querySelector('.biz-grid.mb16');
+    if(bizGrid&&bizGrid.nextSibling!==dp){
+      bizGrid.parentNode.insertBefore(dp,bizGrid.nextSibling);
+    }
+  }
+}
+
+window.openGroup = function(type){
+  if(activeGroup===type){window.closeGroupDrill();return;}
   activeGroup=type;
   Object.values(dchart).forEach(c=>c&&c.destroy()); dchart={};
   ['revenue','gp','opex','ni','bonus','accum'].forEach(t=>{const e=document.getElementById(`gkc-${t}`);if(e)e.classList.toggle('act',t===type);});
+  positionGroupDrill();
   const dp=document.getElementById('group-drill');
   dp.className='dpanel vis';
-  const colors={'revenue':'var(--blue)','gp':'var(--green)','opex':'var(--orange)','ni':'var(--navy)','bonus':'var(--orange)','accum':'var(--purple)'};
+  const colors={revenue:'var(--blue)',gp:'var(--green)',opex:'var(--orange)',ni:'var(--navy)',bonus:'var(--orange)',accum:'var(--purple)'};
   dp.style.borderLeftColor=colors[type]||'var(--navy)';
-  const titles={'revenue':'Total Revenue — Group Breakdown','gp':'Gross Profit — Group Breakdown','opex':'Total OPEX — Operating Expenses Breakdown','ni':'Net Income — Group P&L Waterfall','bonus':'Performance Bonus — By Business','accum':'Accumulated Net Profit — By Business'};
-  const subs={'revenue':'How each business contributes to total group revenue','gp':'Gross profit & gross margin per business','opex':'Operating expenses breakdown per business','ni':'Full consolidated income statement waterfall','bonus':'Performance bonus per business (Net Income − Accumulated Net Profit)','accum':'Retained earnings / accumulated profit per entity'};
+  const titles={revenue:'Total Revenue — Group Breakdown',gp:'Gross Profit — Group Breakdown',opex:'Total OPEX — Operating Expenses Breakdown',ni:'Net Income — Group P&L Waterfall',bonus:'Performance Bonus — By Business',accum:'Accumulated Net Profit — By Business'};
+  const subs={revenue:'How each business contributes to total group revenue',gp:'Gross profit & gross margin per business',opex:'Operating expenses breakdown per business',ni:'Full consolidated income statement waterfall',bonus:'Performance bonus per business (Net Income − Accumulated Net Profit)',accum:'Retained earnings / accumulated profit per entity'};
   document.getElementById('gdtitle').textContent=titles[type];
-  document.getElementById('gdsub').textContent=subs[type]+' · '+getMonthRange().label+' 2026';
-
-  // On mobile, move the drill panel into the mobile anchor
-  if(isMobile()){
-    const anchor=document.getElementById('mob-group-drill-anchor');
-    if(anchor && dp.parentNode!==anchor.parentNode.contains(dp)){
-      anchor.parentNode.insertBefore(dp, anchor.nextSibling);
-    }
-  }
-
+  document.getElementById('gdsub').textContent=subs[type]+' · '+getRangeLabel()+' 2026';
   setTimeout(()=>dp.scrollIntoView({behavior:'smooth',block:'nearest'}),80);
-  const pls=allPL(); const cont=document.getElementById('gdcont');
+  const pls=allPL();const cont=document.getElementById('gdcont');
   if(type==='revenue') renderGDRevenue(pls,cont);
   else if(type==='gp') renderGDGP(pls,cont);
   else if(type==='opex') renderGDOpex(pls,cont);
   else if(type==='ni') renderGDNI(pls,cont);
   else if(type==='bonus') renderGDBonus(pls,cont);
   else if(type==='accum') renderGDAccum(pls,cont);
-}
-function closeGroupDrill(){
+};
+
+window.closeGroupDrill = function(){
   activeGroup=null;
   document.getElementById('group-drill').className='dpanel';
   ['revenue','gp','opex','ni','bonus','accum'].forEach(t=>{const e=document.getElementById(`gkc-${t}`);if(e)e.classList.remove('act');});
   Object.values(dchart).forEach(c=>c&&c.destroy()); dchart={};
-}
+};
 
 function ilistRow(k,i,val,total,extra=''){
-  const m=META[k], pct=total>0?val/total:0, neg=val<0;
+  const m=META[k],pct=total>0?val/total:0,neg=val<0;
   return `<div class="irow"><div class="idot" style="background:${m.color}"></div><div class="iname">${m.label}</div>
     <div class="ibar-wrap"><div class="ibar-fill" style="width:${F.pp(total>0?Math.max(0,val)/total:0)}%;background:${m.color}"></div></div>
     <div class="iamt" style="color:${neg?'var(--red)':'inherit'}">${F.k(val)}</div><div class="ipct">${extra||F.p(pct)}</div></div>`;
@@ -1162,7 +1032,7 @@ function renderGDGP(pls,cont){
 }
 
 function renderGDOpex(pls,cont){
-  const tOpex=pls.reduce((s,p)=>s+p.opex,0), tRev=pls.reduce((s,p)=>s+p.rev,0);
+  const tOpex=pls.reduce((s,p)=>s+p.opex,0),tRev=pls.reduce((s,p)=>s+p.rev,0);
   const maxO=Math.max(...pls.map(p=>p.opex),1);
   cont.innerHTML=`<div class="dstats">${KEYS.map((k,i)=>{const p=pls[i],m=META[k];
     return `<div class="dstat"><div class="dstat-v" style="color:${COLORS[i]}">${F.k(p.opex)}</div><div class="dstat-l">${m.label} · ${F.p(p.rev>0?p.opex/p.rev:0)}</div></div>`;
@@ -1209,9 +1079,9 @@ function renderGDOpex(pls,cont){
 }
 
 function renderGDNI(pls,cont){
-  const tRev=pls.reduce((s,p)=>s+p.rev,0), tCOGS=pls.reduce((s,p)=>s+p.cogs,0),
-        tGP=pls.reduce((s,p)=>s+p.gp,0), tOpex=pls.reduce((s,p)=>s+p.opex,0),
-        tNI=pls.reduce((s,p)=>s+p.ni,0); const base=tRev||1;
+  const tRev=pls.reduce((s,p)=>s+p.rev,0),tCOGS=pls.reduce((s,p)=>s+p.cogs,0),
+        tGP=pls.reduce((s,p)=>s+p.gp,0),tOpex=pls.reduce((s,p)=>s+p.opex,0),
+        tNI=pls.reduce((s,p)=>s+p.ni,0);const base=tRev||1;
   const wf=[{label:'Total Revenue',val:tRev,type:'pos'},{label:'(-) Direct Costs',val:-tCOGS,type:'neg'},{label:'= Gross Profit',val:tGP,type:'sub',bold:true},{label:'(-) Total OPEX',val:-tOpex,type:'neg'},{label:'= Net Income',val:tNI,type:'sub',bold:true}];
   cont.innerHTML=`<div class="dstats">
     <div class="dstat"><div class="dstat-v">${F.k(tRev)}</div><div class="dstat-l">Total Revenue</div></div>
@@ -1223,7 +1093,7 @@ function renderGDNI(pls,cont){
     <div>
       <div class="ilist-lbl">Group P&L Waterfall</div>
       <div class="wfall mt8">${wf.map(r=>{
-        const bw=Math.min(100,Math.abs(r.val)/base*100), cl=r.type==='pos'?'var(--green)':r.type==='neg'?'var(--red)':'var(--navy)';
+        const bw=Math.min(100,Math.abs(r.val)/base*100),cl=r.type==='pos'?'var(--green)':r.type==='neg'?'var(--red)':'var(--navy)';
         return `<div class="wrow"><div class="wlbl" style="font-weight:${r.bold?700:400}">${r.label}</div>
           <div class="wbar-bg"><div class="wbar ${r.type==='pos'?'pos':r.type==='neg'?'neg':'sub'}" style="width:${bw}%"></div></div>
           <div class="wamt" style="color:${cl}">${F.k(r.val)}</div>
@@ -1266,7 +1136,7 @@ function renderGDBonus(pls,cont){
         </div>`;}).join('')}
       <div style="display:flex;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
         <span class="fw7">Group Total Bonus</span>
-        <span class="fw7 ${tot<0?'t-red':'t-orange'}" style="font-family:'JetBrains Mono',monospace;color:${tot<0?'var(--red)':'var(--orange)'}">${F.k(tot,false)}</span>
+        <span class="fw7" style="font-family:'JetBrains Mono',monospace;color:${tot<0?'var(--red)':'var(--orange)'}">${F.k(tot,false)}</span>
       </div>
       <div class="ilist-lbl mt12">How it's computed</div>
       <div style="font-size:11.5px;color:var(--text2);line-height:1.65">
@@ -1280,8 +1150,8 @@ function renderGDBonus(pls,cont){
           <div class="iname" style="font-weight:700">${m.label}</div>
           <div style="flex:1;font-size:11px;color:var(--text2);text-align:right">
             NI: <span style="font-family:'JetBrains Mono',monospace;font-weight:600">${F.k(p.ni)}</span>
-            &nbsp;−&nbsp; Bonus: <span style="font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--orange)">${F.k(b)}</span>
-            &nbsp;=&nbsp; Accum: <span style="font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--purple)">${F.k(p.accum)}</span>
+            &nbsp;−&nbsp;Bonus: <span style="font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--orange)">${F.k(b)}</span>
+            &nbsp;=&nbsp;Accum: <span style="font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--purple)">${F.k(p.accum)}</span>
           </div>
         </div>`;}).join('')}
     </div>
@@ -1296,7 +1166,7 @@ function renderGDBonus(pls,cont){
 }
 
 function renderGDAccum(pls,cont){
-  const tot=pls.reduce((s,p)=>s+p.accum,0), maxA=Math.max(...pls.map(p=>Math.abs(p.accum)),1);
+  const tot=pls.reduce((s,p)=>s+p.accum,0),maxA=Math.max(...pls.map(p=>Math.abs(p.accum)),1);
   cont.innerHTML=`<div class="dstats">${pls.map((p,i)=>`<div class="dstat"><div class="dstat-v" style="color:${p.accum<0?'var(--red)':COLORS[i]}">${F.k(p.accum)}</div><div class="dstat-l">${META[KEYS[i]].label}</div></div>`).join('')}</div>
   <div class="dcont">
     <div><div class="chartbox-d"><canvas id="dc-accum"></canvas></div></div>
@@ -1319,27 +1189,21 @@ function renderGDAccum(pls,cont){
 }
 
 // ══ BIZ DRILL PANELS ══
-function openBiz(key){
-  if(activeBiz===key){closeBizDrill();return;}
+window.openBiz = function(key){
+  if(activeBiz===key){window.closeBizDrill();return;}
   activeBiz=key;
   Object.values(dchart).forEach(c=>c&&c.destroy()); dchart={};
   KEYS.forEach(k=>{const e=document.getElementById(`bizc-${k}`);if(e)e.classList.toggle('act',k===key);});
+  positionBizDrill();
   const dp=document.getElementById('biz-drill');
   dp.className='dpanel vis'; dp.style.borderLeftColor=META[key].color;
-  const m=META[key], p=exPL(key,state[key]);
+  const m=META[key],p=exPL(key,state[key]);
   document.getElementById('bdtitle').textContent=`${m.label} — Detailed Breakdown`;
   document.getElementById('bdsub').textContent=`${m.type} · `+getRangeLabel()+' 2026';
-
-  // On mobile, move the drill panel into the mobile anchor
-  if(isMobile()){
-    const anchor=document.getElementById('mob-biz-drill-anchor');
-    if(anchor){ anchor.parentNode.insertBefore(dp, anchor.nextSibling); }
-  }
-
   setTimeout(()=>dp.scrollIntoView({behavior:'smooth',block:'nearest'}),80);
   const cont=document.getElementById('bdcont');
   if(!p){cont.innerHTML='<div class="ld-full">No data available — check API URL</div>';return;}
-  const pls=allPL(), niNeg=p.ni<0, base=p.rev||1;
+  const pls=allPL(),niNeg=p.ni<0,base=p.rev||1;
   const wf=[{label:'Revenue',val:p.rev,type:'pos'},{label:'(-) Direct Costs',val:-p.cogs,type:'neg'},{label:'= Gross Profit',val:p.gp,type:'sub',bold:true},{label:'(-) OPEX',val:-p.opex,type:'neg'},{label:'= Net Income',val:p.ni,type:'sub',bold:true}];
   cont.innerHTML=`<div class="dstats">
     <div class="dstat"><div class="dstat-v" style="color:${m.color}">${F.k(p.rev)}</div><div class="dstat-l">Total Revenue</div></div>
@@ -1351,7 +1215,7 @@ function openBiz(key){
     <div>
       <div class="ilist-lbl">P&L Waterfall</div>
       <div class="wfall mt8">${wf.map(r=>{
-        const bw=Math.min(100,Math.abs(r.val)/base*100), cl=r.type==='pos'?m.color:r.type==='neg'?'var(--red)':'var(--navy)';
+        const bw=Math.min(100,Math.abs(r.val)/base*100),cl=r.type==='pos'?m.color:r.type==='neg'?'var(--red)':'var(--navy)';
         return `<div class="wrow"><div class="wlbl" style="font-weight:${r.bold?700:400}">${r.label}</div>
           <div class="wbar-bg"><div class="wbar ${r.type==='pos'?'pos':r.type==='neg'?'neg':'sub'}" style="width:${bw}%;${r.type==='pos'?'background:'+m.color:''}"></div></div>
           <div class="wamt" style="color:${cl}">${F.k(r.val)}</div>
@@ -1360,7 +1224,7 @@ function openBiz(key){
       <div class="mt12" style="padding-top:12px;border-top:1px solid var(--border)">
         <div class="ilist-lbl">Summary Table</div>
         <div class="tbl-scroll"><table class="dtbl" style="margin-top:6px">
-          <thead><tr><th style="text-align:left">Item</th><th>Amount (₱)</th><th>% of Rev</th></tr></thead>
+          <thead><tr><th style="text-align:left">Item</th><th>Amount (&#8369;)</th><th>% of Rev</th></tr></thead>
           <tbody>
             <tr><td>Total Revenue</td><td class="mono">${F.k(p.rev,false)}</td><td class="mono">100%</td></tr>
             <tr><td>Direct Costs</td><td class="mono t-red">${F.k(p.cogs,false)}</td><td class="mono t-red">${F.p(p.cogs/base)}</td></tr>
@@ -1369,18 +1233,18 @@ function openBiz(key){
             <tr class="rtot"><td>Net Income</td><td class="mono ${niNeg?'t-red':'t-green'}">${F.k(p.ni,false)}</td><td class="mono ${niNeg?'t-red':'t-green'}">${F.p(p.nm)}</td></tr>
             <tr><td>Accum. Net Profit</td><td class="mono">${F.k(p.accum,false)}</td><td class="mono">—</td></tr>
           </tbody>
-        </table>
+        </table></div>
       </div>
     </div>
     <div>
       <div class="ilist-lbl">How this business compares — Revenue</div>
-      ${(()=>{const maxR=Math.max(...pls.map(q=>q.rev),1); return KEYS.map((k,i)=>{const q=pls[i],mk=META[k],isThis=k===key;
+      ${(()=>{const maxR=Math.max(...pls.map(q=>q.rev),1);return KEYS.map((k,i)=>{const q=pls[i],mk=META[k],isThis=k===key;
         return `<div class="irow" style="${isThis?'background:'+mk.colorA+';border-radius:6px;padding:4px 6px':''}">`
           +`<div class="idot" style="background:${mk.color}"></div><div class="iname" style="${isThis?'font-weight:700':''}">${mk.label}${isThis?' ◀':''}</div>`
           +`<div class="ibar-wrap"><div class="ibar-fill" style="width:${Math.min(100,q.rev/maxR*100)}%;background:${mk.color}"></div></div>`
           +`<div class="iamt">${F.k(q.rev)}</div></div>`;}).join('');})()}
       <div class="ilist-lbl mt12">How this business compares — Net Income</div>
-      ${(()=>{const maxN=Math.max(...pls.map(q=>Math.abs(q.ni)),1); return KEYS.map((k,i)=>{const q=pls[i],mk=META[k],neg=q.ni<0,isThis=k===key;
+      ${(()=>{const maxN=Math.max(...pls.map(q=>Math.abs(q.ni)),1);return KEYS.map((k,i)=>{const q=pls[i],mk=META[k],neg=q.ni<0,isThis=k===key;
         return `<div class="irow" style="${isThis?'background:'+mk.colorA+';border-radius:6px;padding:4px 6px':''}">`
           +`<div class="idot" style="background:${mk.color}"></div><div class="iname" style="${isThis?'font-weight:700':''}">${mk.label}${isThis?' ◀':''}</div>`
           +`<div class="ibar-wrap"><div class="ibar-fill" style="width:${Math.min(100,Math.abs(q.ni)/maxN*100)}%;background:${neg?'var(--red)':mk.color}"></div></div>`
@@ -1389,25 +1253,26 @@ function openBiz(key){
         <a href="${key==='trading'?'index.html':key==='builders'?'nam_builders.html':key==='manpower'?'alm_manpower.html':'loan.html'}"
           style="display:inline-flex;align-items:center;gap:6px;padding:9px 20px;background:${m.color};color:#fff;border-radius:8px;font-size:12.5px;font-weight:700;text-decoration:none;transition:.15s"
           onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
-          Open ${m.label} Full Dashboard →
+          Open ${m.label} Full Dashboard &#8594;
         </a>
       </div>
     </div>
   </div>`;
-}
-function closeBizDrill(){
+};
+
+window.closeBizDrill = function(){
   activeBiz=null;
   document.getElementById('biz-drill').className='dpanel';
   KEYS.forEach(k=>{const e=document.getElementById(`bizc-${k}`);if(e)e.classList.remove('act');});
   Object.values(dchart).forEach(c=>c&&c.destroy()); dchart={};
-}
+};
 
 // ── P&L TABLE ─────────────────────────────────────────────
 function renderPLTable(){
   const pls=allPL();
-  const tRev=pls.reduce((s,p)=>s+p.rev,0), tCOGS=pls.reduce((s,p)=>s+p.cogs,0),
-        tGP=pls.reduce((s,p)=>s+p.gp,0), tOpex=pls.reduce((s,p)=>s+p.opex,0),
-        tNI=pls.reduce((s,p)=>s+p.ni,0), tAcc=pls.reduce((s,p)=>s+p.accum,0);
+  const tRev=pls.reduce((s,p)=>s+p.rev,0),tCOGS=pls.reduce((s,p)=>s+p.cogs,0),
+        tGP=pls.reduce((s,p)=>s+p.gp,0),tOpex=pls.reduce((s,p)=>s+p.opex,0),
+        tNI=pls.reduce((s,p)=>s+p.ni,0),tAcc=pls.reduce((s,p)=>s+p.accum,0);
   const mc=(v,cls='')=>`<td class="mono ${cls}">${v===0?'—':F.k(v,false)}</td>`;
   const mp=(v)=>`<td class="mono" style="color:var(--text3)">${F.p(v)}</td>`;
   const mg=(v,cls='')=>`<td class="mono cG ${cls}">${v===0?'—':F.k(v,false)}</td>`;
@@ -1431,28 +1296,21 @@ function renderCharts(){
   const pls=allPL();
   const short=KEYS.map(k=>META[k].label.replace('NAM ','').replace('ALM ',''));
   const tRev=pls.reduce((s,p)=>s+p.rev,0)||1;
-
-  // Net Income bar
   mkC('ch-ni',{type:'bar',data:{labels:short,datasets:[{label:'Net Income',data:pls.map(p=>p.ni),
     backgroundColor:pls.map((p,i)=>p.ni<0?'rgba(220,38,38,.65)':COLORS[i]+'bb'),
     borderColor:pls.map((p,i)=>p.ni<0?'#dc2626':COLORS[i]),borderWidth:1.5,borderRadius:8}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},...TT},scales:{x:{grid:GRID,ticks:TICK},y:{grid:GRID,ticks:{...TICK,...YAX}}}}});
-
-  // Rev vs GP grouped
   mkC('ch-revgp',{type:'bar',data:{labels:short,datasets:[
     {label:'Revenue',data:pls.map(p=>p.rev),backgroundColor:COLORS.map(c=>c+'33'),borderColor:COLORS,borderWidth:1.5,borderRadius:6},
     {label:'Gross Profit',data:pls.map(p=>p.gp),backgroundColor:COLORS.map(c=>c+'99'),borderColor:COLORS,borderWidth:1.5,borderRadius:6}]},
     options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
       plugins:{legend:{labels:{font:{family:'Inter',size:10},boxWidth:10}},...TT},scales:{x:{grid:GRID,ticks:TICK},y:{grid:GRID,ticks:{...TICK,...YAX}}}}});
-
-  // Revenue share doughnut
   mkC('ch-pie',{type:'doughnut',data:{labels:KEYS.map(k=>META[k].label),datasets:[{data:pls.map(p=>p.rev),
     backgroundColor:COLORS.map(c=>c+'cc'),borderColor:COLORS,borderWidth:2,hoverOffset:8}]},
     options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{display:false},
       tooltip:{callbacks:{label:c=>` ${c.label}: ${F.k(c.raw,false)} (${F.p(c.raw/tRev)})`}}}}});
-
   document.getElementById('contrib-list').innerHTML=KEYS.map((k,i)=>{
-    const p=pls[i], m=META[k], pct=p.rev/tRev;
+    const p=pls[i],m=META[k],pct=p.rev/tRev;
     return `<div style="margin-bottom:10px">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
         <div style="display:flex;align-items:center;gap:6px">
@@ -1474,21 +1332,18 @@ function renderCharts(){
 // ── Status bar ─────────────────────────────────────────────
 function setStatus(html,type){
   const sb=document.getElementById('sbar');
-  const s={info:'background:var(--navy-a);border:1px solid #b5c9e0;color:var(--navy)',
-           ok:'background:var(--green-a);border:1px solid #86efac;color:var(--green)',
-           err:'background:var(--red-a);border:1px solid #fca5a5;color:var(--red)',
-           warn:'background:var(--orange-a);border:1px solid #fdba74;color:var(--orange)'};
-  sb.style.cssText=(s[type]||s.info); sb.style.display='flex'; sb.innerHTML=html;
+  const s={info:'background:var(--navy-a);border:1px solid #b5c9e0;color:var(--navy)',ok:'background:var(--green-a);border:1px solid #86efac;color:var(--green)',err:'background:var(--red-a);border:1px solid #fca5a5;color:var(--red)',warn:'background:var(--orange-a);border:1px solid #fdba74;color:var(--orange)'};
+  sb.style.cssText=(s[type]||s.info);sb.style.display='flex';sb.innerHTML=html;
 }
 
 // ── MAIN LOAD ─────────────────────────────────────────────
 async function load(){
-  const btn=document.getElementById('rfb'); btn.classList.add('spin');
-  const {label,apiMonth}=getMonthRange(), period=apiMonth==='YTD'?'YTD':label;
+  const btn=document.getElementById('rfb');btn.classList.add('spin');
+  const {label,apiMonth}=getMonthRange(),period=apiMonth==='YTD'?'YTD':label;
   document.getElementById('pbadge').textContent=period;
   document.getElementById('pl-period').textContent=apiMonth==='YTD'?'Full Year (YTD)':label+' 2026';
-  closeGroupDrill(); closeBizDrill();
-  KEYS.forEach(k=>{ state[k]=null;
+  window.closeGroupDrill();window.closeBizDrill();
+  KEYS.forEach(k=>{state[k]=null;
     const ld=document.getElementById(`bizld-${k}`),dd=document.getElementById(`bizdata-${k}`);
     if(ld){ld.style.display='block';ld.textContent='Loading…';ld.className='ld-inline';}
     if(dd) dd.style.display='none';
@@ -1496,11 +1351,10 @@ async function load(){
   setStatus('⏳ Fetching data from all 4 businesses…','info');
   const errors=[];
   await Promise.allSettled(KEYS.map(async k=>{
-    try{ const d=await fetchSum(k); state[k]=d; renderBizCard(k,d); }
-    catch(e){ errors.push(META[k].label); const ld=document.getElementById(`bizld-${k}`); if(ld){ld.textContent='⚠ Failed — Check API URL';ld.className='err-inline';} }
+    try{const d=await fetchSum(k);state[k]=d;renderBizCard(k,d);}
+    catch(e){errors.push(META[k].label);const ld=document.getElementById(`bizld-${k}`);if(ld){ld.textContent='⚠ Failed — Check API URL';ld.className='err-inline';}}
   }));
-  renderGroupKPIs(); renderPLTable(); renderCharts();
-  renderMobile();
+  renderGroupKPIs();renderPLTable();renderCharts();renderMobile();
   const ts=new Date().toLocaleTimeString('en-PH',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
   if(errors.length===KEYS.length) setStatus('⚠️ All API URLs need to be configured — paste your Google Apps Script URLs into the <code style="font-family:monospace;background:rgba(0,0,0,.08);padding:1px 4px;border-radius:3px">APIS</code> object in this file','err');
   else if(errors.length) setStatus(`⚠️ Partial load — failed: ${errors.join(', ')} · Check API URLs`,'warn');
@@ -1508,22 +1362,17 @@ async function load(){
   btn.classList.remove('spin');
 }
 
-// ── Auto-refresh every 30 seconds (silent) ──────────────────
-let autoRefreshTimer = null;
+// ── Auto-refresh ───────────────────────────────────────────
+let autoRefreshTimer=null;
 async function silentRefresh(){
   try{
-    await Promise.allSettled(KEYS.map(async k=>{
-      const d=await fetchSum(k); state[k]=d; renderBizCard(k,d);
-    }));
-    renderGroupKPIs(); renderPLTable(); renderCharts(); renderMobile();
+    await Promise.allSettled(KEYS.map(async k=>{const d=await fetchSum(k);state[k]=d;renderBizCard(k,d);}));
+    renderGroupKPIs();renderPLTable();renderCharts();renderMobile();
     const ts=new Date().toLocaleTimeString('en-PH',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
     setStatus(`✓ All 4 businesses loaded · Auto-updated · ${ts} · Click any card to drill down`,'ok');
   }catch(e){}
 }
-function startAutoRefresh(){
-  if(autoRefreshTimer) clearInterval(autoRefreshTimer);
-  autoRefreshTimer=setInterval(silentRefresh,30000);
-}
+function startAutoRefresh(){ if(autoRefreshTimer)clearInterval(autoRefreshTimer); autoRefreshTimer=setInterval(silentRefresh,30000); }
 
 load();
 startAutoRefresh();
@@ -1531,79 +1380,68 @@ startAutoRefresh();
 // ── MOBILE RENDERING ──────────────────────────────────────
 function renderMobile(){
   const pls=allPL();
-  const tRev=pls.reduce((s,p)=>s+p.rev,0), tGP=pls.reduce((s,p)=>s+p.gp,0),
-        tNI=pls.reduce((s,p)=>s+p.ni,0), tOpex=pls.reduce((s,p)=>s+p.opex,0),
-        tCogs=pls.reduce((s,p)=>s+p.cogs,0), tAcc=pls.reduce((s,p)=>s+p.accum,0);
-  const gm=tRev>0?tGP/tRev:0, nm=tRev>0?tNI/tRev:0;
+  const tRev=pls.reduce((s,p)=>s+p.rev,0),tGP=pls.reduce((s,p)=>s+p.gp,0),
+        tNI=pls.reduce((s,p)=>s+p.ni,0),tOpex=pls.reduce((s,p)=>s+p.opex,0),
+        tCogs=pls.reduce((s,p)=>s+p.cogs,0),tAcc=pls.reduce((s,p)=>s+p.accum,0);
+  const gm=tRev>0?tGP/tRev:0,nm=tRev>0?tNI/tRev:0;
   const $=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
   const setW=(id,pct)=>{const e=document.getElementById(id);if(e)e.style.width=Math.min(100,Math.max(0,pct||0))+'%';};
 
-  // Revenue
-  $('mkv-revenue',F.k(tRev)); $('mks-revenue',`GP: ${F.k(tGP)}`); setW('mkbar-revenue',60);
-  // GP
-  $('mkv-gp',F.k(tGP)); $('mks-gp',`Margin: ${F.p(gm)}`);
-  const gpBadge=document.getElementById('mkb-gp'); if(gpBadge) gpBadge.textContent=`▲ ${F.p(gm)} GM`;
+  $('mkv-revenue',F.k(tRev));$('mks-revenue',`GP: ${F.k(tGP)}`);setW('mkbar-revenue',60);
+  $('mkv-gp',F.k(tGP));$('mks-gp',`Margin: ${F.p(gm)}`);
+  const gpBadge=document.getElementById('mkb-gp');if(gpBadge)gpBadge.textContent=`▲ ${F.p(gm)} GM`;
   setW('mkbar-gp',Math.min(100,gm*100));
-  // OPEX
-  $('mkv-opex',F.k(tOpex)); $('mks-opex','Operating Expenses');
+  $('mkv-opex',F.k(tOpex));$('mks-opex','Operating Expenses');
   const opexPct=tRev>0?tOpex/tRev:0;
-  const opBadge=document.getElementById('mkb-opex'); if(opBadge) opBadge.textContent=`${F.p(opexPct)} of Revenue`;
+  const opBadge=document.getElementById('mkb-opex');if(opBadge)opBadge.textContent=`${F.p(opexPct)} of Revenue`;
   setW('mkbar-opex',Math.min(100,opexPct*100));
-  // NI
-  const niEl=document.getElementById('mkv-ni'); if(niEl){niEl.textContent=F.k(tNI);niEl.className='mk-val '+(tNI<0?'t-red':'t-green');}
+  const niEl=document.getElementById('mkv-ni');if(niEl){niEl.textContent=F.k(tNI);niEl.className='mk-val '+(tNI<0?'t-red':'t-green');}
   $('mks-ni',`Net Margin: ${F.p(nm)}`);
-  const niBadge=document.getElementById('mkb-ni'); if(niBadge){niBadge.textContent=tNI<0?'▼ Net Loss':'▲ Net Profit'; niBadge.style.background=tNI<0?'var(--red-a)':'var(--navy-a)'; niBadge.style.color=tNI<0?'var(--red)':'var(--navy)';}
-  const niBar=document.getElementById('mkbar-ni'); if(niBar) niBar.style.background=tNI<0?'var(--red)':'var(--navy)'; setW('mkbar-ni',Math.min(100,Math.abs(nm)*500));
-  // Performance Bonus
+  const niBadge=document.getElementById('mkb-ni');if(niBadge){niBadge.textContent=tNI<0?'▼ Net Loss':'▲ Net Profit';niBadge.style.background=tNI<0?'var(--red-a)':'var(--navy-a)';niBadge.style.color=tNI<0?'var(--red)':'var(--navy)';}
+  const niBar=document.getElementById('mkbar-ni');if(niBar)niBar.style.background=tNI<0?'var(--red)':'var(--navy)';setW('mkbar-ni',Math.min(100,Math.abs(nm)*500));
   const tBonus=tNI-tAcc;
-  const bonusMEl=document.getElementById('mkv-bonus'); if(bonusMEl){bonusMEl.textContent=F.k(tBonus);bonusMEl.style.color=tBonus>0?'var(--orange)':'var(--text2)';}
+  const bonusMEl=document.getElementById('mkv-bonus');if(bonusMEl){bonusMEl.textContent=F.k(tBonus);bonusMEl.style.color=tBonus>0?'var(--orange)':'var(--text2)';}
   $('mks-bonus','Net Income − Accumulated Profit');
-  const bonusMBadge=document.getElementById('mkb-bonus'); if(bonusMBadge) bonusMBadge.textContent=tBonus>0?`▲ ${F.p(tNI>0?tBonus/tNI:0)} of NI`:'No bonus';
-  setW('mkbar-bonus', tNI>0 ? Math.min(100,(tBonus/tNI)*100) : 0);
-  // Accumulated
-  const accEl=document.getElementById('mkv-accum'); if(accEl){accEl.textContent=F.k(tAcc);accEl.style.color=tAcc<0?'var(--red)':'var(--purple)';}
+  const bonusMBadge=document.getElementById('mkb-bonus');if(bonusMBadge)bonusMBadge.textContent=tBonus>0?`▲ ${F.p(tNI>0?tBonus/tNI:0)} of NI`:'No bonus';
+  setW('mkbar-bonus',tNI>0?Math.min(100,(tBonus/tNI)*100):0);
+  const accEl=document.getElementById('mkv-accum');if(accEl){accEl.textContent=F.k(tAcc);accEl.style.color=tAcc<0?'var(--red)':'var(--purple)';}
   $('mks-accum','Retained YTD');
-  const accBadge=document.getElementById('mkb-accum'); if(accBadge) accBadge.textContent=tAcc<0?'▼ Acc. Loss':'▲ Acc. Profit';
+  const accBadge=document.getElementById('mkb-accum');if(accBadge)accBadge.textContent=tAcc<0?'▼ Acc. Loss':'▲ Acc. Profit';
   setW('mkbar-accum',65);
-  // Actual vs target
   const loaded=KEYS.filter(k=>state[k]&&!state[k].error).length;
-  $('mkv-avt',`${loaded}/4`); $('mks-avt',`${loaded} businesses loaded`);
-  const avtBadge=document.getElementById('mkb-avt'); if(avtBadge) avtBadge.textContent=`▲ ${F.p(tRev>0?tRev/tRev:0)} Rev`;
+  $('mkv-avt',`${loaded}/4`);$('mks-avt',`${loaded} businesses loaded`);
+  const avtBadge=document.getElementById('mkb-avt');if(avtBadge)avtBadge.textContent=`${loaded}/4 OK`;
   setW('mkbar-avt',loaded/4*100);
 
-  // Business pills
   KEYS.forEach(k=>{
     const p=exPL(k,state[k]);
     const el=document.getElementById(`mbni-${k}`);
     if(el&&p){el.textContent=F.k(p.ni);el.className='mob-biz-pill-ni '+(p.ni<0?'t-red':'t-green');}
   });
 
-  // P&L summary card
   $('mpl-rev',F.k(tRev,false));
   $('mpl-cogs',tCogs>0?F.k(tCogs,false):'—');
   $('mpl-gp',F.k(tGP,false));
   $('mpl-gm',F.p(gm));
   $('mpl-opex',F.k(tOpex,false));
-  const niPL=document.getElementById('mpl-ni'); if(niPL){niPL.textContent=F.k(tNI,false);niPL.className='mob-pl-val '+(tNI<0?'t-red':'t-green');}
+  const niPL=document.getElementById('mpl-ni');if(niPL){niPL.textContent=F.k(tNI,false);niPL.className='mob-pl-val '+(tNI<0?'t-red':'t-green');}
   $('mpl-nm',F.p(nm));
 
-  // Mobile trend chart (monthly net income approximation using available data)
   renderMobileTrend(pls);
 }
 
 let mobTrendChart=null;
 function renderMobileTrend(pls){
-  const ctx=document.getElementById('mob-trend-chart'); if(!ctx) return;
+  const ctx=document.getElementById('mob-trend-chart');if(!ctx)return;
   const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const tRev=pls.reduce((s,p)=>s+p.rev,0);
   const tGP=pls.reduce((s,p)=>s+p.gp,0);
   const tNI=pls.reduce((s,p)=>s+p.ni,0);
-  // Simulate monthly trend: flat with current month actual
   const curMonth=new Date().getMonth();
   const revData=months.map((_,i)=>i<curMonth?Math.round(tRev/Math.max(1,curMonth)*(0.85+Math.random()*.3)):i===curMonth?tRev/Math.max(1,curMonth):null);
   const gpData=months.map((_,i)=>i<curMonth?Math.round(tGP/Math.max(1,curMonth)*(0.85+Math.random()*.3)):i===curMonth?tGP/Math.max(1,curMonth):null);
   const niData=months.map((_,i)=>i<curMonth?Math.round(tNI/Math.max(1,curMonth)*(0.7+Math.random()*.6)):i===curMonth?tNI/Math.max(1,curMonth):null);
-  if(mobTrendChart) mobTrendChart.destroy();
+  if(mobTrendChart)mobTrendChart.destroy();
   mobTrendChart=new Chart(ctx,{type:'line',data:{labels:months,datasets:[
     {label:'Revenue',data:revData,borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,.08)',borderWidth:2,pointRadius:3,pointBackgroundColor:'#2563eb',tension:.35,spanGaps:false},
     {label:'Gross Profit',data:gpData,borderColor:'#16a34a',backgroundColor:'rgba(22,163,74,.08)',borderWidth:2,pointRadius:3,pointBackgroundColor:'#16a34a',tension:.35,spanGaps:false},
