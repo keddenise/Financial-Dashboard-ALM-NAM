@@ -68,8 +68,9 @@ select.ctl{font-family:'Inter',sans-serif;font-size:12.5px;font-weight:500;
   padding:3px 10px;border-radius:8px}
 
 /* KPI CARDS */
-.krow{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:12px}
-@media(max-width:1200px){.krow{grid-template-columns:repeat(3,1fr)}}
+.krow{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-bottom:12px}
+@media(max-width:1400px){.krow{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:900px){.krow{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:700px){.krow{grid-template-columns:repeat(2,1fr)}}
 .kcard{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r2);
   padding:14px;cursor:pointer;transition:all .18s;box-shadow:var(--sh);position:relative;overflow:hidden}
@@ -81,6 +82,7 @@ select.ctl{font-family:'Inter',sans-serif;font-size:12.5px;font-weight:500;
 .kcard.act-red{color:var(--red);border-color:var(--red)}
 .kcard.act-purple{color:var(--purple);border-color:var(--purple)}
 .kcard.act-navy{color:var(--navy);border-color:var(--navy)}
+.kcard.act-teal{color:var(--teal);border-color:var(--teal)}
 .kh{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px}
 .kico{width:27px;height:27px;border-radius:7px;display:grid;place-items:center;font-size:12px;font-weight:700}
 .i-b{background:var(--blue-a);color:var(--blue)}
@@ -89,6 +91,7 @@ select.ctl{font-family:'Inter',sans-serif;font-size:12.5px;font-weight:500;
 .i-r{background:var(--red-a);color:var(--red)}
 .i-p{background:var(--purple-a);color:var(--purple)}
 .i-n{background:var(--navy-a);color:var(--navy)}
+.i-t{background:var(--teal-a);color:var(--teal)}
 .klbl{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--text3);margin-bottom:4px}
 .kval{font-size:21px;font-weight:800;color:var(--text);line-height:1.1;margin-bottom:3px}
 .ksub{font-size:11px;color:var(--text3);margin-bottom:8px}
@@ -99,10 +102,11 @@ select.ctl{font-family:'Inter',sans-serif;font-size:12.5px;font-weight:500;
 .bg-r{background:var(--red-a);color:var(--red)}
 .bg-p{background:var(--purple-a);color:var(--purple)}
 .bg-n{background:var(--navy-a);color:var(--navy)}
+.bg-t{background:var(--teal-a);color:var(--teal)}
 .kprog{height:3px;border-radius:2px;background:var(--border);margin-top:8px;overflow:hidden}
 .kbar{height:100%;border-radius:2px;transition:width .6s cubic-bezier(.4,0,.2,1)}
 .kb-b{background:var(--blue)}.kb-g{background:var(--green)}.kb-o{background:var(--orange)}
-.kb-r{background:var(--red)}.kb-p{background:var(--purple)}.kb-n{background:var(--navy)}
+.kb-r{background:var(--red)}.kb-p{background:var(--purple)}.kb-n{background:var(--navy)}.kb-t{background:var(--teal)}
 .xbtn{position:absolute;bottom:10px;right:10px;width:18px;height:18px;border-radius:50%;
   background:var(--surface2);border:1px solid var(--border);display:grid;place-items:center;
   font-size:9px;color:var(--text3)}
@@ -117,6 +121,7 @@ select.ctl{font-family:'Inter',sans-serif;font-size:12.5px;font-weight:500;
 .dpanel.col-red{border:1.5px solid var(--red)}
 .dpanel.col-purple{border:1.5px solid var(--purple)}
 .dpanel.col-navy{border:1.5px solid var(--navy)}
+.dpanel.col-teal{border:1.5px solid var(--teal)}
 @keyframes sld{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
 .dh{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
 .dtitle{font-size:14.5px;font-weight:800}
@@ -233,7 +238,7 @@ select.ctl{font-family:'Inter',sans-serif;font-size:12.5px;font-weight:500;
 .badge-wit{background:var(--green-a);color:var(--green);border-radius:5px;padding:1px 6px;font-size:10px;font-weight:700}
 .badge-na{background:var(--surface2);color:var(--text3);border-radius:5px;padding:1px 6px;font-size:10px;font-weight:700}
 
-.t-red{color:var(--red)}.t-green{color:var(--green)}.t-blue{color:var(--blue)}.t-orange{color:var(--orange)}
+.t-red{color:var(--red)}.t-green{color:var(--green)}.t-blue{color:var(--blue)}.t-orange{color:var(--orange)}.t-teal{color:var(--teal)}.t-purple{color:var(--purple)}
 .fw7{font-weight:700}
 .ld{display:flex;align-items:center;justify-content:center;min-height:200px;font-size:13px;color:var(--text3)}
 
@@ -351,14 +356,23 @@ html, body { overflow-x: hidden; max-width: 100vw; }
   </div></div>
   <div class="tr">
     <select class="ctl" id="sy" onchange="load()"><option value="2026">2026</option></select>
-    <select class="ctl" id="sm" onchange="load()">
-      <option value="YTD">All Months (YTD)</option>
-      <option value="January">January</option><option value="February">February</option>
-      <option value="March">March</option><option value="April">April</option>
-      <option value="May">May</option><option value="June">June</option>
-      <option value="July">July</option><option value="August">August</option>
-      <option value="September">September</option><option value="October">October</option>
-      <option value="November">November</option><option value="December">December</option>
+    <select class="ctl" id="sm-start" onchange="onRangeChange()">
+      <option value="YTD">All (YTD)</option>
+      <option value="January">Jan</option><option value="February">Feb</option>
+      <option value="March">Mar</option><option value="April">Apr</option>
+      <option value="May">May</option><option value="June">Jun</option>
+      <option value="July">Jul</option><option value="August">Aug</option>
+      <option value="September">Sep</option><option value="October">Oct</option>
+      <option value="November">Nov</option><option value="December">Dec</option>
+    </select>
+    <span id="range-to" style="color:var(--text3);font-size:11px;font-weight:600;display:none">→</span>
+    <select class="ctl" id="sm-end" onchange="onRangeChange()" style="display:none">
+      <option value="January">Jan</option><option value="February">Feb</option>
+      <option value="March">Mar</option><option value="April">Apr</option>
+      <option value="May">May</option><option value="June">Jun</option>
+      <option value="July">Jul</option><option value="August">Aug</option>
+      <option value="September">Sep</option><option value="October">Oct</option>
+      <option value="November">Nov</option><option value="December">Dec</option>
     </select>
     <div class="clk" id="clk">--:--:-- --</div>
     <button class="rfbtn" id="rfb" onclick="refreshActive()">
@@ -430,6 +444,15 @@ html, body { overflow-x: hidden; max-width: 100vw; }
       <div class="ksub" id="ks-ni">Net Margin: —</div>
       <div class="kbadge bg-r" id="kb-ni">Net Loss</div>
       <div class="kprog"><div class="kbar kb-r" id="kbar-ni" style="width:0%"></div></div>
+      <div class="xbtn">▼</div>
+    </div>
+    <div class="kcard" id="kc-pb" onclick="openDrill('perfbonus')">
+      <div class="kh"><div class="dot" style="background:var(--teal)"></div><div class="kico i-t">★</div></div>
+      <div class="klbl">Performance Bonus</div>
+      <div class="kval" id="kv-pb">—</div>
+      <div class="ksub" id="ks-pb">Net Income − Accum. Net Profit</div>
+      <div class="kbadge bg-t" id="kb-pb">—</div>
+      <div class="kprog"><div class="kbar kb-t" id="kbar-pb" style="width:0%"></div></div>
       <div class="xbtn">▼</div>
     </div>
     <div class="kcard" id="kc-bonus" onclick="openDrill('bonus')">
@@ -513,7 +536,7 @@ html, body { overflow-x: hidden; max-width: 100vw; }
 <script>
 // ══════════════════════════════════════════════════════════
 // ⚠️  PASTE YOUR APPS SCRIPT WEB APP URL HERE
-const API = 'https://script.google.com/macros/s/AKfycbwE8ZVI2zLrkkc-DAUzoulZTy9-m3Jg5TlN1bmal3WNPKFS2z-A_HAojCQlUjQ5Mxs0-g/exec';
+const API = 'https://script.google.com/macros/s/AKfycbxR9PhXNhSKDSLm7BGWg0vrm1UHh0y3XyFiFpePsVkXB_vA93XCp2bGK6aHHI50MnU/exec';
 // ══════════════════════════════════════════════════════════
 
 let activeCard = null;
@@ -546,9 +569,43 @@ function tick(){
 }
 setInterval(tick,1000); tick();
 
+// ── Range helpers ─────────────────────────────────────────
+const MONTH_ORDER=['January','February','March','April','May','June',
+                   'July','August','September','October','November','December'];
+function getRangeParam(){
+  const s=document.getElementById('sm-start').value;
+  if(s==='YTD') return 'YTD';
+  const e=document.getElementById('sm-end').value;
+  if(s===e) return s;
+  const si=MONTH_ORDER.indexOf(s), ei=MONTH_ORDER.indexOf(e);
+  return si<=ei ? `${s}-${e}` : `${e}-${s}`;
+}
+function getRangeLabel(){
+  const s=document.getElementById('sm-start').value;
+  if(s==='YTD') return 'YTD';
+  const e=document.getElementById('sm-end').value;
+  if(s===e) return s.slice(0,3);
+  const si=MONTH_ORDER.indexOf(s), ei=MONTH_ORDER.indexOf(e);
+  return si<=ei
+    ? `${s.slice(0,3)}–${e.slice(0,3)}`
+    : `${e.slice(0,3)}–${s.slice(0,3)}`;
+}
+function onRangeChange(){
+  const s=document.getElementById('sm-start').value;
+  const isYTD=(s==='YTD');
+  document.getElementById('sm-end').style.display   = isYTD ? 'none' : '';
+  document.getElementById('range-to').style.display = isYTD ? 'none' : '';
+  if(!isYTD){
+    const endSel=document.getElementById('sm-end');
+    const si=MONTH_ORDER.indexOf(s), ei=MONTH_ORDER.indexOf(endSel.value);
+    if(ei<si) endSel.value=s;
+  }
+  load();
+}
+
 async function api(action){
   const year=document.getElementById('sy').value;
-  const month=document.getElementById('sm').value;
+  const month=getRangeParam();
   const r=await fetch(`${API}?action=${action}&year=${year}&month=${encodeURIComponent(month)}`);
   if(!r.ok) throw new Error(`HTTP ${r.status}`);
   return r.json();
@@ -565,9 +622,9 @@ async function load(){
     const sb=document.getElementById('sbar');
     sb.style.display='flex'; sb.style.background=''; sb.style.borderColor=''; sb.style.color='';
     document.getElementById('stxt').textContent=`ALM Manpower · Updated · ${ts} · TVA ✓`;
-    const m=document.getElementById('sm').value;
-    document.getElementById('pbadge').textContent=m==='YTD'?'YTD':m.slice(0,3);
-    document.getElementById('plbadge').textContent=m==='YTD'?'YTD':m.slice(0,3);
+    const m=getRangeLabel();
+    document.getElementById('pbadge').textContent=m;
+    document.getElementById('plbadge').textContent=m;
     if(activeCard) openDrill(activeCard,true);
     startAutoRefresh();
   }catch(e){ showErr(e.message); }
@@ -602,12 +659,12 @@ function showErr(msg){
 // ── KPI Rendering ──────────────────────────────────────────
 function renderKPIs(d){
   const k=d.kpis, b=d.bonus, avt=d.avt;
-  const m=document.getElementById('sm').value;
+  const m=getRangeParam();
 
   // Revenue
   set('kv-rev',F.k(k.totalRevenue));
   set('ks-rev','Gross Profit: '+F.k(k.grossProfit));
-  set('kb-rev',m==='YTD'?'YTD Revenue':'Monthly Revenue');
+  set('kb-rev',m==='YTD'?'YTD Revenue':'Range Revenue');
   w('kbar-rev',F.pp(k.totalRevenue/10000000));
 
   // HC — FIX: now populated from AvT row 41
@@ -637,6 +694,18 @@ function renderKPIs(d){
   cl('kb-ni',niNeg?'bg-r':'bg-g');
   document.getElementById('kv-ni').className='kval '+(niNeg?'t-red':'t-green');
   w('kbar-ni',F.pp(Math.abs(k.netMargin)/0.2));
+
+  // Performance Bonus = Total Net Income - Accum. Net Profit
+  if(d.bonus){
+    const pb = (k.netIncome||0) - (d.bonus.accumNetProfit||0);
+    const pbNeg = pb < 0;
+    set('kv-pb', F.k(pb));
+    set('ks-pb', 'Net Income − Accum. Net Profit');
+    set('kb-pb', pbNeg ? '▼ Deficit' : '▲ Eligible');
+    cl('kb-pb', pbNeg ? 'bg-r' : 'bg-t');
+    document.getElementById('kv-pb').className = 'kval ' + (pbNeg ? 't-red' : 't-teal');
+    w('kbar-pb', F.pp(Math.abs(pb) / Math.max(Math.abs(k.netIncome||1), 1)));
+  }
 
   // Bonus — FIX #2 & #3: correct pct (decimal) + remaining badge
   if(b){
@@ -729,15 +798,16 @@ function chartOpts(label){
 
 // ── Drill Panel ─────────────────────────────────────────────
 const cardMeta={
-  revenue  :{color:'blue',  title:'Revenue — Detail',          sub:'Per-client breakdown, HC & WD'},
-  gp       :{color:'green', title:'Gross Profit — Detail',     sub:'Direct expenses & margin analysis'},
-  ga       :{color:'orange',title:'G&A Expenses — Detail',     sub:'Compensation & admin expense structure'},
-  netincome:{color:'red',   title:'Net Income — Detail',       sub:'Full P&L waterfall'},
-  bonus    :{color:'purple',title:'Bonus Monitoring — Detail', sub:'Commission progress by month'},
-  avt      :{color:'navy',  title:'Actual vs Target — Detail', sub:'Revenue / HC / P&L / Expense tracking'},
+  revenue  :{color:'blue',  title:'Revenue — Detail',               sub:'Per-client breakdown, HC & WD'},
+  gp       :{color:'green', title:'Gross Profit — Detail',          sub:'Direct expenses & margin analysis'},
+  ga       :{color:'orange',title:'G&A Expenses — Detail',          sub:'Compensation & admin expense structure'},
+  netincome:{color:'red',   title:'Net Income — Detail',            sub:'Full P&L waterfall'},
+  perfbonus:{color:'teal',  title:'Performance Bonus — Detail',     sub:'Total Net Income − Accum. Net Profit breakdown'},
+  bonus    :{color:'purple',title:'Bonus Monitoring — Detail',      sub:'Commission progress by month'},
+  avt      :{color:'navy',  title:'Actual vs Target — Detail',      sub:'Revenue / HC / P&L / Expense tracking'},
 };
-const cardKey={revenue:'kc-rev',gp:'kc-gp',ga:'kc-ga',netincome:'kc-ni',bonus:'kc-bonus',avt:'kc-avt'};
-const actMap ={revenue:'act-blue',gp:'act-green',ga:'act-orange',netincome:'act-red',bonus:'act-purple',avt:'act-navy'};
+const cardKey={revenue:'kc-rev',gp:'kc-gp',ga:'kc-ga',netincome:'kc-ni',perfbonus:'kc-pb',bonus:'kc-bonus',avt:'kc-avt'};
+const actMap ={revenue:'act-blue',gp:'act-green',ga:'act-orange',netincome:'act-red',perfbonus:'act-teal',bonus:'act-purple',avt:'act-navy'};
 
 async function openDrill(card, forceRefresh=false){
   if(activeCard===card && !forceRefresh){ closeD(); return; }
@@ -745,25 +815,31 @@ async function openDrill(card, forceRefresh=false){
   if(autoRefreshTimer){ clearInterval(autoRefreshTimer); autoRefreshTimer=null; }
   Object.keys(cardKey).forEach(k=>{
     const el=document.getElementById(cardKey[k]); if(!el) return;
-    el.classList.remove('act','act-blue','act-green','act-orange','act-red','act-purple','act-navy');
+    el.classList.remove('act','act-blue','act-green','act-orange','act-red','act-purple','act-navy','act-teal');
     if(k===card) el.classList.add('act',actMap[k]);
   });
   const meta=cardMeta[card];
   const dp=document.getElementById('dp');
   dp.className=`dpanel vis col-${meta.color}`;
   document.getElementById('dtitle').textContent=meta.title;
-  const m=document.getElementById('sm').value;
-  document.getElementById('dsub').textContent=meta.sub+' · '+(m==='YTD'?'YTD':m)+' '+document.getElementById('sy').value;
+  document.getElementById('dsub').textContent=meta.sub+' · '+getRangeLabel()+' '+document.getElementById('sy').value;
   document.getElementById('dc').innerHTML='<div class="ld">Loading…</div>';
   Object.values(drillCharts).forEach(c=>c&&c.destroy()); drillCharts={};
   setTimeout(()=>dp.scrollIntoView({behavior:'smooth',block:'nearest'}),100);
   let data=drillCache[card];
   if(!data||forceRefresh){
-    const actionMap={revenue:'revenue',gp:'gp',ga:'ga',netincome:'netincome',bonus:'bonus',avt:'avt'};
+    const actionMap={revenue:'revenue',gp:'gp',ga:'ga',netincome:'netincome',perfbonus:'bonus',bonus:'bonus',avt:'avt'};
     data=await api(actionMap[card]);
+    // For perfbonus, also fetch netincome to get netIncome value
+    if(card==='perfbonus'){
+      try{
+        const niData=await api('netincome');
+        data={...data, netIncome: niData.netIncome, gaExpenses: niData.gaExpenses, totalRevenue: niData.totalRevenue, grossProfit: niData.grossProfit, waterfall: niData.waterfall, trend: niData.trend};
+      }catch(e){ /* fall back to bonus data only */ }
+    }
     drillCache[card]=data;
   }
-  const renders={revenue:renderRevenue,gp:renderGP,ga:renderGA,netincome:renderNI,bonus:renderBonus,avt:renderAVT};
+  const renders={revenue:renderRevenue,gp:renderGP,ga:renderGA,netincome:renderNI,perfbonus:renderPerfBonus,bonus:renderBonus,avt:renderAVT};
   if(renders[card]) renders[card](data);
 }
 
@@ -1057,6 +1133,133 @@ function renderNI(d){
     {label:'Gross Profit',data:d.trend.map(t=>t.grossProfit),borderColor:'#16a34a',fill:false,tension:.3,pointRadius:2},
     {label:'G&A Expenses',data:d.trend.map(t=>t.gaExpenses), borderColor:'#ea580c',fill:false,tension:.3,pointRadius:2,borderDash:[4,2]},
     {label:'Net Income',  data:d.trend.map(t=>t.netIncome),  borderColor:'#dc2626',fill:false,tension:.3,pointRadius:3,borderDash:[3,3]},
+  ]);
+}
+
+// ══════════════════════════════════════════════════════════
+// PERFORMANCE BONUS DRILL
+// Formula: Total Net Income - Accum. Net Profit = Performance Bonus
+// ══════════════════════════════════════════════════════════
+function renderPerfBonus(d){
+  // d comes from the 'perfbonus' API action, which returns the same shape as 'bonus'
+  // but we also need netIncome from kpis — we embed it via the bonus data's accumNetProfit
+  // The drill data should include: netIncome, accumNetProfit, monthRows, annualTarget
+  const netIncome     = d.netIncome     ?? (d.totalEarned ?? 0);
+  const accumNetProfit= d.accumNetProfit?? 0;
+  const perfBonus     = netIncome - accumNetProfit;
+  const perfBonusNeg  = perfBonus < 0;
+
+  const monthLabels = (d.monthRows||[]).map(r => r.month);
+
+  // Build per-month performance bonus = monthly netProfit - running accumNetProfit delta
+  // We'll show the monthly Net Profit vs Accum Net Profit line and highlight the bonus
+  const rows = (d.monthRows||[]).map((r, i, arr) => {
+    const prevAccum = i === 0 ? 0 : (arr[i-1].accumNetProfit||0);
+    const monthBonus = (r.netProfit||0) - (prevAccum||0);
+    return { ...r, monthBonus };
+  });
+
+  document.getElementById('dc').innerHTML = `
+  <div style="background:var(--teal-a);border:1.5px solid var(--teal);border-radius:var(--r);padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;gap:10px">
+    <div style="font-size:11px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.4px;min-width:140px">Formula</div>
+    <div style="font-size:13px;font-weight:700;color:var(--text)">
+      Total Net Income &nbsp;<span style="color:var(--text3)">₱${(Math.abs(netIncome)/1e6).toFixed(2)}M</span>
+      &nbsp;−&nbsp; Accum. Net Profit &nbsp;<span style="color:var(--text3)">₱${(Math.abs(accumNetProfit)/1e6).toFixed(2)}M</span>
+      &nbsp;=&nbsp; <span style="color:${perfBonusNeg?'var(--red)':'var(--teal)'}">Performance Bonus: ${F.k(perfBonus)}</span>
+    </div>
+  </div>
+
+  <div class="dstats-5">
+    <div class="dstat">
+      <div class="dstat-v t-blue">${F.k(netIncome)}</div>
+      <div class="dstat-l">Total Net Income</div>
+    </div>
+    <div class="dstat">
+      <div class="dstat-v ${accumNetProfit<0?'t-red':'t-green'}">${F.k(accumNetProfit)}</div>
+      <div class="dstat-l">Accum. Net Profit</div>
+    </div>
+    <div class="dstat" style="border:1.5px solid var(--teal)">
+      <div class="dstat-v ${perfBonusNeg?'t-red':'t-teal'}">${F.k(perfBonus)}</div>
+      <div class="dstat-l">Performance Bonus</div>
+    </div>
+    <div class="dstat">
+      <div class="dstat-v">${d.monthsMet||0}/12</div>
+      <div class="dstat-l">Profitable Months</div>
+    </div>
+    <div class="dstat">
+      <div class="dstat-v">${perfBonusNeg ? '<span class="t-red">Deficit</span>' : '<span class="t-teal">Eligible</span>'}</div>
+      <div class="dstat-l">Bonus Status</div>
+    </div>
+  </div>
+
+  <div class="dcont" style="margin-bottom:14px">
+    <div>
+      <div class="ilist-title">Net Income vs Accum. Net Profit — Monthly</div>
+      <div class="cwrap"><canvas id="pb-trend"></canvas></div>
+    </div>
+    <div>
+      <div class="ilist-title">Monthly Performance Bonus Contribution</div>
+      <div class="cwrap"><canvas id="pb-bar"></canvas></div>
+    </div>
+  </div>
+
+  <div style="margin-top:14px">
+    <div class="ilist-title">Monthly Performance Bonus Breakdown</div>
+    <div class="exp-scroll">
+      <table class="dtbl">
+        <thead><tr>
+          <th>Month</th>
+          <th>Net Income (₱)</th>
+          <th>Accum. Net Profit (₱)</th>
+          <th>Monthly Bonus (₱)</th>
+          <th>Cumul. Perf. Bonus (₱)</th>
+          <th>P&amp;L Status</th>
+        </tr></thead>
+        <tbody>
+          ${rows.map((r, i) => {
+            const cumulBonus = (r.netProfit||0) - (r.accumNetProfit||0) + (r.accumNetProfit||0) - (i===0?0:(rows[i-1].accumNetProfit||0));
+            // Running cumulative performance bonus = netIncome_ytd_up_to_this_month - accumNetProfit_this_month
+            // We approximate by using accumNetProfit at each row
+            const runningPB = (r.accumNetProfit||0) !== 0
+              ? ((r.netProfit||0) - (r.accumNetProfit||0))
+              : 0;
+            return `<tr>
+              <td class="fw7">${r.month}</td>
+              <td class="mono ${(r.netProfit||0)<0?'t-red':(r.netProfit||0)>0?'t-green':''}">${r.netProfit!==0?F.k(r.netProfit,false):'—'}</td>
+              <td class="mono ${(r.accumNetProfit||0)<0?'t-red':(r.accumNetProfit||0)>0?'t-green':''}">${r.accumNetProfit!==0?F.k(r.accumNetProfit,false):'—'}</td>
+              <td class="mono ${r.monthBonus<0?'t-red':r.monthBonus>0?'t-teal':''}">${r.netProfit!==0?F.k(r.monthBonus,false):'—'}</td>
+              <td class="mono ${(r.netProfit-r.accumNetProfit)<0?'t-red':(r.netProfit-r.accumNetProfit)>0?'t-teal':''}">${r.netProfit!==0?F.k(r.netProfit-(r.accumNetProfit||0),false):'—'}</td>
+              <td>${r.netProfit<0?'<span class="badge-beh">▼ Loss</span>':r.netProfit>0?'<span class="badge-met">▲ Profit</span>':'<span class="badge-pen">—</span>'}</td>
+            </tr>`;
+          }).join('')}
+          <tr class="tbl-bold">
+            <td>TOTAL / YTD</td>
+            <td class="mono ${netIncome<0?'t-red':'t-green'}">${F.k(netIncome,false)}</td>
+            <td class="mono ${accumNetProfit<0?'t-red':'t-green'}">${F.k(accumNetProfit,false)}</td>
+            <td class="mono">—</td>
+            <td class="mono ${perfBonusNeg?'t-red':'t-teal'}">${F.k(perfBonus,false)}</td>
+            <td>${perfBonusNeg?'<span class="badge-beh">▼ Deficit</span>':'<span class="badge-met">✓ Eligible</span>'}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+
+  // Line chart: Net Income vs Accum. Net Profit monthly
+  lineChart('pb-trend', monthLabels, [
+    {label:'Net Income',      data:rows.map(r=>r.netProfit),      borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,.07)',fill:true,tension:.3,pointRadius:3},
+    {label:'Accum. Net Profit',data:rows.map(r=>r.accumNetProfit),borderColor:'#16a34a',fill:false,tension:.3,pointRadius:3,borderDash:[4,2]},
+    {label:'Perf. Bonus',     data:rows.map(r=>r.netProfit-r.accumNetProfit), borderColor:'#0891b2',fill:false,tension:.3,pointRadius:4},
+  ]);
+
+  // Bar chart: monthly bonus contribution
+  barChart('pb-bar', monthLabels, [
+    {
+      label:'Monthly Bonus',
+      data: rows.map(r=>r.monthBonus),
+      backgroundColor: rows.map(r=>r.monthBonus>=0?'rgba(8,145,178,.7)':'rgba(220,38,38,.7)'),
+      borderRadius: 3,
+    },
   ]);
 }
 
