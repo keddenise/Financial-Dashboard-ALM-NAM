@@ -70,7 +70,7 @@ select.ctl{font-family:'Inter',sans-serif;font-size:12.5px;font-weight:500;
   padding:3px 10px;border-radius:8px}
 
 /* ── KPI CARDS ── */
-.krow{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:12px}
+.krow{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:12px}
 @media(max-width:1200px){.krow{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:700px){.krow{grid-template-columns:repeat(2,1fr)}}
 .kcard{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r2);
@@ -332,14 +332,23 @@ html, body { overflow-x: hidden; max-width: 100vw; }
   </div></div>
   <div class="tr">
     <select class="ctl" id="sy" onchange="load()"><option value="2026">2026</option></select>
-    <select class="ctl" id="sm" onchange="load()">
-      <option value="YTD">All Months (YTD)</option>
-      <option value="January">January</option><option value="February">February</option>
-      <option value="March">March</option><option value="April">April</option>
-      <option value="May">May</option><option value="June">June</option>
-      <option value="July">July</option><option value="August">August</option>
-      <option value="September">September</option><option value="October">October</option>
-      <option value="November">November</option><option value="December">December</option>
+    <select class="ctl" id="sm-from" onchange="onRangeChange()">
+      <option value="YTD">All (YTD)</option>
+      <option value="January">Jan</option><option value="February">Feb</option>
+      <option value="March">Mar</option><option value="April">Apr</option>
+      <option value="May">May</option><option value="June">Jun</option>
+      <option value="July">Jul</option><option value="August">Aug</option>
+      <option value="September">Sep</option><option value="October">Oct</option>
+      <option value="November">Nov</option><option value="December">Dec</option>
+    </select>
+    <span id="range-sep" style="font-size:11px;color:var(--text3);font-weight:600;display:none">–</span>
+    <select class="ctl" id="sm-to" onchange="onRangeChange()" style="display:none">
+      <option value="January">Jan</option><option value="February">Feb</option>
+      <option value="March">Mar</option><option value="April">Apr</option>
+      <option value="May">May</option><option value="June">Jun</option>
+      <option value="July">Jul</option><option value="August">Aug</option>
+      <option value="September">Sep</option><option value="October">Oct</option>
+      <option value="November">Nov</option><option value="December">Dec</option>
     </select>
     <div class="clk" id="clk">--:--:-- --</div>
     <button class="rfbtn" id="rfb" onclick="load()">
@@ -413,15 +422,7 @@ html, body { overflow-x: hidden; max-width: 100vw; }
       <div class="kprog"><div class="kbar kb-r" id="kbar-ni" style="width:0%"></div></div>
       <div class="xbtn">▼</div>
     </div>
-    <div class="kcard" id="kc-collection" onclick="openDrill('collection')">
-      <div class="kh"><div class="dot" style="background:var(--blue)"></div><div class="kico i-b">✓</div></div>
-      <div class="klbl">Collection Rate</div>
-      <div class="kval" id="kv-collection">—</div>
-      <div class="ksub" id="ks-collection">Collected vs Collectible</div>
-      <div class="kbadge bg-b" id="kb-collection">—</div>
-      <div class="kprog"><div class="kbar kb-b" id="kbar-collection" style="width:0%"></div></div>
-      <div class="xbtn">▼</div>
-    </div>
+
   </div>
 
   <!-- DRILL PANEL -->
@@ -458,7 +459,7 @@ html, body { overflow-x: hidden; max-width: 100vw; }
 <script>
 // ══════════════════════════════════════
 // ⚠️  PASTE YOUR LOAN GAS URL HERE
-const API = 'https://script.google.com/macros/s/AKfycbxuikTRs8yOUJKBObZ4WKyxM5naHf4-0RyJlB8qdlgnbJYFcta-nhoex4g7IaWMdGo/exec';
+const API = 'https://script.google.com/macros/s/AKfycbydh4VmXIWnsLYI739TNc7dshsaeVXV1wAar8jUsThioFem4cM3ujHWed9ONQ4xftk/exec';
 // ══════════════════════════════════════
 
 let activeCard = null;
@@ -488,9 +489,39 @@ function set(id,txt){ const e=document.getElementById(id); if(e) e.textContent=t
 function w(id,pct){ const e=document.getElementById(id); if(e) e.style.width=Math.min(100,pct)+'%'; }
 function cl(id,cls){ const e=document.getElementById(id); if(!e) return; e.className='kbadge '+cls; }
 
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+function getRange(){
+  const from=document.getElementById('sm-from').value;
+  const toEl=document.getElementById('sm-to');
+  if(from==='YTD') return {from:'YTD',to:'YTD',label:'YTD',isYTD:true};
+  const to=toEl.value;
+  const fi=MONTHS.indexOf(from), ti=MONTHS.indexOf(to);
+  if(ti<fi){ toEl.value=from; return {from,to:from,label:from.slice(0,3),isYTD:false}; }
+  const label=fi===ti?from.slice(0,3):from.slice(0,3)+'\u2013'+to.slice(0,3);
+  return {from,to,label,isYTD:false};
+}
+
+function onRangeChange(){
+  const from=document.getElementById('sm-from').value;
+  const toEl=document.getElementById('sm-to');
+  const toSep=document.getElementById('range-sep');
+  if(from==='YTD'){
+    toEl.style.display='none';
+    if(toSep) toSep.style.display='none';
+  } else {
+    toEl.style.display='';
+    if(toSep) toSep.style.display='';
+    const fi=MONTHS.indexOf(from), ti=MONTHS.indexOf(toEl.value);
+    if(ti<fi) toEl.value=from;
+  }
+  load();
+}
+
 async function api(action){
-  const year=document.getElementById('sy').value, month=document.getElementById('sm').value;
-  const r=await fetch(`${API}?action=${action}&year=${year}&month=${encodeURIComponent(month)}`);
+  const year=document.getElementById('sy').value;
+  const {from,to}=getRange();
+  const r=await fetch(`${API}?action=${action}&year=${year}&monthFrom=${encodeURIComponent(from)}&monthTo=${encodeURIComponent(to)}&month=${encodeURIComponent(from)}`);
   if(!r.ok) throw new Error(`HTTP ${r.status}`);
   return r.json();
 }
@@ -505,9 +536,9 @@ async function load(){
     const sb=document.getElementById('sbar');
     sb.style.display='flex';sb.style.background='';sb.style.borderColor='';sb.style.color='';
     document.getElementById('stxt').textContent=`NQCL Loan · Updated · ${ts} · TVA ✓`;
-    const mo=document.getElementById('sm').value;
-    document.getElementById('pbadge').textContent=mo==='YTD'?'YTD':mo.slice(0,3);
-    document.getElementById('plbadge').textContent=mo==='YTD'?'YTD':mo.slice(0,3);
+    const {label:moLabel}=getRange();
+    document.getElementById('pbadge').textContent=moLabel;
+    document.getElementById('plbadge').textContent=moLabel;
     document.getElementById('ptitle').textContent=`NAM Quick Cash Loan — FY ${document.getElementById('sy').value}`;
     if(activeCard) openDrill(activeCard,true);
   }catch(e){ showErr(e.message); }
@@ -521,11 +552,11 @@ function showErr(msg){
 }
 
 function renderKPIs(d){
-  const k=d.kpis, c=d.collection, avt=d.avt;
+  const k=d.kpis, avt=d.avt;
   // Releases
   set('kv-releases',F.k(k.totalReleases));
   set('ks-releases',`Revenue: ${F.k(k.totalRevenue)}`);
-  set('kb-releases',document.getElementById('sm').value==='YTD'?'YTD Releases':'Monthly');
+  set('kb-releases',getRange().isYTD?'YTD Releases':getRange().label);
   w('kbar-releases',F.pp(k.totalReleases/5000000));
   // Revenue
   set('kv-revenue',F.k(k.totalRevenue));
@@ -548,14 +579,7 @@ function renderKPIs(d){
   set('kb-ni',niNeg?'▼ Net Loss':'▲ Net Profit');
   cl('kb-ni',niNeg?'bg-r':'bg-g');
   document.getElementById('kv-ni').className='kval '+(niNeg?'t-red':'t-green');
-  // Collection
-  if(c){
-    set('kv-collection',F.p(c.collectionRate));
-    set('ks-collection',`Collected: ${F.k(c.totalCollected)}`);
-    set('kb-collection',`${F.k(c.totalUncollected)} uncollected`);
-    cl('kb-collection',c.collectionRate>=0.9?'bg-g':c.collectionRate>=0.7?'bg-o':'bg-r');
-    w('kbar-collection',F.pp(c.collectionRate));
-  }
+
 }
 
 // Card metadata
@@ -564,10 +588,10 @@ const cardMeta={
   revenue:  {color:'green', title:'Revenue — Detail',     sub:'Interest income & fees breakdown'},
   opex:     {color:'orange',title:'Expenses — Detail',    sub:'Commission & G&A breakdown'},
   netincome:{color:'red',   title:'Net Income — Detail',  sub:'Full P&L waterfall'},
-  collection:{color:'blue', title:'Collection — Detail',  sub:'Monthly collection performance'},
+
 };
-const cardKey={releases:'kc-releases',revenue:'kc-revenue',opex:'kc-opex',netincome:'kc-ni',collection:'kc-collection'};
-const actMap={releases:'act-purple',revenue:'act-green',opex:'act-orange',netincome:'act-red',collection:'act-blue'};
+const cardKey={releases:'kc-releases',revenue:'kc-revenue',opex:'kc-opex',netincome:'kc-ni'};
+const actMap={releases:'act-purple',revenue:'act-green',opex:'act-orange',netincome:'act-red'};
 
 // ── Note: kc-gp opens revenue drill ──────────────────────────
 document.getElementById('kc-gp').addEventListener('click',()=>openDrill('revenue'));
@@ -585,17 +609,17 @@ async function openDrill(card,forceRefresh=false){
   const dp=document.getElementById('dp');
   dp.className=`dpanel vis col-${meta.color}`;
   document.getElementById('dtitle').textContent=meta.title;
-  document.getElementById('dsub').textContent=meta.sub+' · '+(document.getElementById('sm').value==='YTD'?'YTD':document.getElementById('sm').value)+' 2026';
+  document.getElementById('dsub').textContent=meta.sub+' · '+getRange().label+' 2026';
   document.getElementById('dc').innerHTML='<div class="ld">Loading…</div>';
   Object.values(drillCharts).forEach(c=>c&&c.destroy()); drillCharts={};
   setTimeout(()=>dp.scrollIntoView({behavior:'smooth',block:'nearest'}),100);
   let data=drillCache[card];
   if(!data){
-    const actionMap={releases:'revenue',revenue:'revenue',opex:'opex',netincome:'netincome',collection:'collection'};
+    const actionMap={releases:'revenue',revenue:'revenue',opex:'opex',netincome:'netincome'};
     data=await api(actionMap[card]);
     drillCache[card]=data;
   }
-  const renders={releases:renderReleases,revenue:renderRevenue,opex:renderOpex,netincome:renderNI,collection:renderCollection};
+  const renders={releases:renderReleases,revenue:renderRevenue,opex:renderOpex,netincome:renderNI};
   renders[card]&&renders[card](data);
 }
 
@@ -874,75 +898,6 @@ function renderNI(d){
   }).join('');
 }
 
-// ══════════════════════════════════════
-// DRILL: COLLECTION
-// ══════════════════════════════════════
-function renderCollection(d){
-  const tot=d.totals||{};
-  const rate=tot.collectible>0?tot.collected/tot.collectible:0;
-  const rateC=rate>=0.9?'t-green':rate>=0.7?'t-orange':'t-red';
-  document.getElementById('dc').innerHTML=`
-    <div class="dstats">
-      <div class="dstat"><div class="dstat-v">${F.k(tot.releases)}</div><div class="dstat-l">Total Releases</div></div>
-      <div class="dstat"><div class="dstat-v">${F.k(tot.collectible)}</div><div class="dstat-l">Total Collectible</div></div>
-      <div class="dstat"><div class="dstat-v t-green">${F.k(tot.collected)}</div><div class="dstat-l">Total Collected</div></div>
-      <div class="dstat"><div class="dstat-v ${rateC}">${F.p(rate)}</div><div class="dstat-l">Collection Rate</div></div>
-    </div>
-    <div class="dstats-3">
-      <div class="dstat"><div class="dstat-v t-orange">${F.k(tot.active)}</div><div class="dstat-l">Active Uncollected</div></div>
-      <div class="dstat"><div class="dstat-v t-red">${F.k(tot.inactive)}</div><div class="dstat-l">Inactive / Bad Debts</div></div>
-      <div class="dstat"><div class="dstat-v t-red">${F.k(tot.badDebts)}</div><div class="dstat-l">Total Bad Debts</div></div>
-    </div>
-    <div class="vtog">
-      <button class="vbtn on" id="vb-chart-collection" onclick="vtoggle('collection','chart')">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> Chart
-      </button>
-      <button class="vbtn" id="vb-table-collection" onclick="vtoggle('collection','table')">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg> Table
-      </button>
-    </div>
-    <div class="dcont" id="vc-collection">
-      <div class="cwrap"><canvas id="ch-coll-bar" style="max-height:240px"></canvas></div>
-      <div>
-        <div class="ilist-title">Monthly Collection Rate</div>
-        <div id="coll-rate-list"></div>
-      </div>
-    </div>
-    <div id="vt-collection" style="display:none">
-      <div class="tbl-scroll"><table class="dtbl">
-        <thead><tr><th>Month</th><th>Releases (₱)</th><th>Collectible (₱)</th><th>Collected (₱)</th><th>Rate</th><th>Uncollected (₱)</th><th>Bad Debts</th></tr></thead>
-        <tbody id="coll-tbl-body"></tbody>
-      </table>
-    </div>`;
-  const mr=d.monthRows||[];
-  barChart('ch-coll-bar',mr.map(x=>x.month),[
-    {label:'Collectible', data:mr.map(x=>x.collectible),backgroundColor:'rgba(124,58,237,.15)',borderColor:'#7c3aed',borderWidth:1.5,borderRadius:4},
-    {label:'Collected',   data:mr.map(x=>x.collected),  backgroundColor:mr.map(x=>x.rate>=0.9?'rgba(22,163,74,.6)':x.rate>=0.7?'rgba(234,88,12,.5)':'rgba(220,38,38,.45)'),borderColor:mr.map(x=>x.rate>=0.9?'#16a34a':x.rate>=0.7?'#ea580c':'#dc2626'),borderWidth:1.5,borderRadius:4},
-  ]);
-  document.getElementById('coll-rate-list').innerHTML=mr.map(row=>{
-    const w=Math.min(100,(row.rate||0)*100);
-    const bc=row.rate>=0.9?'var(--green)':row.rate>=0.7?'var(--orange)':'var(--red)';
-    const badge=row.rate>=0.9?'badge-ok':row.rate>=0.7?'badge-warn':'badge-bad';
-    return `<div class="irow">
-      <div class="iname">${row.month}</div>
-      <div class="ibar-wrap" style="width:65px"><div class="ibar-fill" style="width:${w}%;background:${bc}"></div></div>
-      <div class="iamt">${F.k(row.collected)}</div>
-      <span class="${badge}">${F.p(row.rate)}</span>
-    </div>`;
-  }).join('');
-  document.getElementById('coll-tbl-body').innerHTML=mr.map(row=>{
-    const rc=row.rate>=0.9?'t-green':row.rate>=0.7?'t-orange':'t-red';
-    return `<tr>
-      <td>${row.month}</td>
-      <td class="mono">${F.k(row.releases,false)}</td>
-      <td class="mono">${F.k(row.collectible,false)}</td>
-      <td class="mono t-green">${row.collected>0?F.k(row.collected,false):'—'}</td>
-      <td class="${rc}">${row.rate>0?F.p(row.rate):'—'}</td>
-      <td class="mono t-orange">${row.active>0?F.k(row.active,false):'—'}</td>
-      <td class="mono t-red">${row.badDebts>0?F.k(row.badDebts,false):'—'}</td>
-    </tr>`;
-  }).join('');
-}
 
 // ══════════════════════════════════════
 // BOTTOM CHARTS
