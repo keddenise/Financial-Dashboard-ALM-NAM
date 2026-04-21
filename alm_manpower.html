@@ -460,7 +460,6 @@ html, body { overflow-x: hidden; max-width: 100vw; }
       <div class="klbl">Bonus Monitoring</div>
       <div class="kval" id="kv-bonus">—</div>
       <div class="ksub" id="ks-bonus">— months met</div>
-      <!-- FIX #2: remaining now shows "Exceeded by" when negative -->
       <div class="kbadge bg-p" id="kb-bonus">— remaining</div>
       <div class="kprog"><div class="kbar kb-p" id="kbar-bonus" style="width:0%"></div></div>
       <div class="xbtn">▼</div>
@@ -603,6 +602,18 @@ function onRangeChange(){
   load();
 }
 
+// ── Helper: filter out months with no real data ────────────
+// A month is considered "empty" if revenue, grossProfit, netIncome,
+// directOpex, gaExpenses, hcActual and hcTarget are all 0 / null / undefined.
+function hasMonthData(m){
+  return !!(
+    m.revenue       || m.grossProfit  || m.netIncome  ||
+    m.directOpex    || m.gaExpenses   ||
+    m.hcActual      || m.hcTarget     ||
+    m.revActual     || m.revTarget
+  );
+}
+
 async function api(action){
   const year=document.getElementById('sy').value;
   const month=getRangeParam();
@@ -667,7 +678,7 @@ function renderKPIs(d){
   set('kb-rev',m==='YTD'?'YTD Revenue':'Range Revenue');
   w('kbar-rev',F.pp(k.totalRevenue/10000000));
 
-  // HC — FIX: now populated from AvT row 41
+  // HC
   set('kv-hc',k.hcActual ? Math.round(k.hcActual)+' HC' : '—');
   set('ks-hc','Avg Working Days: '+(k.wdActual?k.wdActual.toFixed(1):'—'));
   const hcPct = k.hcTarget ? k.hcActual/k.hcTarget : 0;
@@ -695,7 +706,7 @@ function renderKPIs(d){
   document.getElementById('kv-ni').className='kval '+(niNeg?'t-red':'t-green');
   w('kbar-ni',F.pp(Math.abs(k.netMargin)/0.2));
 
-  // Performance Bonus = Total Net Income - Accum. Net Profit
+  // Performance Bonus
   if(d.bonus){
     const pb = (k.netIncome||0) - (d.bonus.accumNetProfit||0);
     const pbNeg = pb < 0;
@@ -707,11 +718,10 @@ function renderKPIs(d){
     w('kbar-pb', F.pp(Math.abs(pb) / Math.max(Math.abs(k.netIncome||1), 1)));
   }
 
-  // Bonus — FIX #2 & #3: correct pct (decimal) + remaining badge
+  // Bonus
   if(b){
     set('kv-bonus',F.p(b.pct));
     set('ks-bonus',b.monthsMet+'/12 months met · Target: '+F.k(b.annualTarget));
-    // FIX: show "Exceeded by" when revenue surpasses annual target
     set('kb-bonus', b.remaining<0
       ? 'Exceeded by '+F.k(-b.remaining)
       : F.k(b.remaining)+' remaining');
@@ -752,24 +762,27 @@ function renderPL(d){
 
 // ── Charts ──────────────────────────────────────────────────
 function renderTrend(d){
-  const labels=d.months.map(m=>m.month);
+  // ✅ FIX: filter out months with no real data (e.g. April when sheet is empty)
+  const months = d.months.filter(hasMonthData);
+  const labels = months.map(m => m.month);
   const ctx=document.getElementById('trend-chart');
   if(trendChart) trendChart.destroy();
   trendChart=new Chart(ctx,{type:'line',data:{labels,datasets:[
-    {label:'Revenue',    data:d.months.map(m=>m.revenue),    borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,.08)',fill:true,tension:.3,pointRadius:3},
-    {label:'Gross Profit',data:d.months.map(m=>m.grossProfit),borderColor:'#16a34a',backgroundColor:'rgba(22,163,74,.04)',fill:false,tension:.3,pointRadius:3},
-    {label:'Net Income', data:d.months.map(m=>m.netIncome),  borderColor:'#dc2626',backgroundColor:'rgba(220,38,38,.04)',fill:false,tension:.3,pointRadius:3},
+    {label:'Revenue',     data:months.map(m=>m.revenue||null),    borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,.08)',fill:true,tension:.3,pointRadius:3,spanGaps:false},
+    {label:'Gross Profit',data:months.map(m=>m.grossProfit||null),borderColor:'#16a34a',backgroundColor:'rgba(22,163,74,.04)',fill:false,tension:.3,pointRadius:3,spanGaps:false},
+    {label:'Net Income',  data:months.map(m=>m.netIncome||null),  borderColor:'#dc2626',backgroundColor:'rgba(220,38,38,.04)',fill:false,tension:.3,pointRadius:3,spanGaps:false},
   ]},options:chartOpts('Revenue · GP · Net Income')});
 }
 
 function renderHCChart(d){
-  const labels=d.months.map(m=>m.month);
+  // ✅ FIX: filter out months with no HC data at all
+  const months = d.months.filter(m => m.hcActual || m.hcTarget || m.revenue);
+  const labels = months.map(m => m.month);
   const ctx=document.getElementById('hc-chart');
   if(hcChart) hcChart.destroy();
-  // FIX: hcActual/hcTarget now correctly populated from AvT row 41
   hcChart=new Chart(ctx,{type:'bar',data:{labels,datasets:[
-    {label:'HC Target',data:d.months.map(m=>m.hcTarget),backgroundColor:'rgba(8,145,178,.15)',borderColor:'#0891b2',borderWidth:1.5},
-    {label:'HC Actual',data:d.months.map(m=>m.hcActual),backgroundColor:'rgba(8,145,178,.7)',borderRadius:3},
+    {label:'HC Target',data:months.map(m=>m.hcTarget||null),backgroundColor:'rgba(8,145,178,.15)',borderColor:'#0891b2',borderWidth:1.5},
+    {label:'HC Actual',data:months.map(m=>m.hcActual||null),backgroundColor:'rgba(8,145,178,.7)',borderRadius:3},
   ]},options:{...chartOpts('Headcount Target vs Actual'),scales:{
     x:{grid:{color:'#f0f2f7'},ticks:{font:{family:'Inter',size:10},color:'#8d97ae'}},
     y:{grid:{color:'#f0f2f7'},ticks:{font:{family:'Inter',size:10},color:'#8d97ae'}}
@@ -777,12 +790,14 @@ function renderHCChart(d){
 }
 
 function renderGATrend(d){
-  const labels=d.months.map(m=>m.month);
+  // ✅ FIX: filter out months with no revenue or G&A data
+  const months = d.months.filter(m => m.revenue || m.gaExpenses);
+  const labels = months.map(m => m.month);
   const ctx=document.getElementById('ga-trend-chart');
   if(gaTrendChart) gaTrendChart.destroy();
   gaTrendChart=new Chart(ctx,{type:'line',data:{labels,datasets:[
-    {label:'Revenue',    data:d.months.map(m=>m.revenue),    borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,.06)',fill:true,tension:.3,pointRadius:2},
-    {label:'G&A Expenses',data:d.months.map(m=>m.gaExpenses),borderColor:'#ea580c',backgroundColor:'rgba(234,88,12,.04)',fill:false,tension:.3,pointRadius:2},
+    {label:'Revenue',     data:months.map(m=>m.revenue||null),    borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,.06)',fill:true,tension:.3,pointRadius:2,spanGaps:false},
+    {label:'G&A Expenses',data:months.map(m=>m.gaExpenses||null), borderColor:'#ea580c',backgroundColor:'rgba(234,88,12,.04)',fill:false,tension:.3,pointRadius:2,spanGaps:false},
   ]},options:chartOpts('G&A vs Revenue')});
 }
 
@@ -830,7 +845,6 @@ async function openDrill(card, forceRefresh=false){
   if(!data||forceRefresh){
     const actionMap={revenue:'revenue',gp:'gp',ga:'ga',netincome:'netincome',perfbonus:'bonus',bonus:'bonus',avt:'avt'};
     data=await api(actionMap[card]);
-    // For perfbonus, also fetch netincome to get netIncome value
     if(card==='perfbonus'){
       try{
         const niData=await api('netincome');
@@ -940,6 +954,8 @@ function statusBadge(raw){
 // ══════════════════════════════════════════════════════════
 function renderRevenue(d){
   const maxRev=d.clients[0]?d.clients[0].amount:0;
+  // ✅ FIX: filter empty months in drill trend too
+  const trendMonths = (d.trend||[]).filter(t => t.revActual || t.revTarget);
   document.getElementById('dc').innerHTML=`
   <div class="dstats-5">
     <div class="dstat"><div class="dstat-v t-blue">${F.k(d.totalRevenue)}</div><div class="dstat-l">Total Revenue</div></div>
@@ -990,9 +1006,9 @@ function renderRevenue(d){
   </div>`;
 
   pieChart('rev-pie', d.clients.map(c=>c.name), d.clients.map(c=>c.amount), PAL.mixed);
-  barChart('rev-trend', d.trend.map(t=>t.month),[
-    {label:'Target',data:d.trend.map(t=>t.revTarget),backgroundColor:'rgba(37,99,235,.2)',borderColor:'#2563eb',borderWidth:1.5},
-    {label:'Actual',data:d.trend.map(t=>t.revActual),backgroundColor:'rgba(37,99,235,.65)',borderRadius:3},
+  barChart('rev-trend', trendMonths.map(t=>t.month),[
+    {label:'Target',data:trendMonths.map(t=>t.revTarget||null),backgroundColor:'rgba(37,99,235,.2)',borderColor:'#2563eb',borderWidth:1.5},
+    {label:'Actual',data:trendMonths.map(t=>t.revActual||null),backgroundColor:'rgba(37,99,235,.65)',borderRadius:3},
   ]);
 
   const grid=document.getElementById('hc-client-grid');
@@ -1011,6 +1027,8 @@ function renderRevenue(d){
 // GP DRILL
 // ══════════════════════════════════════════════════════════
 function renderGP(d){
+  // ✅ FIX: filter empty months in GP drill trend
+  const trendMonths = (d.trend||[]).filter(t => t.revenue || t.grossProfit || t.directOpex);
   document.getElementById('dc').innerHTML=`
   <div class="dstats">
     <div class="dstat"><div class="dstat-v t-blue">${F.k(d.totalRevenue)}</div><div class="dstat-l">Total Revenue</div></div>
@@ -1031,10 +1049,10 @@ function renderGP(d){
     </div>
   </div>`;
 
-  lineChart('gp-trend',d.trend.map(t=>t.month),[
-    {label:'Revenue',    data:d.trend.map(t=>t.revenue),    borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,.06)',fill:true,tension:.3,pointRadius:3},
-    {label:'Gross Profit',data:d.trend.map(t=>t.grossProfit),borderColor:'#16a34a',fill:false,tension:.3,pointRadius:3},
-    {label:'Direct Exp', data:d.trend.map(t=>t.directOpex), borderColor:'#ea580c',fill:false,tension:.3,pointRadius:2},
+  lineChart('gp-trend',trendMonths.map(t=>t.month),[
+    {label:'Revenue',     data:trendMonths.map(t=>t.revenue||null),    borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,.06)',fill:true,tension:.3,pointRadius:3,spanGaps:false},
+    {label:'Gross Profit',data:trendMonths.map(t=>t.grossProfit||null),borderColor:'#16a34a',fill:false,tension:.3,pointRadius:3,spanGaps:false},
+    {label:'Direct Exp',  data:trendMonths.map(t=>t.directOpex||null), borderColor:'#ea580c',fill:false,tension:.3,pointRadius:2,spanGaps:false},
   ]);
 }
 
@@ -1061,6 +1079,9 @@ function renderGA(d){
           tooltip:{callbacks:{label:c=>` ${c.label}: ${F.k(c.raw)} (${F.p(c.raw/tot)})`}}}}});
     }
   }
+
+  // ✅ FIX: filter empty months in G&A trend
+  const trendMonths = (d.trend||[]).filter(t => t.total || t.comp || t.gna);
 
   document.getElementById('dc').innerHTML=`
   <div class="dstats-3">
@@ -1094,10 +1115,10 @@ function renderGA(d){
   window.showGASub=showGASub;
   showGASub('comp');
 
-  lineChart('ga-trend-d',d.trend.map(t=>t.month),[
-    {label:'Total G&A',data:d.trend.map(t=>t.total),borderColor:'#ea580c',backgroundColor:'rgba(234,88,12,.07)',fill:true,tension:.3,pointRadius:3},
-    {label:'Compensation',data:d.trend.map(t=>t.comp),borderColor:'#f97316',fill:false,tension:.3,pointRadius:2,borderDash:[4,2]},
-    {label:'GNA/Admin',data:d.trend.map(t=>t.gna),borderColor:'#2563eb',fill:false,tension:.3,pointRadius:2,borderDash:[4,2]},
+  lineChart('ga-trend-d',trendMonths.map(t=>t.month),[
+    {label:'Total G&A',   data:trendMonths.map(t=>t.total||null),borderColor:'#ea580c',backgroundColor:'rgba(234,88,12,.07)',fill:true,tension:.3,pointRadius:3,spanGaps:false},
+    {label:'Compensation',data:trendMonths.map(t=>t.comp||null), borderColor:'#f97316',fill:false,tension:.3,pointRadius:2,borderDash:[4,2],spanGaps:false},
+    {label:'GNA/Admin',   data:trendMonths.map(t=>t.gna||null),  borderColor:'#2563eb',fill:false,tension:.3,pointRadius:2,borderDash:[4,2],spanGaps:false},
   ]);
 }
 
@@ -1105,6 +1126,8 @@ function renderGA(d){
 // NET INCOME DRILL
 // ══════════════════════════════════════════════════════════
 function renderNI(d){
+  // ✅ FIX: filter empty months in net income trend
+  const trendMonths = (d.trend||[]).filter(t => t.revenue || t.grossProfit || t.gaExpenses || t.netIncome);
   const maxAbs=Math.max(d.totalRevenue,Math.abs(d.netIncome));
   const wfall=d.waterfall.map(ww=>{
     const pct=Math.min(100,Math.abs(ww.value)/maxAbs*100);
@@ -1128,36 +1151,33 @@ function renderNI(d){
     <div><div class="ilist-title">Monthly Trend</div><div class="cwrap"><canvas id="ni-trend"></canvas></div></div>
   </div>`;
 
-  lineChart('ni-trend',d.trend.map(t=>t.month),[
-    {label:'Revenue',     data:d.trend.map(t=>t.revenue),    borderColor:'#2563eb',fill:false,tension:.3,pointRadius:3},
-    {label:'Gross Profit',data:d.trend.map(t=>t.grossProfit),borderColor:'#16a34a',fill:false,tension:.3,pointRadius:2},
-    {label:'G&A Expenses',data:d.trend.map(t=>t.gaExpenses), borderColor:'#ea580c',fill:false,tension:.3,pointRadius:2,borderDash:[4,2]},
-    {label:'Net Income',  data:d.trend.map(t=>t.netIncome),  borderColor:'#dc2626',fill:false,tension:.3,pointRadius:3,borderDash:[3,3]},
+  lineChart('ni-trend',trendMonths.map(t=>t.month),[
+    {label:'Revenue',     data:trendMonths.map(t=>t.revenue||null),    borderColor:'#2563eb',fill:false,tension:.3,pointRadius:3,spanGaps:false},
+    {label:'Gross Profit',data:trendMonths.map(t=>t.grossProfit||null),borderColor:'#16a34a',fill:false,tension:.3,pointRadius:2,spanGaps:false},
+    {label:'G&A Expenses',data:trendMonths.map(t=>t.gaExpenses||null), borderColor:'#ea580c',fill:false,tension:.3,pointRadius:2,borderDash:[4,2],spanGaps:false},
+    {label:'Net Income',  data:trendMonths.map(t=>t.netIncome||null),  borderColor:'#dc2626',fill:false,tension:.3,pointRadius:3,borderDash:[3,3],spanGaps:false},
   ]);
 }
 
 // ══════════════════════════════════════════════════════════
 // PERFORMANCE BONUS DRILL
-// Formula: Total Net Income - Accum. Net Profit = Performance Bonus
 // ══════════════════════════════════════════════════════════
 function renderPerfBonus(d){
-  // d comes from the 'perfbonus' API action, which returns the same shape as 'bonus'
-  // but we also need netIncome from kpis — we embed it via the bonus data's accumNetProfit
-  // The drill data should include: netIncome, accumNetProfit, monthRows, annualTarget
   const netIncome     = d.netIncome     ?? (d.totalEarned ?? 0);
   const accumNetProfit= d.accumNetProfit?? 0;
   const perfBonus     = netIncome - accumNetProfit;
   const perfBonusNeg  = perfBonus < 0;
 
-  const monthLabels = (d.monthRows||[]).map(r => r.month);
+  // ✅ FIX: filter empty months in perf bonus rows
+  const rows = (d.monthRows||[])
+    .filter(r => r.netProfit || r.accumNetProfit)
+    .map((r, i, arr) => {
+      const prevAccum = i === 0 ? 0 : (arr[i-1].accumNetProfit||0);
+      const monthBonus = (r.netProfit||0) - (prevAccum||0);
+      return { ...r, monthBonus };
+    });
 
-  // Build per-month performance bonus = monthly netProfit - running accumNetProfit delta
-  // We'll show the monthly Net Profit vs Accum Net Profit line and highlight the bonus
-  const rows = (d.monthRows||[]).map((r, i, arr) => {
-    const prevAccum = i === 0 ? 0 : (arr[i-1].accumNetProfit||0);
-    const monthBonus = (r.netProfit||0) - (prevAccum||0);
-    return { ...r, monthBonus };
-  });
+  const monthLabels = rows.map(r => r.month);
 
   document.getElementById('dc').innerHTML = `
   <div style="background:var(--teal-a);border:1.5px solid var(--teal);border-radius:var(--r);padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;gap:10px">
@@ -1216,13 +1236,7 @@ function renderPerfBonus(d){
           <th>P&amp;L Status</th>
         </tr></thead>
         <tbody>
-          ${rows.map((r, i) => {
-            const cumulBonus = (r.netProfit||0) - (r.accumNetProfit||0) + (r.accumNetProfit||0) - (i===0?0:(rows[i-1].accumNetProfit||0));
-            // Running cumulative performance bonus = netIncome_ytd_up_to_this_month - accumNetProfit_this_month
-            // We approximate by using accumNetProfit at each row
-            const runningPB = (r.accumNetProfit||0) !== 0
-              ? ((r.netProfit||0) - (r.accumNetProfit||0))
-              : 0;
+          ${rows.map((r) => {
             return `<tr>
               <td class="fw7">${r.month}</td>
               <td class="mono ${(r.netProfit||0)<0?'t-red':(r.netProfit||0)>0?'t-green':''}">${r.netProfit!==0?F.k(r.netProfit,false):'—'}</td>
@@ -1245,18 +1259,16 @@ function renderPerfBonus(d){
     </div>
   </div>`;
 
-  // Line chart: Net Income vs Accum. Net Profit monthly
   lineChart('pb-trend', monthLabels, [
-    {label:'Net Income',      data:rows.map(r=>r.netProfit),      borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,.07)',fill:true,tension:.3,pointRadius:3},
-    {label:'Accum. Net Profit',data:rows.map(r=>r.accumNetProfit),borderColor:'#16a34a',fill:false,tension:.3,pointRadius:3,borderDash:[4,2]},
-    {label:'Perf. Bonus',     data:rows.map(r=>r.netProfit-r.accumNetProfit), borderColor:'#0891b2',fill:false,tension:.3,pointRadius:4},
+    {label:'Net Income',       data:rows.map(r=>r.netProfit||null),       borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,.07)',fill:true,tension:.3,pointRadius:3,spanGaps:false},
+    {label:'Accum. Net Profit',data:rows.map(r=>r.accumNetProfit||null),  borderColor:'#16a34a',fill:false,tension:.3,pointRadius:3,borderDash:[4,2],spanGaps:false},
+    {label:'Perf. Bonus',      data:rows.map(r=>r.netProfit-r.accumNetProfit||null),borderColor:'#0891b2',fill:false,tension:.3,pointRadius:4,spanGaps:false},
   ]);
 
-  // Bar chart: monthly bonus contribution
   barChart('pb-bar', monthLabels, [
     {
       label:'Monthly Bonus',
-      data: rows.map(r=>r.monthBonus),
+      data: rows.map(r=>r.monthBonus||null),
       backgroundColor: rows.map(r=>r.monthBonus>=0?'rgba(8,145,178,.7)':'rgba(220,38,38,.7)'),
       borderRadius: 3,
     },
@@ -1264,10 +1276,12 @@ function renderPerfBonus(d){
 }
 
 // ══════════════════════════════════════════════════════════
-// BONUS DRILL — FIX: correct row indexing + pct display
+// BONUS DRILL
 // ══════════════════════════════════════════════════════════
 function renderBonus(d){
-  const monthLabels = d.monthRows.map(r => r.month);
+  // ✅ FIX: filter empty months (no target and no earned and no netProfit)
+  const filteredRows = d.monthRows.filter(r => r.target || r.earned || r.netProfit || r.accumNetProfit);
+  const monthLabels = filteredRows.map(r => r.month);
  
   document.getElementById('dc').innerHTML = `
   <div class="dstats-5">
@@ -1320,7 +1334,7 @@ function renderBonus(d){
           <th>Accum. Net (₱)</th>
         </tr></thead>
         <tbody>
-          ${d.monthRows.map(r => `
+          ${filteredRows.map(r => `
           <tr>
             <td class="fw7">${r.month}</td>
             <td class="mono">${F.k(r.target, false)}</td>
@@ -1373,19 +1387,18 @@ function renderBonus(d){
     </div>
   </div>`;
  
-  // Commission vs Target bar chart
   barChart('bonus-bar', monthLabels, [
     {
       label: 'Target',
-      data: d.monthRows.map(r => r.target),
+      data: filteredRows.map(r => r.target||null),
       backgroundColor: 'rgba(124,58,237,.2)',
       borderColor: '#7c3aed',
       borderWidth: 1.5,
     },
     {
       label: 'Commission',
-      data: d.monthRows.map(r => r.earned),
-      backgroundColor: d.monthRows.map(r =>
+      data: filteredRows.map(r => r.earned||null),
+      backgroundColor: filteredRows.map(r =>
         r.status === 'Met'     ? 'rgba(22,163,74,.7)'   :
         r.status === 'Behind'  ? 'rgba(220,38,38,.7)'   :
                                   'rgba(141,151,174,.4)'),
@@ -1393,12 +1406,11 @@ function renderBonus(d){
     },
   ]);
  
-  // Net Profit bar chart
   barChart('bonus-ni', monthLabels, [
     {
       label: 'Net Profit',
-      data: d.monthRows.map(r => r.netProfit),
-      backgroundColor: d.monthRows.map(r =>
+      data: filteredRows.map(r => r.netProfit||null),
+      backgroundColor: filteredRows.map(r =>
         r.netProfit >= 0 ? 'rgba(22,163,74,.7)' : 'rgba(220,38,38,.7)'),
       borderRadius: 3,
     },
@@ -1406,7 +1418,7 @@ function renderBonus(d){
 }
 
 // ══════════════════════════════════════════════════════════
-// AVT DRILL — FIX: P&L targets now populated, HC chart fixed
+// AVT DRILL
 // ══════════════════════════════════════════════════════════
 function renderAVT(d){
   function showAvtSub(sub){
@@ -1584,19 +1596,21 @@ function renderAvtContent(sub,d){
   return '';
 }
 
+// ✅ FIX: filter empty months in AVT revenue trend chart
 function renderAvtRevChart(d){
-  lineChart('avt-rev-chart',(d.revTrend||[]).map(t=>t.month),[
-    {label:'Target',data:(d.revTrend||[]).map(t=>t.target),borderColor:'#94a3b8',borderDash:[4,2],fill:false,tension:.3,pointRadius:2},
-    {label:'Actual',data:(d.revTrend||[]).map(t=>t.actual),borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,.07)',fill:true,tension:.3,pointRadius:3},
+  const src = (d.revTrend||[]).filter(t => t.actual || t.target);
+  lineChart('avt-rev-chart', src.map(t=>t.month),[
+    {label:'Target',data:src.map(t=>t.target||null),borderColor:'#94a3b8',borderDash:[4,2],fill:false,tension:.3,pointRadius:2,spanGaps:false},
+    {label:'Actual',data:src.map(t=>t.actual||null),borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,.07)',fill:true,tension:.3,pointRadius:3,spanGaps:false},
   ]);
 }
 
-// FIX #7: HC chart now uses hcTrend from GS (AvT row 41 per month)
+// ✅ FIX: filter empty months in AVT HC trend chart
 function renderAvtHCChart(d){
-  const src = d.hcTrend || d.revTrend || [];
+  const src = (d.hcTrend || d.revTrend || []).filter(t => t.hcActual || t.hcTarget);
   barChart('avt-hc-chart', src.map(t=>t.month),[
-    {label:'HC Target',data:src.map(t=>t.hcTarget||0),backgroundColor:'rgba(8,145,178,.15)',borderColor:'#0891b2',borderWidth:1.5},
-    {label:'HC Actual',data:src.map(t=>t.hcActual||0),backgroundColor:'rgba(8,145,178,.7)',borderRadius:3},
+    {label:'HC Target',data:src.map(t=>t.hcTarget||null),backgroundColor:'rgba(8,145,178,.15)',borderColor:'#0891b2',borderWidth:1.5},
+    {label:'HC Actual',data:src.map(t=>t.hcActual||null),backgroundColor:'rgba(8,145,178,.7)',borderRadius:3},
   ]);
 }
 
