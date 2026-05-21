@@ -698,7 +698,7 @@ function cl(id,cls){
 
 // ── Drill open/close ──────────────────────────────────────
 const cardMeta={
-  sales:{color:'blue',title:'Net Sales — Detail',sub:'Revenue & supplier breakdown'},
+  sales:{color:'blue',title:'Net Sales — Detail',sub:'Revenue & COGS category breakdown'},
   gp:{color:'green',title:'Gross Profit — Detail',sub:'Cost of goods & margin analysis'},
   opex:{color:'orange',title:'Operating Expenses — Detail',sub:'Compensation & expense structure'},
   netincome:{color:'red',title:'Net Income — Detail',sub:'Full P&L waterfall'},
@@ -856,12 +856,12 @@ function renderSales(d){
     <div class="dcont" id="vc-sales">
       <div class="cwrap"><canvas id="ch-sales-trend" style="max-height:240px"></canvas></div>
       <div>
-        <div class="ilist-title">Top Suppliers — ${getRangeLabel()}</div>
+        <div class="ilist-title">COGS Categories — ${getRangeLabel()}</div>
         <div id="sales-sup-list"></div>
       </div>
     </div>
     <div id="vt-sales" style="display:none">
-      <div class="tbl-scroll"><table class="dtbl"><thead><tr><th>Supplier</th><th>Sales (₱)</th><th>% of Total</th></tr></thead>
+      <div class="tbl-scroll"><table class="dtbl"><thead><tr><th>COGS Category</th><th>Amount (₱)</th><th>% of COGS</th></tr></thead>
       <tbody id="sales-tbl-body"></tbody></table>
     </div>
   `;
@@ -870,11 +870,11 @@ function renderSales(d){
     {label:'Net Sales',data:ts,borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,.08)',fill:true,tension:.4,borderWidth:2,pointRadius:3},
     {label:'COGS',data:tc,borderColor:'#ea580c',borderWidth:2,tension:.4,pointRadius:3,fill:false}
   ]);
-  const sup=d.suppliers||[], maxSup=sup[0]?.amount||1;
-  document.getElementById('sales-sup-list').innerHTML=itemsList(sup,maxSup,PAL.blue);
+  const cats=d.cogsCategories||[], maxCat=cats[0]?.val||1;
+  document.getElementById('sales-sup-list').innerHTML=itemsList(cats,maxCat,PAL.blue);
   document.getElementById('sales-tbl-body').innerHTML=
-    sup.map(s=>`<tr><td>${s.name}</td><td class="mono">${F.k(s.amount,false)}</td><td>${F.p(s.pct)}</td></tr>`).join('')
-    +`<tr><td class="fw7">Total</td><td class="mono fw7">${F.k(d.netSales,false)}</td><td class="fw7">100%</td></tr>`;
+    cats.map(c=>`<tr><td>${c.name}</td><td class="mono">${F.k(c.val,false)}</td><td>${F.p(c.pct)}</td></tr>`).join('')
+    +`<tr><td class="fw7">Total COGS</td><td class="mono fw7">${F.k(d.totalCOGS,false)}</td><td class="fw7">100%</td></tr>`;
 }
 
 // ══════════════════════════════════════════════════════
